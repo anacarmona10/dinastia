@@ -1,0 +1,29 @@
+{
+  "name": "dinastiaamv",
+  "version": "1.0.0",
+  "description": "Proyecto final - Análisis y Desarrollo de Software",
+  "homepage": "https://github.com/anacarmona10/dinastia#readme",
+  "bugs": {
+    "url": "https://github.com/anacarmona10/dinastia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anacarmona10/dinastia.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "express": "^5.2.1",
+    "express-handlebars": "^8.0.6",
+    "express-myconnection": "^1.0.4",
+    "mysql": "^2.18.1",
+    "nodemon": "^3.1.14"
+  }
+}
