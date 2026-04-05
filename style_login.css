@@ -3,7 +3,10 @@
 }
 
 body {
-    background: linear-gradient(180deg, white, #ff00a6);
+    /* Imagen de fondo con overlay negro semitransparente */
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), 
+                url("imagenes/Iglesia.jpg") no-repeat center center fixed;
+    background-size: cover;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -12,77 +15,94 @@ body {
     margin: 0;
 }
 
+/* CONTENEDOR */
 .login-container {
-    background: #ff00a6;
-    padding: 40px;
-    border-radius: 15px;
+    background: #ffffff; /* login totalmente blanco */
+    padding: 35px 30px;
+    border-radius: 16px;
     width: 350px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     text-align: center;
 }
 
+/* TÍTULO */
 .login-container h2 {
-    color: white;
+    color: #000;
     margin-bottom: 25px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-size: 1.8rem;
 }
 
+/* INPUT GROUP */
 .input-group {
     margin-bottom: 15px;
     text-align: left;
 }
 
+/* LABELS */
 .input-group label {
-    color: white;
-    font-weight: bold;
+    color: #2d2d2d;
+    font-weight: 600;
     display: block;
     margin-bottom: 5px;
 }
 
+/* INPUTS */
 .login-container input {
     width: 100%;
-    padding: 13px; /* Ajustado para igualar altura con el botón */
-    border-radius: 10px;
-    border: 2px solid black;
-    background: #e67ac2;
+    padding: 13px;
+    border-radius: 12px;
+    border: 2px solid #e3b0ff;
+    background: #ffffff;
     font-size: 14px;
-    color: white;
+    color: #333;
     outline: none;
+    transition: 0.3s;
 }
 
+/* PLACEHOLDER */
+.login-container input::placeholder {
+    color: #666;
+}
+
+/* FOCUS */
 .login-container input:focus {
-    border-color: #fff;
+    border-color: #d100ff;
+    box-shadow: 0 0 0 3px rgba(209, 0, 255, 0.2);
 }
 
+/* BOTÓN */
 .login-container button {
     width: 100%;
-    padding: 15px;
-    margin-top: 5px;
+    padding: 14px;
+    margin-top: 10px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: bold;
     color: white;
-    background: linear-gradient(90deg, #ff4fc3, #ff7cd6);
+    background: linear-gradient(to right, #c800ff, #ff4d00);
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .login-container button:hover {
     opacity: 0.9;
+    transform: scale(1.03);
 }
 
+/* TEXTO REGISTRO */
 .registro {
     margin-top: 20px;
-    color: white;
+    color: #333;
 }
 
 .registro a {
-    color: white;
+    color: #c800ff;
     font-weight: bold;
     text-decoration: none;
-    border-bottom: 1px solid white;
 }
 
 .registro a:hover {
-    border-bottom: 2px solid white;
+    color: #ff4d00;
+    transform: scale(1.05);
 }
