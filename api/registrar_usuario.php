@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redirigir a una página de éxito o mostrar mensaje
             echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Registro exitoso</title></head><body>
                   <h3>¡Registro exitoso!</h3>
-                  <p>Ya puedes <a href='login.html'>iniciar sesión</a>.</p>
+                  <p>Ya puedes <a href='../Login.html'>iniciar sesión</a>.</p>
                   </body></html>";
             exit;
         } catch(PDOException $e) {

@@ -5,7 +5,7 @@ require_once 'conexion.php'; // tu conexión PDO
 
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../login.html');
+    header('Location: ../Login.html');
     exit;
 }
 
@@ -66,7 +66,7 @@ function mostrarErrores($errores) {
     foreach ($errores as $error) {
         echo "<li>$error</li>";
     }
-    echo "</ul><a href='../login.html'>← Volver al inicio de sesión</a>";
+    echo "</ul><a href='../Login.html'>← Volver al inicio de sesión</a>";
     echo "</div></body></html>";
 }
 ?>
