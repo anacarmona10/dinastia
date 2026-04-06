@@ -16,10 +16,10 @@
         <div class="content-side">
             <div class="registro-container">
                 <h2>Registro de Usuarios</h2>
-                <form>
-                    <input type="text" placeholder="Nombre completo" required>
+                 <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
+                    <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
 
-                    <select required>
+                    <select name="tipoDocumento" id="tipoDocumento" required>
                         <option value="">Tipo de documento</option>
                         <option value="cc">Cédula de Ciudadanía</option>
                         <option value="ce">Cédula de Extranjería</option>
@@ -28,14 +28,26 @@
                         <option value="passport">Pasaporte</option>
                     </select>
 
-                    <input type="text" placeholder="Número de documento" required>
-                    <input type="email" placeholder="Correo electrónico" required>
-                    <input type="password" placeholder="Contraseña" required>
-                    <input type="password" placeholder="Confirmar contraseña" required>
+                    <input type="text" name="numeroDocumento" id="numeroDocumento" placeholder="Número de documento" required>
+                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico" required>
+                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
+                    <input type="password" name="confirmar_contraseña" id="confirm_password" placeholder="Confirmar contraseña" required>
 
-                    <button type="submit">Registrar</button>
+                    <button type="submit" class="form-button">Registrar</button>
+                    <button> <a href="login.html">Iniciar Sesión</a></button>
                 </form>
             </div>
+    
+    
+        <script>
+        document.getElementById('formRegistro').addEventListener('submit', function(e) {
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            if (pass !== confirm) {
+                e.preventDefault();
+                document.getElementById('mensaje').innerHTML = '<p style="color:red;">Las contraseñas no coinciden</p>';
+            }
+        });
     </script>
 </body>
 </html>
