@@ -10,7 +10,14 @@
 
 <div class="login-container">
 
-    <h2>Iniciar Sesión</h2>
+    <!-- SELECTOR -->
+    <div class="selector-login">
+        <button id="btnUsuario" class="active">Usuario</button>
+        <button id="btnAdmin">Administrador</button>
+    </div>
+
+    <!-- TÍTULO -->
+    <h2 id="tituloLogin">Iniciar Sesión</h2>
 
     <form action="#" method="post">
 
@@ -33,6 +40,25 @@
     </form>
 
 </div>
+
+<!-- SCRIPT -->
+<script>
+const btnUsuario = document.getElementById("btnUsuario");
+const btnAdmin = document.getElementById("btnAdmin");
+const titulo = document.getElementById("tituloLogin");
+
+btnUsuario.addEventListener("click", () => {
+    titulo.textContent = "Iniciar Sesión";
+    btnUsuario.classList.add("active");
+    btnAdmin.classList.remove("active");
+});
+
+btnAdmin.addEventListener("click", () => {
+    titulo.textContent = "Iniciar Sesión como Administrador";
+    btnAdmin.classList.add("active");
+    btnUsuario.classList.remove("active");
+});
+</script>
 
 </body>
 </html>

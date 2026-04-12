@@ -3,7 +3,7 @@
 }
 
 body {
-    /* Imagen de fondo con overlay negro semitransparente */
+    /* Fondo con overlay */
     background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), 
                 url("imagenes/Iglesia.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -17,12 +17,43 @@ body {
 
 /* CONTENEDOR */
 .login-container {
-    background: #ffffff; /* login totalmente blanco */
+    background: #ffffff;
     padding: 35px 30px;
     border-radius: 16px;
     width: 350px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     text-align: center;
+}
+
+/* SELECTOR USUARIO / ADMIN */
+.selector-login {
+    display: flex;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e3b0ff;
+}
+
+.selector-login button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+    transition: 0.3s;
+}
+
+/* ACTIVO */
+.selector-login button.active {
+    background: linear-gradient(to right, #c800ff, #ff4d00);
+    color: white;
+}
+
+/* HOVER */
+.selector-login button:hover {
+    background: #f3d9ff;
 }
 
 /* TÍTULO */
@@ -71,7 +102,7 @@ body {
 }
 
 /* BOTÓN */
-.login-container button {
+.login-container button[type="submit"] {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
@@ -85,7 +116,7 @@ body {
     transition: 0.3s;
 }
 
-.login-container button:hover {
+.login-container button[type="submit"]:hover {
     opacity: 0.9;
     transform: scale(1.03);
 }
@@ -104,5 +135,4 @@ body {
 
 .registro a:hover {
     color: #ff4d00;
-    transform: scale(1.05);
 }
