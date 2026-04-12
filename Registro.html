@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style_registro.css">
 </head>
 <body>
+
     <div class="main-wrapper">
         <div class="image-side">
             <img src="imagenes/Lago.jpg" alt="Paisaje de lago">
@@ -16,7 +17,9 @@
         <div class="content-side">
             <div class="registro-container">
                 <h2>Registro de Usuarios</h2>
-                 <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
+
+                <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
+                    
                     <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
 
                     <select name="tipoDocumento" id="tipoDocumento" required>
@@ -30,29 +33,48 @@
 
                     <input type="text" name="numeroDocumento" id="numeroDocumento" placeholder="Número de documento" required>
                     <input type="email" name="correo" id="correo" placeholder="Correo electrónico" required>
+
                     <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
+
                     <input type="password" name="confirmar_contraseña" id="confirm_password" placeholder="Confirmar contraseña" required>
 
                     <button type="submit" class="form-button">Registrar</button>
+
+                    <div id="mensaje"></div>
+
                     <p class="registro">
                         ¿Ya tienes una cuenta? <a href="Login.html">Inicia sesión</a>
                     </p>
+
                     <div class="logo-container">
                         <img src="imagenes/Logo Dinastia AMV 2.png" alt="Logo Dinastia AMV 2">
                     </div>
+
                 </form>
             </div>
-    
-    
-        <script>
+        </div>
+    </div>
+
+    <script>
+   
         document.getElementById('formRegistro').addEventListener('submit', function(e) {
-            const pass = document.getElementById('password').value;
+            const pass = document.getElementById('contraseña').value;
             const confirm = document.getElementById('confirm_password').value;
+
             if (pass !== confirm) {
                 e.preventDefault();
-                document.getElementById('mensaje').innerHTML = '<p style="color:red;">Las contraseñas no coinciden</p>';
+                document.getElementById('mensaje').innerHTML = 
+                    '<p style="color:red;">Las contraseñas no coinciden ❌</p>';
             }
         });
+
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get('success') === '1') {
+            document.getElementById('mensaje').innerHTML =
+                '<p style="color:green;">Usuario registrado con éxito ✅</p>';
+        }
     </script>
+
 </body>
 </html>
