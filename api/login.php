@@ -32,7 +32,7 @@ if (!empty($errores)) {
 }
 
 // Buscar el usuario por correo
-$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM users WHERE correo = ?");
+$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM usuarios WHERE correo = ?");
 $stmt->execute([$correo]);
 $usuario = $stmt->fetch();
 

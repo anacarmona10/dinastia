@@ -9,7 +9,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     // Si quieres verificar que funciona (solo para pruebas):
-    // echo "Conexión exitosa";
+    //echo "Conexión exitosa";
 } catch(PDOException $e) {
     // En producción no muestres el mensaje interno, pero para desarrollo está bien
     die("Error de conexión: " . $e->getMessage());
