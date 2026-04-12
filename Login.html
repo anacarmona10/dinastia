@@ -10,25 +10,25 @@
 
 <div class="login-container">
 
-    <!-- SELECTOR -->
     <div class="selector-login">
         <button id="btnUsuario" class="active">Usuario</button>
         <button id="btnAdmin">Administrador</button>
     </div>
 
-    <!-- TÍTULO -->
     <h2 id="tituloLogin">Iniciar Sesión</h2>
 
-    <form action="#" method="post">
+    <form action="api/login.php" method="post">
+
+        <input type="hidden" name="tipo_usuario" id="tipoUsuario" value="usuario">
 
         <div class="input-group">
             <label>Correo electrónico</label>
-            <input type="email" placeholder="Ingresa tu correo" required>
+            <input type="email" name="correo" placeholder="Ingresa tu correo" required>
         </div>
 
         <div class="input-group">
             <label>Contraseña</label>
-            <input type="password" placeholder="Ingresa tu contraseña" required>
+            <input type="password" name="contraseña" placeholder="Ingresa tu contraseña" required>
         </div>
 
         <button type="submit">Ingresar</button>
@@ -41,7 +41,6 @@
 
 </div>
 
-<!-- SCRIPT -->
 <script>
 const btnUsuario = document.getElementById("btnUsuario");
 const btnAdmin = document.getElementById("btnAdmin");
@@ -51,12 +50,14 @@ btnUsuario.addEventListener("click", () => {
     titulo.textContent = "Iniciar Sesión";
     btnUsuario.classList.add("active");
     btnAdmin.classList.remove("active");
+    document.getElementById("tipoUsuario").value = "usuario";
 });
 
 btnAdmin.addEventListener("click", () => {
     titulo.textContent = "Iniciar Sesión como Administrador";
     btnAdmin.classList.add("active");
     btnUsuario.classList.remove("active");
+    document.getElementById("tipoUsuario").value = "admin";
 });
 </script>
 
