@@ -167,7 +167,7 @@ body {
     transition: 0.3s;
 }
 
-/* 🔥 HOVER NARANJITA */
+/* HOVER NARANJITA */
 .registro a:hover {
     color: #ff4d00; /* naranja suave */
     text-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
