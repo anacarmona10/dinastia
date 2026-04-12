@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dinsatía AMV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl font-bold">explore</span>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">AMV <span class="text-primary">Explora</span></h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-10">
+<nav class="flex items-center gap-8">
+<a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="#destinos">Destinos</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="#nosotros">Nosotros</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="#historia">Historia</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="#precios">Precios Locales</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors" href="#contacto">Contacto</a>
+</nav>
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-wide shadow-lg shadow-primary/30 hover:scale-105 transition-transform">
+<a href="Registro.html">Reservar Ahora</a>
+</button>
+</div>
+<!-- Mobile Menu Icon -->
+<div class="md:hidden flex items-center text-primary">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</header>
+<main class="flex-1">
+<!-- Hero Section -->
+<div class="@container px-4 md:px-20 py-6" id="destinos">
+<div class="relative flex min-h-[520px] flex-col gap-6 overflow-hidden rounded-3xl items-center justify-center p-8 text-center" data-alt="Vibrant aerial view of colorful Colombian houses in Guatape" style="background-image: linear-gradient(rgba(34, 22, 16, 0.6) 0%, rgba(34, 22, 16, 0.8) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuCgy3LSrGedKm84yxaWF73tHPJOthiYQyITAhNoSdd0uyNmos8JZYnUFMe_07bNfe9BTEdl2BrEUXGgG0mJpeoP_ZsNwXk8QV2Ag1QClp_WI2ZVDf8iiB_GcYHYblN9yzlFxIBjWwL1DVyOY0xcJD3EhsK993C-d-ZSzJlxCrD41CkY5o31NJafICQK2Ggx2alPU-W7gXnJk5fkET0R7tdt3lQBjkMUck9pJUvudyUMB7HvJC4mcMu4xhAc_SLgCesSWmm4H_14eo4'); background-size: cover; background-position: center;">
+<div class="z-10 flex flex-col gap-4 max-w-3xl">
+<span class="inline-block self-center px-4 py-1 rounded-full bg-yellow-400 text-background-dark text-xs font-black uppercase tracking-widest">Ofertas para Colombianos</span>
+<h1 class="text-white text-5xl md:text-7xl font-black leading-tight tracking-tighter">
+                                Conectamos historias, creamos viajes.
+                            </h1>
+<h2 class="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
+                                Descubre paisajes vibrantes con las tarifas más bajas del mercado, diseñadas exclusivamente para nuestra gente por <span class="text-primary font-bold">AMV</span>.
+                            </h2>
+<div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-white text-base font-bold shadow-xl hover:bg-primary/90 transition-all">
+                                    Ver Planes Locales
+                                </button>
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-white/10 backdrop-blur-md border border-white/20 text-white text-base font-bold hover:bg-white/20 transition-all">
+                                    Explorar Destinos
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats/Highlights Banner -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-20 py-8">
+<div class="bg-yellow-400/10 dark:bg-yellow-400/5 p-6 rounded-2xl border border-yellow-400/20 text-center">
+<span class="material-symbols-outlined text-yellow-500 text-3xl mb-2">payments</span>
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl">-40% Dcto.</p>
+<p class="text-slate-600 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Tarifa Nacional</p>
+</div>
+<div class="bg-primary/10 dark:bg-primary/5 p-6 rounded-2xl border border-primary/20 text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">hotel</span>
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl">500+ Hoteles</p>
+<p class="text-slate-600 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Aliados Locales</p>
+</div>
+<div class="bg-orange-400/10 dark:bg-orange-400/5 p-6 rounded-2xl border border-orange-400/20 text-center">
+<span class="material-symbols-outlined text-orange-500 text-3xl mb-2">map</span>
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl">32 Deptos</p>
+<p class="text-slate-600 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Cobertura Total</p>
+</div>
+<div class="bg-green-400/10 dark:bg-green-400/5 p-6 rounded-2xl border border-green-400/20 text-center">
+<span class="material-symbols-outlined text-green-500 text-3xl mb-2">support_agent</span>
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl">24/7 Soporte</p>
+<p class="text-slate-600 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Atención en Casa</p>
+</div>
+</div>
+<!-- Nosotros Section -->
+<section class="px-4 md:px-20 py-16 bg-white dark:bg-background-dark/50" id="nosotros">
+<div class="grid md:grid-cols-2 gap-12 items-center">
+<div class="order-2 md:order-1 flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<h3 class="text-primary font-black uppercase tracking-[0.2em] text-sm">Nosotros</h3>
+<h2 class="text-slate-900 dark:text-slate-100 text-4xl md:text-5xl font-black leading-tight">
+                                    Nacimos de los Colores de Nuestra Tierra
+                                </h2>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                AMV es más que una agencia de viajes; somos el puente entre tus ganas de descubrir el mundo y las experiencias auténticas que mereces. Nacimos con la convicción de que viajar debería ser sencillo, personal y sin sorpresas desagradables.
+                            </p>
+<p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                Por eso creamos un espacio donde los viajeros encuentran exactamente lo que buscan y los creadores de experiencias locales pueden mostrar lo mejor de su tierra. Creemos en el turismo responsable, en la transparencia desde la primera búsqueda hasta el regreso a casa, y en el poder de las conexiones humanas. Detrás de AMV hay un equipo de viajeros apasionados, desarrolladores y expertos en turismo que trabajan cada día para que planificar tus vacaciones sea tan emocionante como vivirlas.
+                            </p>
+<div class="flex gap-4">
+<div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div class="size-12 rounded-full bg-yellow-400/20 flex items-center justify-center text-yellow-600">
+<span class="material-symbols-outlined">celebration</span>
+</div>
+<div class="size-12 rounded-full bg-orange-400/20 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined">psychology_alt</span>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2 grid grid-cols-2 gap-4">
+<div class="space-y-4">
+<div class="h-64 rounded-2xl bg-cover bg-center shadow-2xl" data-alt="Lush green coffee plantation in Colombia" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCAFULv7V385hj3NSp_U0VgIwxekKvxBF63mmnKF8NZbINTL5vTubhaLgZjs1AZJYyl0XD5XYfrHyIUG_GL40ciA8xMZexdafC_1as70YRF8wNU2Yt9bwZ-hQUW6w0MjbGwWqckuJqybLYuo4FSotVpjLoFb3mvMrxYzkKxHnewcU2ukI4-8T3vn_VSn3TbcqN5gmkkUr2lJiVnErKK1TV2lkazHmBbKuBx9m0NWjHP2wLwMk0UZByWqQcOCPfMM94zJ64sfDfx0zA')"></div>
+<div class="h-40 rounded-2xl bg-cover bg-center shadow-xl" data-alt="Close up of Colombian coffee beans" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdSsvCFL1onxuBriviUYFQAURMycocjf47-hSPUPxSvr4i3MNR8DtO1SQJbIppZVLUcwMB_vaqOSHbZEsnsFTFpFuGloC-_czbcWm3Tprd8n3-IDpMyyRh9bobWLrdNh3EOoxuWcDho98MJICv_eIrejicuHHYXokiU5GgDAwCl-oeUYCZ5Wf_Gvr8vcHSG07bjXS2ebyKe98AywrwFZxj8ky5vqeXnjfdOuM8UfKoSLHpFTCF7hJdaqSPSev_9pj_D_jc5j0dZ9I')"></div>
+</div>
+<div class="space-y-4 pt-8">
+<div class="h-40 rounded-2xl bg-cover bg-center shadow-xl" data-alt="Brightly colored traditional Colombian dresses" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDlLQhvm5XTY7jtZuEVJFYBi5CvObAaOB7GXlSVisA4674G1wUhNy2HsgI4SAZoUZpCUt35JWr8xhLz-aYSn_e6dhz6Quzg0t3SXWGkDmEd7kdYr7sdhc9zyN_CxYcBTDQHFBnkyiDumF3xGPNySaYL-bDGdaGJcKNBYZKV_BZ65CjamKu_BIJb-rSrmsCdm34bRT5pBzMJ480BmwVUngYwdS_qSFNehglFkRen9ln8IhwipS9VgDnY-kPK8ee4xpxos9AJzy23DA')"></div>
+<div class="h-64 rounded-2xl bg-cover bg-center shadow-2xl" data-alt="Stunning sunset over the Caribbean sea" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiXE7gWRx16tuwej22OcN757KcveCGEPKyz2fWFckF7mlFsIEvu8aDYRuzCsWeohn8IZkH5dqvkUp0xMHHJIlTaxaa1nw53yQXet4dV4GrjCNqOqrGarmdt88O4bxyR0uryDUJ4zI-wDhbxjB1jiLVMgPh2gwjm32a0N_C0mrl1r87HNzeBgmnRTyNsSWkCbhxLr2yn4oiVWIuH3-l7MmeIgbHHvP6G79Z-c-M8yVQNPGg5Ok7jr_nPsg7jAsFEvX3Do2H2S9HYSw')"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Historia Section -->
+<section class="px-4 md:px-20 py-16 bg-slate-50 dark:bg-background-dark/20" id="historia">
+<div class="max-w-4xl mx-auto flex flex-col gap-8 text-center">
+<div class="flex flex-col gap-2">
+<h3 class="text-primary font-black uppercase tracking-[0.2em] text-sm">Nuestra Historia</h3>
+<h2 class="text-slate-900 dark:text-slate-100 text-4xl font-black">Todo comenzó con una conversación frente al mar.</h2>
+</div>
+<div class="space-y-6 text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+<p>
+                                Era una tarde cálida en una pequeña costa del Caribe colombiano. Dos amigos, viajeros empedernidos, compartían sus frustraciones: encontrar un plan auténtico requería visitar decenas de páginas, lidiar con intermediarios y, aún así, nunca sabían si lo que contrataban era real. Al mismo tiempo, conocían a emprendedores locales increíbles —guias, chefs, pequeños hoteleros— que ofrecían experiencias únicas pero no tenían cómo darse a conocer más allá del boca a boca.
+                            </p>
+<p>
+                                Esa tarde nació la semilla de AMV. Nos propusimos construir algo diferente: una plataforma que eliminara las barreras entre quienes quieren viajar y quienes hacen posible la magia de cada destino. Empezamos con una hoja de papel, muchos cafés y la certeza de que la tecnología podía humanizar, no despersonalizar, la forma de viajar.
+                            </p>
+<p>
+                                Hoy, AMV es el resultado de ese sueño compartido. Una comunidad que crece con cada reserva, con cada historia de viaje que nos cuentan y con cada vendedor local que encuentra en nuestra agencia un aliado para mostrar su trabajo al mundo. Y esto es solo el despegue.
+                            </p>
+</div>
+</div>
+</section>
+<!-- Featured Destinations -->
+<section class="px-4 md:px-20 py-16" id="precios">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div class="max-w-xl">
+<h2 class="text-slate-900 dark:text-slate-100 text-4xl font-black mb-4">Destinos Imperdibles - Precios Locales</h2>
+<p class="text-slate-600 dark:text-slate-400 text-lg">Seleccionamos los rincones más coloridos y energéticos para tu próxima aventura nacional.</p>
+</div>
+<a class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all" href="#">
+                            Ver todos los destinos <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="group flex flex-col gap-4 bg-white dark:bg-background-dark p-4 rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-primary/5">
+<div class="relative w-full aspect-[4/5] overflow-hidden rounded-2xl">
+<img alt="Cartagena Old Town Streets" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Colorful colonial streets of Cartagena de Indias" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvExoATYYi5sDh08TyPPpKcGBFiwHlycMmkBk5FC0OdZHqlImdFAXBLAxvA5dJzz0UzTvI6sns2Y4gg9yNq5PC5vDCQsjUqUxP3MrXpKQ0vcjYULysOsHoF1LCxQIAYzrcAXOsFo0_NpASTBhkFMThKRPE9WDT3fv2k8u5TF4thJQgKsXAX-AG_XlUx_uqxTAjmwvEcFJoKXsSvJ49YJIye1LHjRQw13CrFFvBDC8WvO78oaKxO8_9D9YyzfgoboksblDE0tcvsEo"/>
+<div class="absolute top-4 left-4 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-sm">-35% Dcto</div>
+</div>
+<div class="px-2 pb-2">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-slate-100">Cartagena de Indias</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-xs">location_on</span> Costa Caribe
+                                        </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-500 line-through">$850.000</p>
+<p class="text-xl font-black text-primary">$549.900</p>
+</div>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm mb-4">Historia, color y la mejor energía del caribe colombiano.</p>
+<button class="w-full py-3 rounded-xl bg-primary/10 text-primary font-bold group-hover:bg-primary group-hover:text-white transition-colors">Ver Plan</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col gap-4 bg-white dark:bg-background-dark p-4 rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-primary/5">
+<div class="relative w-full aspect-[4/5] overflow-hidden rounded-2xl">
+<img alt="Salento Valle del Cocora" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Tall wax palms in the Valle del Cocora, Salento" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvPrz-UJLgGXIH0Xj9xFFkT2pAErtARb9_kUsDaWTeNYoK90WuIr-r4f2Z5NE5T77dRYqDNb4PGgKUraUCh0Hnvx1jS8_zSwPsWNzowYY8gwjFPiVUfmWhF4wZtVb9aAV_fLElFnKQb44pSi34O-KCUpy8K3_eMvLHUQ6owRySIsVcdQDtOQUKamSenZHRMrBXSDSmnMgpmFyvVtuwSrpIxgrgPo2W70ONswYkq_4l3RS0eX0wLZf0xdtAbT2t0jQUZRqM9teIQik"/>
+<div class="absolute top-4 left-4 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-sm">-45% Dcto</div>
+</div>
+<div class="px-2 pb-2">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-slate-100">Eje Cafetero</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-xs">location_on</span> Quindío
+                                        </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-500 line-through">$620.000</p>
+<p class="text-xl font-black text-primary">$341.000</p>
+</div>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm mb-4">Verdes infinitos y el aroma del mejor café del mundo.</p>
+<button class="w-full py-3 rounded-xl bg-primary/10 text-primary font-bold group-hover:bg-primary group-hover:text-white transition-colors">Ver Plan</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col gap-4 bg-white dark:bg-background-dark p-4 rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-primary/5">
+<div class="relative w-full aspect-[4/5] overflow-hidden rounded-2xl">
+<img alt="Medellin Comuna 13" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Vibrant street art and escalators in Comuna 13 Medellin" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmvzIkEu7h8e83Z31QwWqQ7n5su1eKBEyRUobk1YJybkCWUwvqHDMfmC0jbhWQPCxubuHzk8cjKAfVr5eRMpk2COpC666qd6uUTkr8VnoYPZi0fhVpwoL1qD-1OHHHgcuPZqGOmcfp5ou0eF1sRahYPKZlSjxkwOsbRAnxHu3e_HcHZQutsJ24A30ECbAROL3MDJXjdnIa1mSqVJlcw6d-czAR56c8jxneUMLQzgBO1q3KrXJXRW911pQmSPrVyWNToinxExApd3M"/>
+<div class="absolute top-4 left-4 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-sm">-30% Dcto</div>
+</div>
+<div class="px-2 pb-2">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-slate-100">Medellín</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-xs">location_on</span> Antioquia
+                                        </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-500 line-through">$710.000</p>
+<p class="text-xl font-black text-primary">$497.000</p>
+</div>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm mb-4">La ciudad de la eterna primavera y su transformación.</p>
+<button class="w-full py-3 rounded-xl bg-primary/10 text-primary font-bold group-hover:bg-primary group-hover:text-white transition-colors">Ver Plan</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Local Map CTA -->
+<div class="px-4 md:px-20 py-16 bg-gradient-to-br from-primary to-orange-600 rounded-[3rem] mx-4 md:mx-10 my-10 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-1/2 h-full opacity-20 hidden md:block" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1 text-center md:text-left">
+<h2 class="text-white text-4xl md:text-5xl font-black mb-6">¿A dónde quieres ir hoy, paisano?</h2>
+<p class="text-white/90 text-xl mb-8">Usa nuestro mapa interactivo para encontrar las agencias locales con precios preferenciales cerca de ti.</p>
+<div class="flex flex-wrap gap-4 justify-center md:justify-start">
+<button class="bg-yellow-400 text-background-dark font-black px-8 py-4 rounded-2xl shadow-xl flex items-center gap-3 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">map</span> Abrir Mapa de Descuentos
+                                </button>
+<button class="bg-white/20 backdrop-blur-md text-white font-black px-8 py-4 rounded-2xl border border-white/30 hover:bg-white/30 transition-all">
+                                    Chat con un Experto
+                                </button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-md bg-white p-2 rounded-3xl shadow-2xl rotate-3">
+<img alt="Colombia Map Location" class="w-full rounded-2xl grayscale" data-alt="Stylized map of Colombia showing main travel hubs" data-location="Colombia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd62DMEV7RysGpQBsZiAVCg0i-o-Jj1bmMQaDO0ZqX2iUK3qKSsQLIjlUfcMZhh4_2Bdq_z-ZRuf4hhcyObqYsr4SCohzA-XHgc8Vnk_8PCgvfIBLwDJmtAKLFhzdfwg83RIxtcZJAwwjB_xOeCpshAfdVAH-kZGwYhtVqr7ePTO4MMgvLJNummZL87d8JVEQ-VB__NGtLEQRaycNLA28hjjtu5ZNDWXMJy6RWUxYxdox15gEB2rksNRzPEr6Gno9t06j06t39D4s"/>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="px-6 md:px-20 py-20 bg-background-dark text-slate-400">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16" id="contacto">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-3 text-white mb-6">
+<span class="material-symbols-outlined text-primary text-3xl font-bold">explore</span>
+<h2 class="text-xl font-black leading-tight tracking-tight">AMV <span class="text-primary">Explora</span></h2>
+</div>
+<p class="text-sm leading-relaxed mb-6">Haciendo que recorrer Colombia sea fácil, vibrante y accesible para todos los locales con AMV.</p>
+<div class="flex gap-4">
+<a class="size-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white" href="#"><span class="material-symbols-outlined text-sm">social_leaderboard</span></a>
+<a class="size-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white" href="#"><span class="material-symbols-outlined text-sm">alternate_email</span></a>
+<a class="size-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors text-white" href="#"><span class="material-symbols-outlined text-sm">share</span></a>
+</div>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Nuestra Empresa</h4>
+<ul class="space-y-4 text-sm">
+<li><a class="hover:text-primary" href="#nosotros">Nosotros</a></li>
+<li><a class="hover:text-primary" href="#historia">Historia</a></li>
+<li><a class="hover:text-primary" href="#">Nuestros Destinos</a></li>
+<li><a class="hover:text-primary" href="#">Blog de Viajes</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Soporte</h4>
+<ul class="space-y-4 text-sm">
+<li><a class="hover:text-primary" href="#">Preguntas Frecuentes</a></li>
+<li><a class="hover:text-primary" href="#">Términos y Condiciones</a></li>
+<li><a class="hover:text-primary" href="#">Política de Privacidad</a></li>
+<li><a class="hover:text-primary" href="#">Derechos del Viajero</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Suscríbete</h4>
+<p class="text-sm mb-4">Recibe las mejores ofertas nacionales directamente en tu correo.</p>
+<div class="flex gap-2">
+<input class="bg-white/5 border-white/10 rounded-xl px-4 py-2 w-full focus:ring-primary focus:border-primary" placeholder="Tu email" type="email"/>
+<button class="bg-primary text-white p-2 rounded-xl"><span class="material-symbols-outlined">send</span></button>
+</div>
+</div>
+</div>
+<div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-xs">© 2024 Explora Colombia por AMV S.A.S. Todos los derechos reservados. Registro Nacional de Turismo #123456</p>
+<div class="flex items-center gap-2">
+<span class="text-xs">País:</span>
+<span class="flex items-center gap-1 text-white text-xs font-bold"><span class="material-symbols-outlined text-xs">flag</span> Colombia</span>
+</div>
+</div>
+</footer>
+</main>
+</div>
+</div>
+</body></html>

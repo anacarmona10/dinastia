@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin</title>
+    <link rel="stylesheet" href="style_InterAdmin.css">
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Panel de Administración</h1>
+
+    <button class="btn-crear" onclick="abrirModal()">
+        + Crear viaje
+    </button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h2>Crear viaje</h2>
+
+        <label>Imágenes</label>
+
+        <div id="drop-zone">
+            <span class="plus">+</span>
+            <input type="file" id="imagenes" multiple accept="image/*">
+        </div>
+
+        <div id="preview"></div>
+
+        <label>Destino</label>
+        <input type="text" placeholder="Ingresa el destino">
+
+        <label>Precio</label>
+        <input type="number" placeholder="Ingresa el precio">
+
+        <label>Fecha salida</label>
+        <input type="date">
+
+        <label>Fecha regreso</label>
+        <input type="date">
+
+        <button class="btn-guardar">Guardar</button>
+        <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
+    </div>
+</div>
+
+<script>
+function abrirModal() {
+    document.getElementById("modal").style.display = "flex";
+}
+
+function cerrarModal() {
+    document.getElementById("modal").style.display = "none";
+}
+</script>
+
+<script>
+let imagenesGuardadas = [];
+
+const inputImagenes = document.getElementById("imagenes");
+const preview = document.getElementById("preview");
+const dropZone = document.getElementById("drop-zone");
+
+// CLICK (ya funciona por el input oculto)
+
+// DRAG EVENTS
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("dragover");
+});
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+
+    const archivos = Array.from(e.dataTransfer.files);
+    agregarImagenes(archivos);
+});
+
+// INPUT NORMAL
+inputImagenes.addEventListener("change", function() {
+    const archivos = Array.from(this.files);
+    agregarImagenes(archivos);
+});
+
+// FUNCIÓN GLOBAL
+function agregarImagenes(archivos) {
+    archivos.forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+        imagenesGuardadas.push(file);
+    });
+
+    mostrarPreview();
+}
+
+// PREVIEW
+function mostrarPreview() {
+    preview.innerHTML = "";
+
+    imagenesGuardadas.forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const contenedor = document.createElement("div");
+            contenedor.classList.add("img-container");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("preview-img");
+
+            const btnEliminar = document.createElement("button");
+            btnEliminar.innerText = "✖";
+            btnEliminar.classList.add("btn-eliminar");
+
+            btnEliminar.onclick = () => {
+                imagenesGuardadas.splice(index, 1);
+                mostrarPreview();
+            };
+
+            contenedor.appendChild(img);
+            contenedor.appendChild(btnEliminar);
+            preview.appendChild(contenedor);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+</script>
+
+</body>
+</html>
