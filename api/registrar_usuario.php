@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verificar si el correo ya existe en la BD
     if (empty($errores)) {
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE correo = ?");
+        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE correo = ?");
         $stmt->execute([$correo]);
         if ($stmt->fetch()) {
             $errores[] = "El correo electrónico ya está registrado";
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Hashear la contraseña
         $hash = password_hash($contraseña, PASSWORD_DEFAULT);
         
-        $sql = "INSERT INTO users (nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, created_at)
+        $sql = "INSERT INTO usuarios (nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, created_at)
                 VALUES (?, ?, ?, ?, ?, NOW())";
         $stmt = $pdo->prepare($sql);
         try {
