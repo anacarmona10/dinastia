@@ -63,9 +63,9 @@ h1 {
 }
 
 .modal-content {
-    max-height: 80vh;   /* altura máxima */
+    max-height: 90vh;   /* altura máxima */
     overflow-y: auto;   /* activa scroll vertical */
-    padding: 20px;
+  
 }
 
 /* BOTÓN GUARDAR */
@@ -176,5 +176,8 @@ textarea {
     outline: none;
     resize: none;
     font-family: Arial, sans-serif;
+    width: 100%;
+    min-height: 80px;
+    resize: none;
+    overflow: hidden;
 }
-
