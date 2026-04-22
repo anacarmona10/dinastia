@@ -31,18 +31,21 @@
         <div id="preview"></div>
 
         <label>Destino</label>
-        <input type="text" placeholder="Ingresa el destino">
+        <input type="text" id="destino" placeholder="Ingresa el destino">
 
         <label>Precio</label>
-        <input type="number" placeholder="Ingresa el precio">
+        <input type="number" id="precio" placeholder="Ingresa el precio">
 
         <label>Fecha salida</label>
-        <input type="date">
+        <input type="date" id="fecha_salida">
 
         <label>Fecha regreso</label>
-        <input type="date">
+        <input type="date" id="fecha_regreso">
 
-        <button class="btn-guardar">Guardar</button>
+        <label>Descripción</label>
+        <textarea id="descripcion" placeholder="Descripción del plan turístico"></textarea>
+
+        <button class="btn-guardar" onclick="guardarPlan()">Guardar</button>
         <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
     </div>
 </div>
@@ -54,17 +57,14 @@ function abrirModal() {
 
 function cerrarModal() {
     document.getElementById("modal").style.display = "none";
+    limpiarFormulario();
 }
-</script>
 
-<script>
 let imagenesGuardadas = [];
 
 const inputImagenes = document.getElementById("imagenes");
 const preview = document.getElementById("preview");
 const dropZone = document.getElementById("drop-zone");
-
-// CLICK (ya funciona por el input oculto)
 
 // DRAG EVENTS
 dropZone.addEventListener("dragover", (e) => {
@@ -90,7 +90,6 @@ inputImagenes.addEventListener("change", function() {
     agregarImagenes(archivos);
 });
 
-// FUNCIÓN GLOBAL
 function agregarImagenes(archivos) {
     archivos.forEach(file => {
         if (!file.type.startsWith("image/")) return;
@@ -100,7 +99,6 @@ function agregarImagenes(archivos) {
     mostrarPreview();
 }
 
-// PREVIEW
 function mostrarPreview() {
     preview.innerHTML = "";
 
@@ -114,6 +112,11 @@ function mostrarPreview() {
             const img = document.createElement("img");
             img.src = e.target.result;
             img.classList.add("preview-img");
+
+            // IMAGEN POR DEFECTO SI NO CARGA
+            img.onerror = function() {
+                this.src = "https://via.placeholder.com/100x100?text=Sin+imagen";
+            };
 
             const btnEliminar = document.createElement("button");
             btnEliminar.innerText = "✖";
@@ -132,6 +135,74 @@ function mostrarPreview() {
         reader.readAsDataURL(file);
     });
 }
+
+function limpiarFormulario() {
+    document.getElementById("destino").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("fecha_salida").value = "";
+    document.getElementById("fecha_regreso").value = "";
+    document.getElementById("descripcion").value = "";
+    imagenesGuardadas = [];
+    mostrarPreview();
+    document.getElementById("imagenes").value = "";
+}
+
+async function guardarPlan() {
+    const destino = document.getElementById("destino").value;
+    const precio = document.getElementById("precio").value;
+    const fecha_salida = document.getElementById("fecha_salida").value;
+    const fecha_regreso = document.getElementById("fecha_regreso").value;
+    const descripcion = document.getElementById("descripcion").value;
+
+    if (!destino || !precio || !fecha_salida || !fecha_regreso) {
+        alert("Completa todos los campos obligatorios");
+        return;
+    }
+
+    if (imagenesGuardadas.length === 0) {
+        alert("Debes seleccionar al menos una imagen");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("destino", destino);
+    formData.append("precio", precio);
+    formData.append("fecha_salida", fecha_salida);
+    formData.append("fecha_regreso", fecha_regreso);
+    formData.append("descripcion", descripcion);
+
+    imagenesGuardadas.forEach((imagen) => {
+        formData.append("imagenes[]", imagen);
+    });
+
+    try {
+        const response = await fetch("guardar_plan.php", {
+            method: "POST",
+            body: formData
+        });
+
+        const resultado = await response.json();
+        
+        if (response.ok) {
+            alert("Plan guardado exitosamente");
+            cerrarModal();
+            limpiarFormulario();
+        } else {
+            alert("Error: " + resultado.error);
+        }
+    } catch (error) {
+        alert("Error al conectar con el servidor: " + error.message);
+    }
+}
+</script>
+
+<script>
+const textarea = document.querySelector("textarea");
+
+textarea.addEventListener("input", () => {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+});
 </script>
 
 </body>
