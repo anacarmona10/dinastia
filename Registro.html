@@ -1,25 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace la página responsive -->
     <title>Registro de Usuarios</title>
+
+    <!-- Librería de iconos (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Hoja de estilos personalizada -->
+    <link rel="stylesheet" href="style_registro.css">
 </head>
 <body>
+
+    <!-- Contenedor principal -->
     <div class="main-wrapper">
+
+        <!-- Sección de imagen lateral -->
         <div class="image-side">
             <img src="imagenes/Lago.jpg" alt="Paisaje de lago">
         </div>
 
+        <!-- Sección del formulario -->
         <div class="content-side">
             <div class="registro-container">
                 <h2>Registro de Usuarios</h2>
-                <form>
-                    <input type="text" placeholder="Nombre completo" required>
 
-                    <select required>
+                <!-- Formulario de registro -->
+                <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
+                    
+                    <!-- Campo nombre completo -->
+                    <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
+
+                    <!-- Selector tipo de documento -->
+                    <select name="tipoDocumento" id="tipoDocumento" required>
                         <option value="">Tipo de documento</option>
                         <option value="cc">Cédula de Ciudadanía</option>
                         <option value="ce">Cédula de Extranjería</option>
@@ -28,14 +42,68 @@
                         <option value="passport">Pasaporte</option>
                     </select>
 
-                    <input type="text" placeholder="Número de documento" required>
-                    <input type="email" placeholder="Correo electrónico" required>
-                    <input type="password" placeholder="Contraseña" required>
-                    <input type="password" placeholder="Confirmar contraseña" required>
+                    <!-- Número de documento -->
+                    <input type="text" name="numeroDocumento" id="numeroDocumento" placeholder="Número de documento" required>
 
-                    <button type="submit">Registrar</button>
+                    <!-- Correo electrónico -->
+                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico" required>
+
+                    <!-- Contraseña -->
+                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
+
+                    <!-- Confirmación de contraseña -->
+                    <input type="password" name="confirmar_contraseña" id="confirm_password" placeholder="Confirmar contraseña" required>
+
+                    <!-- Botón de envío -->
+                    <button type="submit" class="form-button">Registrar</button>
+
+                    <!-- Aquí se mostrarán mensajes (errores o éxito) -->
+                    <div id="mensaje"></div>
+
+                    <!-- Enlace a login -->
+                    <p class="registro">
+                        ¿Ya tienes una cuenta? <a href="Login.html">Inicia sesión</a>
+                    </p>
+
+                    <!-- Logo -->
+                    <div class="logo-container">
+                        <img src="imagenes/Logo Dinastia AMV 2.png" alt="Logo Dinastia AMV 2">
+                    </div>
+
                 </form>
             </div>
+        </div>
+    </div>
+
+    <script>
+        // Validación del formulario antes de enviarlo
+        document.getElementById('formRegistro').addEventListener('submit', function(e) {
+
+            // Obtener valores de las contraseñas
+            const pass = document.getElementById('contraseña').value;
+            const confirm = document.getElementById('confirm_password').value;
+
+            // Verificar si coinciden
+            if (pass !== confirm) {
+                e.preventDefault(); // Evita que el formulario se envíe
+
+                // Mostrar mensaje de error
+                document.getElementById('mensaje').innerHTML = 
+                    '<p style="color:red;">Las contraseñas no coinciden ❌</p>';
+            }
+        });
+
+        // Obtener parámetros de la URL 
+        const params = new URLSearchParams(window.location.search);
+
+        // Si el registro fue exitoso (enviado desde el backend)
+        if (params.get('success') === '1') {
+            document.getElementById('mensaje').innerHTML =
+                '<p style="color:green;">Usuario registrado con éxito ✅</p>';
+        }
     </script>
+    
+    <!-- cambio -->
+
 </body>
 </html>

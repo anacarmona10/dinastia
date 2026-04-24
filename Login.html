@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres -->
+    <title>Inicio de Sesión</title>
+
+    <!-- Hoja de estilos del login -->
+    <link rel="stylesheet" href="style_login.css">
+</head>
+
+<body>
+
+<!-- Contenedor principal del login -->
+<div class="login-container">
+
+    <!-- Botones para seleccionar tipo de usuario -->
+    <div class="selector-login">
+        <button id="btnUsuario" class="active">Usuario</button> <!-- Activo por defecto -->
+        <button id="btnAdmin">Administrador</button>
+    </div>
+
+    <!-- Título dinámico -->
+    <h2 id="tituloLogin">Iniciar Sesión</h2>
+
+    <!-- Formulario de inicio de sesión -->
+    <form action="api/login.php" method="post">
+
+        <!-- Campo oculto para enviar el tipo de usuario (usuario o admin) -->
+        <input type="hidden" name="tipo_usuario" id="tipoUsuario" value="usuario">
+
+        <!-- Campo correo -->
+        <div class="input-group">
+            <label>Correo electrónico</label>
+            <input type="email" name="correo" placeholder="Ingresa tu correo" required>
+        </div>
+
+        <!-- Campo contraseña -->
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" name="contraseña" placeholder="Ingresa tu contraseña" required>
+        </div>
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Ingresar</button>
+
+        <!-- Enlace al registro -->
+        <p class="registro">
+            ¿No tienes cuenta? <a href="Registro.html">Regístrate</a>
+        </p>
+
+    </form>
+
+</div>
+
+<script>
+// Obtener elementos del DOM
+const btnUsuario = document.getElementById("btnUsuario");
+const btnAdmin = document.getElementById("btnAdmin");
+const titulo = document.getElementById("tituloLogin");
+
+// Evento cuando se selecciona "Usuario"
+btnUsuario.addEventListener("click", () => {
+    titulo.textContent = "Iniciar Sesión"; // Cambia el título
+    btnUsuario.classList.add("active"); // Activa botón usuario
+    btnAdmin.classList.remove("active"); // Desactiva botón admin
+
+    // Cambia el valor del input oculto
+    document.getElementById("tipoUsuario").value = "usuario";
+});
+
+// Evento cuando se selecciona "Administrador"
+btnAdmin.addEventListener("click", () => {
+    titulo.textContent = "Iniciar Sesión como Administrador"; // Cambia el título
+    btnAdmin.classList.add("active"); // Activa botón admin
+    btnUsuario.classList.remove("active"); // Desactiva botón usuario
+
+    // Cambia el valor del input oculto
+    document.getElementById("tipoUsuario").value = "admin";
+});
+</script>
+
+</body>
+</html>

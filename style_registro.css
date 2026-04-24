@@ -1,0 +1,198 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.main-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+/* IMAGEN DE FONDO */
+.image-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* CAPA OSCURA SOBRE LA IMAGEN */
+.image-side::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+}
+
+/* FORMULARIO CENTRADO */
+.content-side {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    z-index: 2;
+
+    background: #ffffff;
+    padding: 25px 25px;
+    border-radius: 16px;
+
+    width: 100%;
+    max-width: 400px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* CONTENEDOR FORM */
+.registro-container {
+    width: 100%;
+}
+
+/* TÍTULO */
+.registro-container h2 {
+    margin-bottom: 20px;
+    color: #000;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+/* LABELS */
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #2d2d2d;
+    font-weight: 600;
+}
+
+/* INPUTS */
+.registro-container input,
+.registro-container select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 2px solid #e3b0ff;
+    background: #ffffff;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* PLACEHOLDER */
+.registro-container input::placeholder {
+    color: #666;
+}
+
+/* FOCUS */
+.registro-container input:focus,
+.registro-container select:focus {
+    outline: none;
+    border-color: #d100ff;
+    box-shadow: 0 0 0 3px rgba(209, 0, 255, 0.25);
+}
+
+/* SELECT */
+.registro-container select option {
+    background: #1c1c2e;
+    color: white;
+}
+
+/* BOTÓN */
+.registro-container button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(to right, #c800ff, #ff4d00);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.registro-container button:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+}
+
+/* CHECKBOX */
+.checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.checkbox input {
+    margin-right: 8px;
+}
+
+/* LINKS */
+.checkbox a {
+    color: #c800ff;
+    text-decoration: none;
+}
+
+.registro {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.registro a {
+    color: #c800ff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* HOVER NARANJITA */
+.registro a:hover {
+    color: #ff4d00; /* naranja suave */
+    text-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
+}
+/* LOGO */
+.logo-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo-container img {
+    width: 90px;
+    opacity: 0.95;
+    transition: transform 0.3s ease;
+}
+
+.logo-container img:hover {
+    transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+    .content-side {
+        width: 90%;
+        padding: 20px;
+    }
+}
