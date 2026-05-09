@@ -13,6 +13,11 @@
 </head>
 <body>
 
+    <!-- Flecha para volver al inicio -->
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
     <!-- Contenedor principal -->
     <div class="main-wrapper">
 
@@ -24,11 +29,12 @@
         <!-- Sección del formulario -->
         <div class="content-side">
             <div class="registro-container">
+
                 <h2>Registro de Usuarios</h2>
 
                 <!-- Formulario de registro -->
                 <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
-                    
+
                     <!-- Campo nombre completo -->
                     <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
 
@@ -57,18 +63,13 @@
                     <!-- Botón de envío -->
                     <button type="submit" class="form-button">Registrar</button>
 
-                    <!-- Aquí se mostrarán mensajes (errores o éxito) -->
+                    <!-- Aquí se mostrarán mensajes -->
                     <div id="mensaje"></div>
 
                     <!-- Enlace a login -->
                     <p class="registro">
                         ¿Ya tienes una cuenta? <a href="Login.html">Inicia sesión</a>
                     </p>
-
-                    <!-- Logo -->
-                    <div class="logo-container">
-                        <img src="imagenes/Logo Dinastia AMV 2.png" alt="Logo Dinastia AMV 2">
-                    </div>
 
                 </form>
             </div>
@@ -85,25 +86,23 @@
 
             // Verificar si coinciden
             if (pass !== confirm) {
-                e.preventDefault(); // Evita que el formulario se envíe
+                e.preventDefault();
 
                 // Mostrar mensaje de error
-                document.getElementById('mensaje').innerHTML = 
+                document.getElementById('mensaje').innerHTML =
                     '<p style="color:red;">Las contraseñas no coinciden ❌</p>';
             }
         });
 
-        // Obtener parámetros de la URL 
+        // Obtener parámetros de la URL
         const params = new URLSearchParams(window.location.search);
 
-        // Si el registro fue exitoso (enviado desde el backend)
+        // Si el registro fue exitoso
         if (params.get('success') === '1') {
             document.getElementById('mensaje').innerHTML =
                 '<p style="color:green;">Usuario registrado con éxito ✅</p>';
         }
     </script>
-    
-    <!-- cambio -->
 
 </body>
 </html>

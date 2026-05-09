@@ -189,6 +189,36 @@ body {
     transform: scale(1.05);
 }
 
+/* FLECHA VOLVER */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+
+    transition: 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
+}
+
 /* RESPONSIVE */
 @media (max-width: 500px) {
     .content-side {
