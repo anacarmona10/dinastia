@@ -14,7 +14,7 @@
 <body>
 
     <!-- Flecha para volver al inicio -->
-    <a href="index.html" class="back-button">
+    <a href="index.html" class="back-button" aria-label="Volver al inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
@@ -39,8 +39,9 @@
                     <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
 
                     <!-- Selector tipo de documento -->
+                    <label for="tipoDocumento">Tipo de documento</label>
                     <select name="tipoDocumento" id="tipoDocumento" required>
-                        <option value="">Tipo de documento</option>
+                        <option value="">Seleccione un tipo de documento</option>
                         <option value="cc">Cédula de Ciudadanía</option>
                         <option value="ce">Cédula de Extranjería</option>
                         <option value="ppt">Permiso por Protección Temporal</option>
@@ -94,14 +95,20 @@
             }
         });
 
-        // Obtener parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
+      // Obtener parámetros de la URL
+const params = new URLSearchParams(window.location.search);
 
-        // Si el registro fue exitoso
-        if (params.get('success') === '1') {
-            document.getElementById('mensaje').innerHTML =
-                '<p style="color:green;">Usuario registrado con éxito ✅</p>';
-        }
+// Si el registro fue exitoso
+if (params.get('success') === '1') {
+    let mensajeHTML = '<p style="color:green;">✅ Usuario registrado con éxito</p>';
+    
+    // Si también se inició sesión automáticamente
+    if (params.get('login') === '1') {
+        mensajeHTML += '<p style="color:blue;">✅ Sesión iniciada con éxito</p>';
+    }
+    
+    document.getElementById('mensaje').innerHTML = mensajeHTML;
+}
     </script>
 
 </body>
