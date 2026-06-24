@@ -12,23 +12,34 @@
 
     <h2>Iniciar Sesión</h2>
 
-    <form action="#" method="post">
+   <form action="api/login.php" method="post">
 
-        <div class="input-group">
-            <label>Correo electrónico</label>
-            <input type="email" placeholder="Ingresa tu correo" required>
-        </div>
+    <div class="input-group">
+        <label>Correo electrónico</label>
+        <input
+            type="email"
+            name="correo"
+            placeholder="Ingresa tu correo"
+            required>
+    </div>
 
-        <div class="input-group">
-            <label>Contraseña</label>
-            <input type="password" placeholder="Ingresa tu contraseña" required>
-        </div>
+    <div class="input-group">
+        <label>Contraseña</label>
+        <input
+            type="password"
+            name="contraseña"
+            placeholder="Ingresa tu contraseña"
+            required>
+    </div>
 
-        <button type="submit">Ingresar</button>
+    <button type="submit">Ingresar</button>
 
-        <p class="registro">
-            ¿No tienes cuenta? <a href="Registro.html">Regístrate</a>
-        </p>
+    <p class="registro">
+        ¿No tienes cuenta?
+        <a href="Registro.html">Regístrate</a>
+    </p>
+
+</form>
 
     </form>
 
