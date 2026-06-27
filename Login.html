@@ -2,16 +2,25 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión</title>
+
+    <!-- Hoja de estilos personalizada -->
     <link rel="stylesheet" href="style_login.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+
 <div class="login-container">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Flecha volver -->
     <a href="index.html" class="back-button">
         <i class="fas fa-arrow-left"></i>
     </a>
 
+    <!-- Selector de tipo de usuario -->
     <div class="selector-login">
         <button id="btnUsuario" class="active">Usuario</button>
         <button id="btnAdmin">Administrador</button>
@@ -19,20 +28,22 @@
 
     <h2 id="tituloLogin">Iniciar Sesión</h2>
 
-    <form action="api/login.php" method="post">
+    <!-- Formulario SIN required -->
+    <form id="formLogin" action="api/login.php" method="post">
+
         <input type="hidden" name="tipo_usuario" id="tipoUsuario" value="usuario">
 
         <div class="input-group">
             <label>Correo electrónico</label>
-            <input type="email" name="correo" placeholder="Ingresa tu correo" required>
+            <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
         </div>
 
         <div class="input-group">
             <label>Contraseña</label>
-            <input type="password" name="contraseña" placeholder="Ingresa tu contraseña" required>
+            <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
         </div>
 
-        <!-- Contenedor para mensaje de éxito -->
+        <!-- Contenedor para mensajes -->
         <div id="mensajeLogin"></div>
 
         <button type="submit">Ingresar</button>
@@ -43,33 +54,30 @@
     </form>
 </div>
 
+<!-- Lógica de botones (usuario/admin) -->
 <script>
-    // Lógica de botones (la que ya tenías)
     const btnUsuario = document.getElementById("btnUsuario");
     const btnAdmin = document.getElementById("btnAdmin");
     const titulo = document.getElementById("tituloLogin");
+    const tipoUsuario = document.getElementById("tipoUsuario");
 
     btnUsuario.addEventListener("click", () => {
         titulo.textContent = "Iniciar Sesión";
         btnUsuario.classList.add("active");
         btnAdmin.classList.remove("active");
-        document.getElementById("tipoUsuario").value = "usuario";
+        tipoUsuario.value = "usuario";
     });
 
     btnAdmin.addEventListener("click", () => {
         titulo.textContent = "Iniciar Sesión como Administrador";
         btnAdmin.classList.add("active");
         btnUsuario.classList.remove("active");
-        document.getElementById("tipoUsuario").value = "admin";
+        tipoUsuario.value = "admin";
     });
-
-    // --- NUEVO: mostrar mensaje si login fue exitoso ---
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('login') === '1') {
-        document.getElementById('mensajeLogin').innerHTML = 
-            '<p style="color:green; font-weight:bold; margin-top:10px;">✅ Sesión iniciada con éxito</p>';
-    }
 </script>
+
+<!-- JavaScript externo con validaciones -->
+<script src="js/validaciones.js"></script>
 
 </body>
 </html>
