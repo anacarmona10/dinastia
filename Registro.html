@@ -4,23 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuarios</title>
+
+    <!-- Librería de iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Hoja de estilos personalizada -->
     <link rel="stylesheet" href="style_registro.css">
 </head>
 <body>
+
+    <!-- Flecha volver -->
+    <a href="index.html" class="back-button" aria-label="Volver al inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
     <div class="main-wrapper">
+
         <div class="image-side">
-            <img src="imagenes/Lago.jpg" alt="Paisaje de lago">
+            <img src="/imagenes/Lago.jpg" alt="Paisaje de lago">
         </div>
 
         <div class="content-side">
             <div class="registro-container">
-                <h2>Registro de Usuarios</h2>
-                 <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
-                    <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo" required>
 
-                    <select name="tipoDocumento" id="tipoDocumento" required>
-                        <option value="">Tipo de documento</option>
+                <h2>Registro de Usuarios</h2>
+
+                <!-- Formulario SIN required -->
+                <form id="formRegistro" method="POST" action="api/registrar_usuario.php">
+
+                    <input type="text" name="nombreCompleto" id="nombreCompleto" placeholder="Nombre completo">
+
+                    <select name="tipoDocumento" id="tipoDocumento">
+                        <option value="">Seleccione un tipo de documento</option>
                         <option value="cc">Cédula de Ciudadanía</option>
                         <option value="ce">Cédula de Extranjería</option>
                         <option value="ppt">Permiso por Protección Temporal</option>
@@ -28,31 +43,39 @@
                         <option value="passport">Pasaporte</option>
                     </select>
 
-                    <input type="text" name="numeroDocumento" id="numeroDocumento" placeholder="Número de documento" required>
-                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico" required>
-                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
-                    <input type="password" name="confirmar_contraseña" id="confirm_password" placeholder="Confirmar contraseña" required>
+                    <input type="text" name="numeroDocumento" id="numeroDocumento" placeholder="Número de documento">
+
+                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+
+                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña">
+
+                    <input type="password" name="confirmar_contraseña" id="confirm_password" placeholder="Confirmar contraseña">
 
                     <button type="submit" class="form-button">Registrar</button>
+
+                    <!-- Aquí se mostrarán mensajes de error o éxito -->
+                    <div id="mensaje"></div>
+
                     <p class="registro">
-                        ¿Ya tienes una cuenta? <a href="Login.html">Inicia sesión</a>
+                        ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a>
                     </p>
-                    <div class="logo-container">
-                        <img src="imagenes/Logo Dinastia AMV 2.png" alt="Logo Dinastia AMV 2">
-                    </div>
+
                 </form>
             </div>
-    
-    
-        <script>
-        document.getElementById('formRegistro').addEventListener('submit', function(e) {
-            const pass = document.getElementById('password').value;
-            const confirm = document.getElementById('confirm_password').value;
-            if (pass !== confirm) {
-                e.preventDefault();
-                document.getElementById('mensaje').innerHTML = '<p style="color:red;">Las contraseñas no coinciden</p>';
-            }
-        });
-    </script>
+        </div>
+    </div>
+
+    <!-- JavaScript externo (validaciones) -->
+    <script src="js/validaciones.js"></script>
+
+    <!-- ===== MODAL DE ÉXITO ===== -->
+<div id="modalExito" class="modal-exito" style="display:none;">
+    <div class="modal-exito-content">
+        <div class="modal-icon">✅</div>
+        <h2 id="modalExitoTitulo">¡Registro exitoso!</h2>
+        <p id="modalExitoMensaje">Tu cuenta ha sido creada correctamente.</p>
+        <button id="modalExitoBoton" class="modal-exito-btn">Continuar</button>
+    </div>
+</div>
 </body>
 </html>

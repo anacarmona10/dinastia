@@ -3,7 +3,7 @@
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Dinsatía AMV</title>
+<title>Dinastía AMV</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -59,10 +59,24 @@
 </button>
 </div>
 <!-- Mobile Menu Icon -->
-<div class="md:hidden flex items-center text-primary">
-<span class="material-symbols-outlined">menu</span>
+<div id="menu-btn" class="md:hidden flex items-center text-primary cursor-pointer">
+    <span class="material-symbols-outlined">menu</span>
 </div>
 </header>
+<div id="mobile-menu" class="hidden md:hidden flex flex-col bg-white shadow-lg absolute top-20 left-0 w-full p-6 space-y-4 z-50 transition-all duration-300">
+
+    <a href="#destinos" class="text-gray-700 font-medium">Destinos</a>
+    <a href="#nosotros" class="text-gray-700 font-medium">Nosotros</a>
+    <a href="#historia" class="text-gray-700 font-medium">Historia</a>
+    <a href="#precios" class="text-gray-700 font-medium">Precios Locales</a>
+    <a href="#contacto" class="text-gray-700 font-medium">Contacto</a>
+
+    <a href="Registro.html"
+       class="bg-orange-500 text-white text-center py-3 rounded-xl font-bold mt-4">
+        Reservar Ahora
+    </a>
+
+</div>
 <main class="flex-1">
 <!-- Hero Section -->
 <div class="@container px-4 md:px-20 py-6" id="destinos">
@@ -326,4 +340,5 @@
 </main>
 </div>
 </div>
-</body></html>
+</body>
+</html>

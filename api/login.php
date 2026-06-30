@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Recibir datos del formulario
 $correo = trim($_POST['correo'] ?? '');
 $contraseña = $_POST['contraseña'] ?? '';
+$tipo_usuario = $_POST['tipo_usuario'] ?? 'usuario';
 
 $errores = [];
 
@@ -32,7 +33,7 @@ if (!empty($errores)) {
 }
 
 // Buscar el usuario por correo
-$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM users WHERE correo = ?");
+$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM usuarios WHERE correo = ?");
 $stmt->execute([$correo]);
 $usuario = $stmt->fetch();
 
@@ -49,10 +50,15 @@ $_SESSION['user_nombre'] = $usuario['nombreCompleto'];
 $_SESSION['user_email'] = $usuario['correo'];
 $_SESSION['user_tipo_doc'] = $usuario['tipoDocumento'];
 $_SESSION['user_num_doc'] = $usuario['numeroDocumento'];
+$_SESSION['tipo_usuario'] = $tipo_usuario;
 $_SESSION['logged_in'] = true;
 
-// Redirigir al dashboard o página principal
-header('Location: ../dashboard.html');
+// Redirigir según el tipo de usuario
+if ($tipo_usuario === 'admin') {
+    header('Location: ../InterfazAdmin.html');
+} else {
+    header('Location: ../index.html');
+}
 exit;
 
 // Función auxiliar para mostrar errores en una página amigable

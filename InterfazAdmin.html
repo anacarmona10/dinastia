@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Panel Admin</title>
@@ -8,131 +9,203 @@
 
 <body>
 
-<div class="container">
-    <h1>Panel de Administración</h1>
+    <div class="container">
+        <h1>Panel de Administración</h1>
 
-    <button class="btn-crear" onclick="abrirModal()">
-        + Crear viaje
-    </button>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <h2>Crear viaje</h2>
-
-        <label>Imágenes</label>
-
-        <div id="drop-zone">
-            <span class="plus">+</span>
-            <input type="file" id="imagenes" multiple accept="image/*">
-        </div>
-
-        <div id="preview"></div>
-
-        <label>Destino</label>
-        <input type="text" placeholder="Ingresa el destino">
-
-        <label>Precio</label>
-        <input type="number" placeholder="Ingresa el precio">
-
-        <label>Fecha salida</label>
-        <input type="date">
-
-        <label>Fecha regreso</label>
-        <input type="date">
-
-        <button class="btn-guardar">Guardar</button>
-        <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-crear" onclick="abrirModal()">
+            + Crear viaje
+        </button>
     </div>
-</div>
 
-<script>
-function abrirModal() {
-    document.getElementById("modal").style.display = "flex";
-}
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Crear viaje</h2>
 
-function cerrarModal() {
-    document.getElementById("modal").style.display = "none";
-}
-</script>
+            <label>Imágenes</label>
 
-<script>
-let imagenesGuardadas = [];
+            <div id="drop-zone">
+                <span class="plus">+</span>
+                <input type="file" id="imagenes" multiple accept="image/*">
+            </div>
 
-const inputImagenes = document.getElementById("imagenes");
-const preview = document.getElementById("preview");
-const dropZone = document.getElementById("drop-zone");
+            <div id="preview"></div>
 
-// CLICK (ya funciona por el input oculto)
+            <label>Destino</label>
+            <input type="text" id="destino" placeholder="Ingresa el destino">
 
-// DRAG EVENTS
-dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragover");
-});
+            <label>Precio</label>
+            <input type="number" id="precio" placeholder="Ingresa el precio">
 
-dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("dragover");
-});
+            <label>Fecha salida</label>
+            <input type="date" id="fecha_salida">
 
-dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
+            <label>Fecha regreso</label>
+            <input type="date" id="fecha_regreso">
 
-    const archivos = Array.from(e.dataTransfer.files);
-    agregarImagenes(archivos);
-});
+            <label>Descripción</label>
+            <textarea id="descripcion" placeholder="Descripción del plan turístico"></textarea>
 
-// INPUT NORMAL
-inputImagenes.addEventListener("change", function() {
-    const archivos = Array.from(this.files);
-    agregarImagenes(archivos);
-});
+            <button class="btn-guardar" onclick="guardarPlan()">Guardar</button>
+            <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
 
-// FUNCIÓN GLOBAL
-function agregarImagenes(archivos) {
-    archivos.forEach(file => {
-        if (!file.type.startsWith("image/")) return;
-        imagenesGuardadas.push(file);
-    });
+    <script>
+        function abrirModal() {
+            document.getElementById("modal").style.display = "flex";
+        }
 
-    mostrarPreview();
-}
+        function cerrarModal() {
+            document.getElementById("modal").style.display = "none";
+            limpiarFormulario();
+        }
 
-// PREVIEW
-function mostrarPreview() {
-    preview.innerHTML = "";
+        let imagenesGuardadas = [];
 
-    imagenesGuardadas.forEach((file, index) => {
-        const reader = new FileReader();
+        const inputImagenes = document.getElementById("imagenes");
+        const preview = document.getElementById("preview");
+        const dropZone = document.getElementById("drop-zone");
 
-        reader.onload = function(e) {
-            const contenedor = document.createElement("div");
-            contenedor.classList.add("img-container");
+        // DRAG EVENTS
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("dragover");
+        });
 
-            const img = document.createElement("img");
-            img.src = e.target.result;
-            img.classList.add("preview-img");
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("dragover");
+        });
 
-            const btnEliminar = document.createElement("button");
-            btnEliminar.innerText = "✖";
-            btnEliminar.classList.add("btn-eliminar");
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("dragover");
 
-            btnEliminar.onclick = () => {
-                imagenesGuardadas.splice(index, 1);
-                mostrarPreview();
-            };
+            const archivos = Array.from(e.dataTransfer.files);
+            agregarImagenes(archivos);
+        });
 
-            contenedor.appendChild(img);
-            contenedor.appendChild(btnEliminar);
-            preview.appendChild(contenedor);
-        };
+        // INPUT NORMAL
+        inputImagenes.addEventListener("change", function () {
+            const archivos = Array.from(this.files);
+            agregarImagenes(archivos);
+        });
 
-        reader.readAsDataURL(file);
-    });
-}
-</script>
+        function agregarImagenes(archivos) {
+            archivos.forEach(file => {
+                if (!file.type.startsWith("image/")) return;
+                imagenesGuardadas.push(file);
+            });
+
+            mostrarPreview();
+        }
+
+        function mostrarPreview() {
+            preview.innerHTML = "";
+
+            imagenesGuardadas.forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const contenedor = document.createElement("div");
+                    contenedor.classList.add("img-container");
+
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add("preview-img");
+
+                    // IMAGEN POR DEFECTO SI NO CARGA
+                    img.onerror = function () {
+                        this.src = "https://via.placeholder.com/100x100?text=Sin+imagen";
+                    };
+
+                    const btnEliminar = document.createElement("button");
+                    btnEliminar.innerText = "✖";
+                    btnEliminar.classList.add("btn-eliminar");
+
+                    btnEliminar.onclick = () => {
+                        imagenesGuardadas.splice(index, 1);
+                        mostrarPreview();
+                    };
+
+                    contenedor.appendChild(img);
+                    contenedor.appendChild(btnEliminar);
+                    preview.appendChild(contenedor);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function limpiarFormulario() {
+            document.getElementById("destino").value = "";
+            document.getElementById("precio").value = "";
+            document.getElementById("fecha_salida").value = "";
+            document.getElementById("fecha_regreso").value = "";
+            document.getElementById("descripcion").value = "";
+            imagenesGuardadas = [];
+            mostrarPreview();
+            document.getElementById("imagenes").value = "";
+        }
+
+        async function guardarPlan() {
+            const destino = document.getElementById("destino").value;
+            const precio = document.getElementById("precio").value;
+            const fecha_salida = document.getElementById("fecha_salida").value;
+            const fecha_regreso = document.getElementById("fecha_regreso").value;
+            const descripcion = document.getElementById("descripcion").value;
+
+            if (!destino || !precio || !fecha_salida || !fecha_regreso) {
+                alert("Completa todos los campos obligatorios");
+                return;
+            }
+
+            if (imagenesGuardadas.length === 0) {
+                alert("Debes seleccionar al menos una imagen");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("destino", destino);
+            formData.append("precio", precio);
+            formData.append("fecha_salida", fecha_salida);
+            formData.append("fecha_regreso", fecha_regreso);
+            formData.append("descripcion", descripcion);
+
+            imagenesGuardadas.forEach((imagen) => {
+                formData.append("imagenes[]", imagen);
+            });
+
+            try {
+                const response = await fetch("api/guardar_viaje.php", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    alert(resultado.mensaje);
+                    cerrarModal();
+                    limpiarFormulario();
+                } else {
+                    alert(resultado.error);
+                }
+            } catch (error) {
+                alert("Error al conectar con el servidor: " + error.message);
+            }
+        }
+    </script>
+
+    <script>
+        const textarea = document.querySelector("textarea");
+
+        textarea.addEventListener("input", () => {
+            textarea.style.height = "auto";
+            textarea.style.height = textarea.scrollHeight + "px";
+        });
+    </script>
 
 </body>
+
 </html>

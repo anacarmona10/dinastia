@@ -62,6 +62,12 @@ h1 {
     outline: none;
 }
 
+.modal-content {
+    max-height: 90vh;   /* altura máxima */
+    overflow-y: auto;   /* activa scroll vertical */
+  
+}
+
 /* BOTÓN GUARDAR */
 .btn-guardar {
     margin-top: 20px;
@@ -160,4 +166,18 @@ h1 {
 #drop-zone.dragover {
     background-color: #ede9fe;
     border-color: #9333ea;
+}
+
+textarea {
+    margin-top: 5px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #d8b4fe;
+    outline: none;
+    resize: none;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    min-height: 80px;
+    resize: none;
+    overflow: hidden;
 }
