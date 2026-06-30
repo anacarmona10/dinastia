@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: API Agencia AMV
+  description: Documentación de la API para la agencia de viajes
+  version: 1.0.0
+servers:
+  - url: http://localhost/dinastia-feature-swagger
+    description: Servidor local XAMPP
+
+paths:
+  /login.php:
+    post:
+      summary: Iniciar sesión
+      description: Autentica a un usuario y redirige según el tipo
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [correo, contraseña]
+              properties:
+                correo:
+                  type: string
+                  format: email
+                  example: usuario@email.com
+                contraseña:
+                  type: string
+                  format: password
+                  example: "123456"
+                tipo_usuario:
+                  type: string
+                  enum: [usuario, admin]
+                  default: usuario
+              required:
+                - correo
+                - contraseña
+      responses:
+        '302':
+          description: Redirección según tipo (index.html o InterfazAdmin.html)
+        '400':
+          description: Errores de validación
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html>...errores...</html>"
+
+  /registrar_usuario.php:
+    post:
+      summary: Registrar nuevo usuario
+      description: Crea una cuenta de usuario
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                nombreCompleto:
+                  type: string
+                  example: "Juan Pérez"
+                tipoDocumento:
+                  type: string
+                  enum: [CC, CE, NIT, Pasaporte]
+                  example: "CC"
+                numeroDocumento:
+                  type: string
+                  example: "12345678"
+                correo:
+                  type: string
+                  format: email
+                  example: "juan@mail.com"
+                contraseña:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "miclave"
+                confirmar_contraseña:
+                  type: string
+                  format: password
+                  example: "miclave"
+              required:
+                - nombreCompleto
+                - tipoDocumento
+                - numeroDocumento
+                - correo
+                - contraseña
+                - confirmar_contraseña
+      responses:
+        '200':
+          description: Registro exitoso (mensaje HTML)
+        '400':
+          description: Errores de validación o correo duplicado
+
+  /guardar_viaje.php:
+    post:
+      summary: Guardar un nuevo viaje
+      description: Crea un viaje y sube sus imágenes
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                destino:
+                  type: string
+                  example: "Cancún"
+                descripcion:
+                  type: string
+                  example: "Viaje todo incluido"
+                precio:
+                  type: number
+                  format: float
+                  example: 750.50
+                fecha_salida:
+                  type: string
+                  format: date
+                  example: "2026-07-15"
+                fecha_regreso:
+                  type: string
+                  format: date
+                  example: "2026-07-22"
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - destino
+                - descripcion
+                - precio
+                - fecha_salida
+                - fecha_regreso
+      responses:
+        '200':
+          description: Viaje guardado correctamente (JSON)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  mensaje:
+                    type: string
+        '500':
+          description: Error en el servidor
