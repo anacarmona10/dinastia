@@ -4,9 +4,12 @@
     padding: 0;
 }
 
-body {
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;      /* ← elimina barras de scroll */
     font-family: Arial, sans-serif;
-    height: 100vh;
 }
 
 /* CONTENEDOR PRINCIPAL */
@@ -14,9 +17,10 @@ body {
     width: 100vw;
     height: 100vh;
     position: relative;
+    overflow: hidden;      /* seguridad */
 }
 
-/* IMAGEN DE FONDO */
+/* IMAGEN DE FONDO (fija) */
 .image-side {
     position: absolute;
     width: 100%;
@@ -41,22 +45,18 @@ body {
     left: 0;
 }
 
-/* FORMULARIO CENTRADO */
+/* FORMULARIO CENTRADO (más compacto) */
 .content-side {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
     z-index: 2;
-
     background: #ffffff;
-    padding: 25px 25px;
+    padding: 15px 20px;          /* reducido */
     border-radius: 16px;
-
     width: 100%;
-    max-width: 400px;
-
+    max-width: 380px;            /* un poco más estrecho */
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
@@ -67,41 +67,30 @@ body {
 
 /* TÍTULO */
 .registro-container h2 {
-    margin-bottom: 20px;
+    margin-bottom: 12px;         /* reducido */
     color: #000;
-    font-size: 1.8rem;
+    font-size: 1.5rem;           /* reducido */
     text-align: center;
 }
 
-/* LABELS */
-.form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #2d2d2d;
-    font-weight: 600;
-}
-
-/* INPUTS */
+/* INPUTS Y SELECT */
 .registro-container input,
 .registro-container select {
     width: 100%;
-    padding: 12px 14px;
-    margin-bottom: 15px;
+    padding: 10px 12px;          /* reducido */
+    margin-bottom: 10px;         /* reducido */
     border-radius: 12px;
     border: 2px solid #e3b0ff;
     background: #ffffff;
     color: #333;
-    font-size: 14px;
+    font-size: 13px;             /* reducido */
     transition: all 0.3s ease;
 }
 
-/* PLACEHOLDER */
 .registro-container input::placeholder {
     color: #666;
 }
 
-/* FOCUS */
 .registro-container input:focus,
 .registro-container select:focus {
     outline: none;
@@ -109,7 +98,6 @@ body {
     box-shadow: 0 0 0 3px rgba(209, 0, 255, 0.25);
 }
 
-/* SELECT */
 .registro-container select option {
     background: #1c1c2e;
     color: white;
@@ -118,12 +106,12 @@ body {
 /* BOTÓN */
 .registro-container button {
     width: 100%;
-    padding: 14px;
+    padding: 12px;               /* reducido */
     border: none;
     border-radius: 12px;
     background: linear-gradient(to right, #c800ff, #ff4d00);
     color: white;
-    font-size: 16px;
+    font-size: 15px;             /* reducido */
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
@@ -134,7 +122,7 @@ body {
     transform: scale(1.03);
 }
 
-/* CHECKBOX */
+/* CHECKBOX (si lo usas) */
 .checkbox {
     display: flex;
     align-items: center;
@@ -147,16 +135,16 @@ body {
     margin-right: 8px;
 }
 
-/* LINKS */
 .checkbox a {
     color: #c800ff;
     text-decoration: none;
 }
 
+/* ENLACE "¿Ya tienes cuenta?" */
 .registro {
     text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
+    margin-top: 6px;             /* reducido */
+    font-size: 13px;             /* reducido */
     color: #333;
 }
 
@@ -167,12 +155,12 @@ body {
     transition: 0.3s;
 }
 
-/* HOVER NARANJITA */
 .registro a:hover {
-    color: #ff4d00; /* naranja suave */
+    color: #ff4d00;
     text-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
 }
-/* LOGO */
+
+/* LOGO (opcional) */
 .logo-container {
     margin-top: 15px;
     display: flex;
@@ -195,22 +183,17 @@ body {
     top: 20px;
     left: 20px;
     z-index: 3;
-
     width: 45px;
     height: 45px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(6px);
-
     border-radius: 50%;
     color: white;
     font-size: 20px;
     text-decoration: none;
-
     transition: 0.3s ease;
 }
 
@@ -223,6 +206,90 @@ body {
 @media (max-width: 500px) {
     .content-side {
         width: 90%;
-        padding: 20px;
+        padding: 12px 15px;      /* aún más compacto en móviles */
     }
+    .registro-container h2 {
+        font-size: 1.2rem;
+    }
+    .registro-container input,
+    .registro-container select {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+    .registro-container button {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+/* ===== MODAL DE ÉXITO ===== */
+.modal-exito {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-exito-content {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 24px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease;
+}
+
+.modal-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+}
+
+.modal-exito-content h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #1e1e2f;
+}
+
+.modal-exito-content p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.modal-exito-btn {
+    background: linear-gradient(135deg, #c800ff, #ff4d00);
+    border: none;
+    color: white;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(200, 0, 255, 0.3);
+}
+
+.modal-exito-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(200, 0, 255, 0.5);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

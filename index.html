@@ -341,26 +341,4 @@
 </div>
 </div>
 </body>
-<script>
-const btn = document.getElementById("menu-btn");
-const menu = document.getElementById("mobile-menu");
-
-btn.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-});
-</script>
-<script>
-const btn = document.getElementById("menu-btn");
-const menu = document.getElementById("mobile-menu");
-
-btn.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-});
-
-document.querySelectorAll("#mobile-menu a").forEach(link => {
-    link.addEventListener("click", () => {
-        menu.classList.add("hidden");
-    });
-});
-</script>
 </html>
