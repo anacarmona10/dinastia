@@ -39,8 +39,18 @@ try {
         }
     }
 
-    echo "Viaje guardado correctamente";
+    header('Content-Type: application/json');
+
+echo json_encode([
+    "success" => true,
+    "mensaje" => "Viaje guardado correctamente"
+]);
 
 } catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    header('Content-Type: application/json');
+
+echo json_encode([
+    "success" => false,
+    "error" => $e->getMessage()
+]);
 }
