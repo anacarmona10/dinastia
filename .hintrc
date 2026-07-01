@@ -16,7 +16,10 @@
           "backdrop-filter",
           "scrollbar-color",
           "scrollbar-width",
-          "scrollbar-width: thin"
+          "scrollbar-width: thin",
+          "-ms-text-size-adjust",
+          "-webkit-text-size-adjust",
+          "-webkit-text-decoration-skip"
         ]
       }
     ],
