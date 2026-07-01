@@ -1,5 +1,5 @@
 // ==============================================
-// VALIDACIONES PARA REGISTRO Y LOGIN (con toast)
+// VALIDACIONES PARA REGISTRO Y LOGIN
 // ==============================================
 
 function validarContrasena(pass) {
@@ -8,7 +8,7 @@ function validarContrasena(pass) {
     if (!/[A-Z]/.test(pass)) errores.push('La contraseña debe tener mínimo una mayúscula.');
     if (!/[a-z]/.test(pass)) errores.push('La contraseña debe tener mínimo una minúscula.');
     if (!/[0-9]/.test(pass)) errores.push('La contraseña debe tener mínimo un número.');
-    if (!/[!@#$%^&*()_+\-=\[\]{};:'"\\|,.<>\/?]/.test(pass)) errores.push('La contraseña debe tener mínimo un caracter especial.');
+    if (!/[!@#$%^&*()_+\-=\[\]{};:'"\\|,.<>\/?]/.test(pass)) errores.push('La contraseña debe tener mínimo un carácter especial.');
     return errores;
 }
 
@@ -19,6 +19,10 @@ function mostrarToast(mensaje, destino) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
     const closeBtn = document.getElementById('toastClose');
+
+    // Asegurar color verde (por si venía de error)
+    toast.style.background = '#10b981';
+    toast.style.borderLeftColor = '#047857';
 
     toastMessage.textContent = mensaje;
     toast.classList.add('show');
@@ -44,7 +48,47 @@ function mostrarToast(mensaje, destino) {
 }
 
 // ==============================================
-// VALIDACIÓN REGISTRO
+// TOAST DE ERROR (rojo)
+// ==============================================
+function mostrarToastError(mensaje) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const closeBtn = document.getElementById('toastClose');
+
+    // Cambiar color a rojo
+    toast.style.background = '#ef4444';
+    toast.style.borderLeftColor = '#b91c1c';
+
+    toastMessage.textContent = mensaje;
+    toast.classList.add('show');
+
+    // El error no redirige, solo se oculta después de 4 segundos
+    const timeout = setTimeout(() => {
+        toast.classList.remove('show');
+        // Restaurar colores para futuros mensajes de éxito
+        toast.style.background = '#10b981';
+        toast.style.borderLeftColor = '#047857';
+    }, 4000);
+
+    closeBtn.onclick = function() {
+        clearTimeout(timeout);
+        toast.classList.remove('show');
+        toast.style.background = '#10b981';
+        toast.style.borderLeftColor = '#047857';
+    };
+
+    toast.onclick = function(e) {
+        if (e.target === toast) {
+            clearTimeout(timeout);
+            toast.classList.remove('show');
+            toast.style.background = '#10b981';
+            toast.style.borderLeftColor = '#047857';
+        }
+    };
+}
+
+// ==============================================
+// VALIDACIÓN REGISTRO (con fetch y toasts)
 // ==============================================
 async function validarRegistro(event) {
     event.preventDefault();
@@ -57,7 +101,7 @@ async function validarRegistro(event) {
     const confirm = document.getElementById('confirm_password').value;
 
     const mensajeDiv = document.getElementById('mensaje');
-    mensajeDiv.innerHTML = '';
+    mensajeDiv.innerHTML = ''; // Limpiar mensajes anteriores
     let errores = [];
 
     if (nombre === '') errores.push('El nombre completo es obligatorio.');
@@ -79,6 +123,7 @@ async function validarRegistro(event) {
         errores.push('Las contraseñas no coinciden.');
     }
 
+    // Si hay errores de validación en el cliente, mostrarlos en el div (texto rojo)
     if (errores.length > 0) {
         let html = '<ul style="color:red; text-align:left; padding-left:20px;">';
         errores.forEach(err => html += '<li>' + err + '</li>');
@@ -93,26 +138,35 @@ async function validarRegistro(event) {
     try {
         const response = await fetch(form.action, { method: 'POST', body: formData });
         const text = await response.text();
-        console.log('📦 Respuesta:', text);
-        const resultado = JSON.parse(text);
+        console.log('📦 Respuesta del servidor:', text);
+
+        let resultado;
+        try {
+            resultado = JSON.parse(text);
+        } catch (e) {
+            // Si no es JSON, mostrar como toast de error
+            mostrarToastError('⚠️ Error del servidor: ' + text.substring(0, 100));
+            return;
+        }
 
         if (resultado.success) {
             mostrarToast(
-                '✅ ¡Te has registrado con éxito!',
+                '✅ ¡Registro exitoso!',
                 'login.html?registro=exito'
             );
         } else {
-            mensajeDiv.innerHTML = `<p style="color:red;">${resultado.error}</p>`;
+            // Mostrar el error del servidor como toast rojo
+            mostrarToastError('❌ ' + resultado.error);
         }
     } catch (error) {
-        mensajeDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+        mostrarToastError('⚠️ Error de red: ' + error.message);
     }
 }
 
 // ==============================================
-// VALIDACIÓN LOGIN
+// VALIDACIÓN LOGIN (envío tradicional)
 // ==============================================
-async function validarLogin(event) {
+function validarLogin(event) {
     event.preventDefault();
     const correo = document.getElementById('correoLogin').value.trim();
     const pass = document.getElementById('contraseñaLogin').value;
@@ -135,29 +189,8 @@ async function validarLogin(event) {
         return;
     }
 
-    const form = document.getElementById('formLogin');
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch(form.action, { method: 'POST', body: formData });
-        const text = await response.text();
-        console.log('📦 Respuesta login:', text);
-        const resultado = JSON.parse(text);
-
-        if (resultado.success) {
-            localStorage.setItem('usuarioNombre', resultado.nombre);
-            localStorage.setItem('tipoUsuario', resultado.tipo_usuario);
-            if (resultado.tipo_usuario === 'admin') {
-                window.location.href = 'InterfazAdmin.html';
-            } else {
-                window.location.href = 'Dashboard.html';
-            }
-        } else {
-            mensajeDiv.innerHTML = `<p style="color:red;">${resultado.error}</p>`;
-        }
-    } catch (error) {
-        mensajeDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
-    }
+    // Envío tradicional (el formulario se envía a login.php)
+    document.getElementById('formLogin').submit();
 }
 
 // ==============================================
@@ -170,12 +203,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const formLog = document.getElementById('formLogin');
     if (formLog) formLog.addEventListener('submit', validarLogin);
 
-    // Mostrar mensaje de éxito en login si viene de registro
+    // --- Mostrar mensaje en login si viene de registro ---
     const params = new URLSearchParams(window.location.search);
     if (params.get('registro') === 'exito') {
         const mensajeDiv = document.getElementById('mensajeLogin');
         if (mensajeDiv) {
-            mensajeDiv.innerHTML = '<p style="color:green; font-weight:bold;">✅ Te has registrado con éxito. Ahora inicia sesión.</p>';
+            mensajeDiv.innerHTML = '<p style="color:green; font-weight:bold;">✅ Registrado con éxito, ahora inicia sesión</p>';
         }
     }
 });
