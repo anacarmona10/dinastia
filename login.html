@@ -5,45 +5,42 @@
     <title>Inicio de Sesión</title>
     <link rel="stylesheet" href="style_login.css">
 </head>
-
 <body>
 
 <div class="login-container">
-
     <h2>Iniciar Sesión</h2>
 
-   <form action="api/login.php" method="post">
+    <!-- Formulario SIN required (ya los quitamos) -->
+    <form id="formLogin" action="api/login.php" method="post">
 
-    <div class="input-group">
-        <label>Correo electrónico</label>
-        <input
-            type="email"
-            name="correo"
-            placeholder="Ingresa tu correo"
-            required>
-    </div>
+        <div class="input-group">
+            <label>Correo electrónico</label>
+            <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
+        </div>
 
-    <div class="input-group">
-        <label>Contraseña</label>
-        <input
-            type="password"
-            name="contraseña"
-            placeholder="Ingresa tu contraseña"
-            required>
-    </div>
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+        </div>
 
-    <button type="submit">Ingresar</button>
+        <!-- Contenedor para mensaje de éxito (si viene de registro) -->
+        <div id="mensajeLogin"></div>
 
-    <p class="registro">
-        ¿No tienes cuenta?
-        <a href="Registro.html">Regístrate</a>
-    </p>
+        <button type="submit">Ingresar</button>
 
-</form>
+        <p class="registro">
+            ¿No tienes cuenta?
+            <a href="Registro.html">Regístrate</a>
+        </p>
 
+        <p class="registro">
+            ¿Eres administrador?
+            <a href="login_admin.html">Inicia sesión aquí</a>
+        </p>
     </form>
-
 </div>
 
+<!-- JavaScript externo -->
+<script src="js/validaciones.js"></script>
 </body>
 </html>

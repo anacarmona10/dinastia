@@ -1,18 +1,18 @@
 <?php
 // api/login.php
+// Login SOLO para usuarios normales (tabla usuarios)
 session_start();
-require_once 'conexion.php'; // tu conexión PDO
+require_once 'conexion.php'; // conexión PDO
 
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../Login.html');
+    header('Location: ../login.html');
     exit;
 }
 
 // Recibir datos del formulario
 $correo = trim($_POST['correo'] ?? '');
 $contraseña = $_POST['contraseña'] ?? '';
-$tipo_usuario = $_POST['tipo_usuario'] ?? 'usuario';
 
 $errores = [];
 
@@ -32,7 +32,7 @@ if (!empty($errores)) {
     exit;
 }
 
-// Buscar el usuario por correo
+// Buscar el usuario por correo (SOLO en la tabla usuarios)
 $stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM usuarios WHERE correo = ?");
 $stmt->execute([$correo]);
 $usuario = $stmt->fetch();
@@ -44,35 +44,31 @@ if (!$usuario || !password_verify($contraseña, $usuario['contraseña'])) {
     exit;
 }
 
-// Si todo es correcto, iniciar sesión
+// Si todo es correcto, iniciar sesión de USUARIO
+session_regenerate_id(true);
 $_SESSION['user_id'] = $usuario['id'];
 $_SESSION['user_nombre'] = $usuario['nombreCompleto'];
 $_SESSION['user_email'] = $usuario['correo'];
 $_SESSION['user_tipo_doc'] = $usuario['tipoDocumento'];
 $_SESSION['user_num_doc'] = $usuario['numeroDocumento'];
-$_SESSION['tipo_usuario'] = $tipo_usuario;
+$_SESSION['tipo_usuario'] = 'usuario';
 $_SESSION['logged_in'] = true;
 
-// Redirigir según el tipo de usuario
-if ($tipo_usuario === 'admin') {
-    header('Location: ../InterfazAdmin.html');
-} else {
-    header('Location: ../index.html');
-}
+// Los usuarios normales siempre van al dashboard de usuario
+header('Location: ../dashboard.html');
 exit;
 
 // Función auxiliar para mostrar errores en una página amigable
 function mostrarErrores($errores) {
     echo "<!DOCTYPE html>";
     echo "<html><head><meta charset='UTF-8'><title>Error de inicio de sesión</title>";
-    echo "<link rel='stylesheet' href='../style.css'>";
+    echo "<link rel='stylesheet' href='../style_login.css'>";
     echo "</head><body>";
     echo "<div class='mensaje-error' style='max-width:500px; margin:50px auto; padding:20px; background:#ffe6e5; border-radius:1rem;'>";
     echo "<h3>No se pudo iniciar sesión</h3><ul>";
     foreach ($errores as $error) {
         echo "<li>$error</li>";
     }
-    echo "</ul><a href='../Login.html'>← Volver al inicio de sesión</a>";
+    echo "</ul><a href='../login.html'>← Volver al inicio de sesión</a>";
     echo "</div></body></html>";
 }
-?>
