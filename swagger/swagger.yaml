@@ -4,14 +4,14 @@ info:
   description: Documentación de la API para la agencia de viajes
   version: 1.0.0
 servers:
-  - url: http://localhost/dinastia-feature-swagger
+  - url: http://localhost/dinastia  #Cambiar en caso de tener otro nombre - Documentación swagger en http://localhost/dinastia/swagger/index.html
     description: Servidor local XAMPP
 
 paths:
-  /login.php:
+  /api/login.php:
     post:
       summary: Iniciar sesión
-      description: Autentica a un usuario y redirige según el tipo
+      tags: [Autenticación]
       requestBody:
         required: true
         content:
@@ -23,119 +23,90 @@ paths:
                 correo:
                   type: string
                   format: email
-                  example: usuario@email.com
+                  example: usuario@ejemplo.com
                 contraseña:
                   type: string
                   format: password
-                  example: "123456"
+                  example: miPassword123
                 tipo_usuario:
                   type: string
                   enum: [usuario, admin]
                   default: usuario
-              required:
-                - correo
-                - contraseña
       responses:
         '302':
-          description: Redirección según tipo (index.html o InterfazAdmin.html)
-        '400':
-          description: Errores de validación
-          content:
-            text/html:
-              schema:
-                type: string
-                example: "<html>...errores...</html>"
+          description: Redirige a index.html o InterfazAdmin.html según el tipo
 
-  /registrar_usuario.php:
+  /api/registrar_usuario.php:
     post:
       summary: Registrar nuevo usuario
-      description: Crea una cuenta de usuario
+      tags: [Usuarios]
       requestBody:
         required: true
         content:
           application/x-www-form-urlencoded:
             schema:
               type: object
+              required: [nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, confirmar_contraseña]
               properties:
                 nombreCompleto:
                   type: string
-                  example: "Juan Pérez"
+                  example: Juan Pérez
                 tipoDocumento:
                   type: string
-                  enum: [CC, CE, NIT, Pasaporte]
-                  example: "CC"
+                  enum: [CC, CE, TI, PP]
                 numeroDocumento:
                   type: string
-                  example: "12345678"
+                  example: "1234567890"
                 correo:
                   type: string
                   format: email
-                  example: "juan@mail.com"
+                  example: juan@ejemplo.com
                 contraseña:
                   type: string
-                  format: password
                   minLength: 6
-                  example: "miclave"
                 confirmar_contraseña:
                   type: string
-                  format: password
-                  example: "miclave"
-              required:
-                - nombreCompleto
-                - tipoDocumento
-                - numeroDocumento
-                - correo
-                - contraseña
-                - confirmar_contraseña
       responses:
         '200':
-          description: Registro exitoso (mensaje HTML)
-        '400':
-          description: Errores de validación o correo duplicado
+          description: Registro exitoso o mensaje de error HTML
 
-  /guardar_viaje.php:
+  /api/guardar_viaje.php:
     post:
-      summary: Guardar un nuevo viaje
-      description: Crea un viaje y sube sus imágenes
+      summary: Guardar un nuevo viaje (admin)
+      tags: [Viajes]
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required: [destino, descripcion, precio, fecha_salida, fecha_regreso]
               properties:
                 destino:
                   type: string
-                  example: "Cancún"
+                  example: Cartagena, Colombia
                 descripcion:
                   type: string
-                  example: "Viaje todo incluido"
+                  example: Paquete todo incluido 5 días
                 precio:
                   type: number
-                  format: float
-                  example: 750.50
+                  example: 1500000
                 fecha_salida:
                   type: string
                   format: date
-                  example: "2026-07-15"
+                  example: "2026-08-15"
                 fecha_regreso:
                   type: string
                   format: date
-                  example: "2026-07-22"
+                  example: "2026-08-20"
                 imagenes:
                   type: array
                   items:
                     type: string
                     format: binary
-              required:
-                - destino
-                - descripcion
-                - precio
-                - fecha_salida
-                - fecha_regreso
       responses:
         '200':
-          description: Viaje guardado correctamente (JSON)
+          description: Resultado de la operación
           content:
             application/json:
               schema:
@@ -145,5 +116,3 @@ paths:
                     type: boolean
                   mensaje:
                     type: string
-        '500':
-          description: Error en el servidor
