@@ -1,5 +1,5 @@
 // ==============================================
-// VALIDACIONES PARA REGISTRO Y LOGIN
+// VALIDACIONES PARA REGISTRO Y LOGIN (sin fetch)
 // ==============================================
 
 function validarContrasena(pass) {
@@ -13,84 +13,9 @@ function validarContrasena(pass) {
 }
 
 // ==============================================
-// TOAST DE ÉXITO
+// VALIDACIÓN REGISTRO (envío tradicional)
 // ==============================================
-function mostrarToast(mensaje, destino) {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    const closeBtn = document.getElementById('toastClose');
-
-    // Asegurar color verde (por si venía de error)
-    toast.style.background = '#10b981';
-    toast.style.borderLeftColor = '#047857';
-
-    toastMessage.textContent = mensaje;
-    toast.classList.add('show');
-
-    const timeout = setTimeout(() => {
-        toast.classList.remove('show');
-        window.location.href = destino;
-    }, 2500);
-
-    closeBtn.onclick = function() {
-        clearTimeout(timeout);
-        toast.classList.remove('show');
-        window.location.href = destino;
-    };
-
-    toast.onclick = function(e) {
-        if (e.target === toast) {
-            clearTimeout(timeout);
-            toast.classList.remove('show');
-            window.location.href = destino;
-        }
-    };
-}
-
-// ==============================================
-// TOAST DE ERROR (rojo)
-// ==============================================
-function mostrarToastError(mensaje) {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    const closeBtn = document.getElementById('toastClose');
-
-    // Cambiar color a rojo
-    toast.style.background = '#ef4444';
-    toast.style.borderLeftColor = '#b91c1c';
-
-    toastMessage.textContent = mensaje;
-    toast.classList.add('show');
-
-    // El error no redirige, solo se oculta después de 4 segundos
-    const timeout = setTimeout(() => {
-        toast.classList.remove('show');
-        // Restaurar colores para futuros mensajes de éxito
-        toast.style.background = '#10b981';
-        toast.style.borderLeftColor = '#047857';
-    }, 4000);
-
-    closeBtn.onclick = function() {
-        clearTimeout(timeout);
-        toast.classList.remove('show');
-        toast.style.background = '#10b981';
-        toast.style.borderLeftColor = '#047857';
-    };
-
-    toast.onclick = function(e) {
-        if (e.target === toast) {
-            clearTimeout(timeout);
-            toast.classList.remove('show');
-            toast.style.background = '#10b981';
-            toast.style.borderLeftColor = '#047857';
-        }
-    };
-}
-
-// ==============================================
-// VALIDACIÓN REGISTRO (con fetch y toasts)
-// ==============================================
-async function validarRegistro(event) {
+function validarRegistro(event) {
     event.preventDefault();
 
     const nombre = document.getElementById('nombreCompleto').value.trim();
@@ -101,7 +26,7 @@ async function validarRegistro(event) {
     const confirm = document.getElementById('confirm_password').value;
 
     const mensajeDiv = document.getElementById('mensaje');
-    mensajeDiv.innerHTML = ''; // Limpiar mensajes anteriores
+    mensajeDiv.innerHTML = '';
     let errores = [];
 
     if (nombre === '') errores.push('El nombre completo es obligatorio.');
@@ -123,7 +48,6 @@ async function validarRegistro(event) {
         errores.push('Las contraseñas no coinciden.');
     }
 
-    // Si hay errores de validación en el cliente, mostrarlos en el div (texto rojo)
     if (errores.length > 0) {
         let html = '<ul style="color:red; text-align:left; padding-left:20px;">';
         errores.forEach(err => html += '<li>' + err + '</li>');
@@ -132,35 +56,8 @@ async function validarRegistro(event) {
         return;
     }
 
-    const form = document.getElementById('formRegistro');
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch(form.action, { method: 'POST', body: formData });
-        const text = await response.text();
-        console.log('📦 Respuesta del servidor:', text);
-
-        let resultado;
-        try {
-            resultado = JSON.parse(text);
-        } catch (e) {
-            // Si no es JSON, mostrar como toast de error
-            mostrarToastError('⚠️ Error del servidor: ' + text.substring(0, 100));
-            return;
-        }
-
-        if (resultado.success) {
-            mostrarToast(
-                '✅ ¡Registro exitoso!',
-                'login.html?registro=exito'
-            );
-        } else {
-            // Mostrar el error del servidor como toast rojo
-            mostrarToastError('❌ ' + resultado.error);
-        }
-    } catch (error) {
-        mostrarToastError('⚠️ Error de red: ' + error.message);
-    }
+    // Si todo válido, envía el formulario normalmente
+    document.getElementById('formRegistro').submit();
 }
 
 // ==============================================
@@ -189,7 +86,6 @@ function validarLogin(event) {
         return;
     }
 
-    // Envío tradicional (el formulario se envía a login.php)
     document.getElementById('formLogin').submit();
 }
 
@@ -202,13 +98,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const formLog = document.getElementById('formLogin');
     if (formLog) formLog.addEventListener('submit', validarLogin);
-
-    // --- Mostrar mensaje en login si viene de registro ---
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('registro') === 'exito') {
-        const mensajeDiv = document.getElementById('mensajeLogin');
-        if (mensajeDiv) {
-            mensajeDiv.innerHTML = '<p style="color:green; font-weight:bold;">✅ Registrado con éxito, ahora inicia sesión</p>';
-        }
-    }
 });
