@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión - Administrador</title>
+    <link rel="stylesheet" href="style_login.css">
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Acceso Administradores</h2>
+
+    <form id="formLogin" action="api/login_admin.php" method="post">
+
+        <div class="input-group">
+            <label>Correo electrónico</label>
+            <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
+        </div>
+
+        <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+        </div>
+
+        <div id="mensajeLogin"></div>
+
+        <button type="submit">Ingresar</button>
+
+        <p class="registro">
+            ¿Eres usuario?
+            <a href="login.html">Inicia sesión aquí</a>
+        </p>
+    </form>
+</div>
+
+<script src="js/validaciones.js"></script>
+</body>
+</html>

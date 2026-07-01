@@ -1,5 +1,17 @@
 <?php
+session_start();
 require "conexion.php";
+
+// Solo un admin con sesión iniciada puede guardar viajes
+if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admin') {
+    header('Content-Type: application/json');
+    http_response_code(403);
+    echo json_encode([
+        "success" => false,
+        "error" => "Debes iniciar sesión como administrador"
+    ]);
+    exit;
+}
 
 try {
     // 1. Recibir datos
@@ -8,7 +20,7 @@ try {
     $precio = $_POST['precio'];
     $fecha_salida = $_POST['fecha_salida'];
     $fecha_regreso = $_POST['fecha_regreso'];
-    $admin_id = 1; // luego lo hacemos dinámico
+    $admin_id = $_SESSION['admin_id']; // ahora viene de la sesión, no fijo
 
     // 2. Insertar viaje
     $sql = "INSERT INTO viajes (destino, descripcion, precio, fecha_salida, fecha_regreso, admin_id)
