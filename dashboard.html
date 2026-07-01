@@ -1,11 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mi Dashboard - Dinastía AMV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#ec5b13",
+                    "background-light": "#f8f6f6",
+                    "background-dark": "#221610",
+                },
+                fontFamily: {
+                    "display": ["Public Sans", "sans-serif"]
+                },
+                borderRadius: {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+                },
+            },
+        },
+    }
+</script>
+<style>
+    body { font-family: 'Public Sans', sans-serif; }
+</style>
 </head>
-<body>
-    <h1>dashboard usuario</h1>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+<!-- Barra de navegación -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="flex items-center gap-3 text-primary">
+        <span class="material-symbols-outlined text-3xl font-bold">explore</span>
+        <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">AMV <span class="text-primary">Explora</span></h2>
+    </div>
+    <div class="flex items-center gap-6">
+        <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300">
+            ¡Hola de nuevo!
+        </span>
+        <a href="api/logout.php" class="flex items-center gap-1 text-sm font-bold text-primary hover:opacity-80 transition-opacity">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            Cerrar sesión
+        </a>
+    </div>
+</header>
+
+<main class="flex-1 px-6 md:px-20 py-10">
+
+    <!-- Bienvenida -->
+    <section class="mb-10">
+        <h1 class="text-3xl font-black tracking-tight mb-2">Mi Dashboard</h1>
+        <p class="text-slate-600 dark:text-slate-400">Aquí puedes ver tus reservas, explorar nuevos viajes y administrar tu perfil.</p>
+    </section>
+
+    <!-- Tarjetas de resumen -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
+            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">confirmation_number</span>
+            <div>
+                <p class="text-2xl font-black">0</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Reservas activas</p>
+            </div>
+        </div>
+        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
+            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">travel_explore</span>
+            <div>
+                <p class="text-2xl font-black">0</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Viajes realizados</p>
+            </div>
+        </div>
+        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
+            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">favorite</span>
+            <div>
+                <p class="text-2xl font-black">0</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Destinos favoritos</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mis reservas -->
+    <section class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-black">Mis reservas</h2>
+        </div>
+        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-8 text-center text-slate-500 dark:text-slate-400">
+            <span class="material-symbols-outlined text-4xl mb-2 block">inbox</span>
+            Aún no tienes reservas. Explora nuestros destinos y reserva tu próximo viaje.
+        </div>
+        <!-- Cuando se conecte con la tabla "reservas", cada fila se puede pintar aquí -->
+    </section>
+
+    <!-- Accesos rápidos -->
+    <section>
+        <h2 class="text-xl font-black mb-4">Accesos rápidos</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <a href="index.html" class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                <span class="material-symbols-outlined text-3xl text-primary">explore</span>
+                <div>
+                    <p class="font-bold">Explorar viajes</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles</p>
+                </div>
+            </a>
+            <a href="#" class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                <span class="material-symbols-outlined text-3xl text-primary">person</span>
+                <div>
+                    <p class="font-bold">Mi perfil</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos personales</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+</div>
+</div>
 </body>
 </html>
