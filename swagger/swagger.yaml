@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: API Agencia AMV
+  description: Documentación de la API para la agencia de viajes
+  version: 1.0.0
+servers:
+  - url: http://localhost/dinastia  #Cambiar en caso de tener otro nombre - Documentación swagger en http://localhost/dinastia/swagger/index.html
+    description: Servidor local XAMPP
+
+paths:
+  /api/login.php:
+    post:
+      summary: Iniciar sesión
+      tags: [Autenticación]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [correo, contraseña]
+              properties:
+                correo:
+                  type: string
+                  format: email
+                  example: usuario@ejemplo.com
+                contraseña:
+                  type: string
+                  format: password
+                  example: miPassword123
+                tipo_usuario:
+                  type: string
+                  enum: [usuario, admin]
+                  default: usuario
+      responses:
+        '302':
+          description: Redirige a index.html o InterfazAdmin.html según el tipo
+
+  /api/registrar_usuario.php:
+    post:
+      summary: Registrar nuevo usuario
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, confirmar_contraseña]
+              properties:
+                nombreCompleto:
+                  type: string
+                  example: Juan Pérez
+                tipoDocumento:
+                  type: string
+                  enum: [CC, CE, TI, PP]
+                numeroDocumento:
+                  type: string
+                  example: "1234567890"
+                correo:
+                  type: string
+                  format: email
+                  example: juan@ejemplo.com
+                contraseña:
+                  type: string
+                  minLength: 6
+                confirmar_contraseña:
+                  type: string
+      responses:
+        '200':
+          description: Registro exitoso o mensaje de error HTML
+
+  /api/guardar_viaje.php:
+    post:
+      summary: Guardar un nuevo viaje (admin)
+      tags: [Viajes]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [destino, descripcion, precio, fecha_salida, fecha_regreso]
+              properties:
+                destino:
+                  type: string
+                  example: Cartagena, Colombia
+                descripcion:
+                  type: string
+                  example: Paquete todo incluido 5 días
+                precio:
+                  type: number
+                  example: 1500000
+                fecha_salida:
+                  type: string
+                  format: date
+                  example: "2026-08-15"
+                fecha_regreso:
+                  type: string
+                  format: date
+                  example: "2026-08-20"
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Resultado de la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  mensaje:
+                    type: string
