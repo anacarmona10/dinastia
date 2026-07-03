@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="api/validaciones.php" colors="true">
+    <testsuites>
+        <testsuite name="Pruebas unitarias">
+            <directory>__test__</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
