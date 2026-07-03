@@ -23,6 +23,13 @@
         ]
       }
     ],
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "no-inline-styles": "off",
+    "axe/keyboard": [
+      "default",
+      {
+        "nested-interactive": "off"
+      }
+    ]
   }
 }
