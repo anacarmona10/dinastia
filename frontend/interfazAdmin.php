@@ -18,7 +18,7 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
 <body>
     <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
         <p style="margin:0;">Bienvenido/a, <strong><?php echo htmlspecialchars($_SESSION['admin_nombre']); ?></strong></p>
-        <a href="api/logout.php" style="color:#c800ff; font-weight:bold; text-decoration:none;">Cerrar sesión</a>
+        <a href="../backend/api/logout.php" style="color:#c800ff; font-weight:bold; text-decoration:none;">Cerrar sesión</a>
     </div>
 
     <div class="container">
@@ -232,7 +232,7 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
             });
 
             try {
-                const response = await fetch("api/guardar_viaje.php", {
+                const response = await fetch("../backend/api/guardar_viaje.php", {
                     method: "POST",
                     body: formData
                 });
@@ -275,7 +275,7 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
             const contenedor = document.getElementById("listaViajes");
 
             try {
-                const response = await fetch("api/listar_viajes.php");
+                const response = await fetch("../backend/api/listar_viajes.php");
                 const resultado = await response.json();
 
                 if (!resultado.success) {
@@ -466,7 +466,7 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
             });
 
             try {
-                const response = await fetch("api/actualizar_viaje.php", {
+                const response = await fetch("../backend/api/actualizar_viaje.php", {
                     method: "POST",
                     body: formData
                 });
