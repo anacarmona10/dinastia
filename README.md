@@ -17,15 +17,22 @@ CSS
 
 # Estructura de carpetas
 
-/api = Conexión a base de datos
-/imagenes = Imagenes que usaremos en la página web.
+/backend = Contiene la API (conexión a base de datos, endpoints PHP), las pruebas, dependencias (vendor) y la documentación Swagger.
+/frontend = Contiene todos los archivos como el registro, inicio de sesión, interfaz de usuario, imágenes y el CSS para la decoración.
 /docs = Toda la documentación necesaria.
-/dinastia = Contiene todos los archivos como el registro, inicio de sesión, interfaz de usuario y el CSS para al decoración.
 
 # Estructura de Backend
 
-/api
+/backend
+  /api        = Conexión a base de datos y endpoints
+  /__test__   = Pruebas
+  /swagger    = Documentación de la API
+  composer.json / composer.lock / phpunit.xml
 
 # Estructura de Frontend
 
-/dinastia
+/frontend
+  index.html, login.html, login_admin.html, Registro.html, dashboard.html, interfazAdmin.php
+  /js         = Scripts de validación
+  /imagenes   = Imágenes del sitio
+  style_*.css = Hojas de estilo
