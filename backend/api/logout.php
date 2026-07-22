@@ -8,8 +8,8 @@ $_SESSION = [];
 session_destroy();
 
 if ($era_admin) {
-    header('Location: ../login_admin.html');
+    header('Location: ../../frontend/login_admin.html');
 } else {
-    header('Location: ../login.html');
+    header('Location: ../../frontend/login.html');
 }
 exit;

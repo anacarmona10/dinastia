@@ -6,7 +6,7 @@ require_once 'conexion.php'; // conexión PDO
 
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../login.html');
+    header('Location: ../../frontend/login.html');
     exit;
 }
 
@@ -55,20 +55,20 @@ $_SESSION['tipo_usuario'] = 'usuario';
 $_SESSION['logged_in'] = true;
 
 // Los usuarios normales siempre van al dashboard de usuario
-header('Location: ../dashboard.html');
+header('Location: ../../frontend/dashboard.html');
 exit;
 
 // Función auxiliar para mostrar errores en una página amigable
 function mostrarErrores($errores) {
     echo "<!DOCTYPE html>";
     echo "<html><head><meta charset='UTF-8'><title>Error de inicio de sesión</title>";
-    echo "<link rel='stylesheet' href='../style_login.css'>";
+    echo "<link rel='stylesheet' href='../../frontend/style_login.css'>";
     echo "</head><body>";
     echo "<div class='mensaje-error' style='max-width:500px; margin:50px auto; padding:20px; background:#ffe6e5; border-radius:1rem;'>";
     echo "<h3>No se pudo iniciar sesión</h3><ul>";
     foreach ($errores as $error) {
         echo "<li>$error</li>";
     }
-    echo "</ul><a href='../login.html'>← Volver al inicio de sesión</a>";
+    echo "</ul><a href='../../frontend/login.html'>← Volver al inicio de sesión</a>";
     echo "</div></body></html>";
 }

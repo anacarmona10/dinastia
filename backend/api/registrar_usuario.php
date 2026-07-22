@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<style>body{font-family:Arial;text-align:center;padding:50px;background:#f0f9f0;}h1{color:#2e7d32;}a{color:#c800ff;}</style>";
             echo "</head><body>";
             echo "<h1>✅ ¡Registro exitoso!</h1>";
-            echo "<p>Ya puedes <a href='../login.html'>iniciar sesión</a>.</p>";
+            echo "<p>Ya puedes <a href='../../frontend/login.html'>iniciar sesión</a>.</p>";
             echo "</body></html>";
             exit;
         } catch(PDOException $e) {
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 } else {
-    header("Location: index.html");
+    header("Location: ../../frontend/index.html");
     exit;
 }
 ?>
