@@ -33,7 +33,7 @@ if (!empty($errores)) {
 }
 
 // Buscar el administrador por correo (SOLO en la tabla admins)
-$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM admins WHERE correo = ?");
+$stmt = $pdo->prepare('SELECT id, "nombreCompleto", correo, contraseña, "tipoDocumento", "numeroDocumento" FROM admins WHERE correo = ?');
 $stmt->execute([$correo]);
 $admin = $stmt->fetch();
 

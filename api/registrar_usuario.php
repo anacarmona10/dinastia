@@ -3,13 +3,6 @@
 session_start();
 require_once 'conexion.php'; // conexión PDO
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombreCompleto = trim($_POST['nombreCompleto'] ?? '');
     $tipoDocumento = trim($_POST['tipoDocumento'] ?? '');
@@ -36,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errores)) {
         $hash = password_hash($contraseña, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO usuarios (nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, created_at)
-                VALUES (?, ?, ?, ?, ?, NOW())";
+        $sql = 'INSERT INTO usuarios ("nombreCompleto", "tipoDocumento", "numeroDocumento", correo, contraseña, created_at)
+        VALUES (?, ?, ?, ?, ?, NOW())';
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$nombreCompleto, $tipoDocumento, $numeroDocumento, $correo, $hash]);
