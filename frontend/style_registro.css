@@ -8,19 +8,17 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;      /* ← elimina barras de scroll */
+    overflow: hidden;
     font-family: Arial, sans-serif;
 }
 
-/* CONTENEDOR PRINCIPAL */
 .main-wrapper {
     width: 100vw;
     height: 100vh;
     position: relative;
-    overflow: hidden;      /* seguridad */
+    overflow: hidden;
 }
 
-/* IMAGEN DE FONDO (fija) */
 .image-side {
     position: absolute;
     width: 100%;
@@ -34,7 +32,6 @@ html, body {
     object-fit: cover;
 }
 
-/* CAPA OSCURA SOBRE LA IMAGEN */
 .image-side::after {
     content: "";
     position: absolute;
@@ -45,7 +42,6 @@ html, body {
     left: 0;
 }
 
-/* FORMULARIO CENTRADO (más compacto) */
 .content-side {
     position: absolute;
     top: 50%;
@@ -53,37 +49,34 @@ html, body {
     transform: translate(-50%, -50%);
     z-index: 2;
     background: #ffffff;
-    padding: 15px 20px;          /* reducido */
+    padding: 15px 20px;
     border-radius: 16px;
     width: 100%;
-    max-width: 380px;            /* un poco más estrecho */
+    max-width: 380px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* CONTENEDOR FORM */
 .registro-container {
     width: 100%;
 }
 
-/* TÍTULO */
 .registro-container h2 {
-    margin-bottom: 12px;         /* reducido */
+    margin-bottom: 12px;
     color: #000;
-    font-size: 1.5rem;           /* reducido */
+    font-size: 1.5rem;
     text-align: center;
 }
 
-/* INPUTS Y SELECT */
 .registro-container input,
 .registro-container select {
     width: 100%;
-    padding: 10px 12px;          /* reducido */
-    margin-bottom: 10px;         /* reducido */
+    padding: 10px 12px;
+    margin-bottom: 10px;
     border-radius: 12px;
     border: 2px solid #e3b0ff;
     background: #ffffff;
     color: #333;
-    font-size: 13px;             /* reducido */
+    font-size: 13px;
     transition: all 0.3s ease;
 }
 
@@ -103,26 +96,31 @@ html, body {
     color: white;
 }
 
-/* BOTÓN */
-.registro-container button {
+/* 🟣 BOTÓN – CON !important Y SELECTORES MÚLTIPLES PARA ASEGURAR */
+.registro-container button,
+button.form-button,
+.registro-container button[type="submit"],
+button.form-button[type="submit"] {
     width: 100%;
-    padding: 12px;               /* reducido */
+    padding: 12px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(to right, #c800ff, #ff4d00);
     color: white;
-    font-size: 15px;             /* reducido */
+    background: linear-gradient(to right, #c800ff, #EF1D9C) !important;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.registro-container button:hover {
+.registro-container button:hover,
+button.form-button:hover,
+.registro-container button[type="submit"]:hover,
+button.form-button[type="submit"]:hover {
     opacity: 0.9;
     transform: scale(1.03);
 }
 
-/* CHECKBOX (si lo usas) */
 .checkbox {
     display: flex;
     align-items: center;
@@ -140,11 +138,10 @@ html, body {
     text-decoration: none;
 }
 
-/* ENLACE "¿Ya tienes cuenta?" */
 .registro {
     text-align: center;
-    margin-top: 6px;             /* reducido */
-    font-size: 13px;             /* reducido */
+    margin-top: 6px;
+    font-size: 13px;
     color: #333;
 }
 
@@ -156,11 +153,10 @@ html, body {
 }
 
 .registro a:hover {
-    color: #ff4d00;
-    text-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
+    color: #EF1D9C;
+    text-shadow: 0 0 5px rgba(239, 29, 156, 0.4);
 }
 
-/* LOGO (opcional) */
 .logo-container {
     margin-top: 15px;
     display: flex;
@@ -177,7 +173,6 @@ html, body {
     transform: scale(1.05);
 }
 
-/* FLECHA VOLVER */
 .back-button {
     position: absolute;
     top: 20px;
@@ -202,11 +197,10 @@ html, body {
     transform: scale(1.08);
 }
 
-/* RESPONSIVE */
 @media (max-width: 500px) {
     .content-side {
         width: 90%;
-        padding: 12px 15px;      /* aún más compacto en móviles */
+        padding: 12px 15px;
     }
     .registro-container h2 {
         font-size: 1.2rem;
@@ -216,7 +210,10 @@ html, body {
         font-size: 12px;
         padding: 8px 10px;
     }
-    .registro-container button {
+    .registro-container button,
+    button.form-button,
+    .registro-container button[type="submit"],
+    button.form-button[type="submit"] {
         font-size: 13px;
         padding: 10px;
     }
