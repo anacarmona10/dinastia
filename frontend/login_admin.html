@@ -2,37 +2,54 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Administrador</title>
+
+    <!-- Font Awesome para el ícono de flecha -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Hoja de estilos compartida -->
     <link rel="stylesheet" href="style_login.css">
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Acceso Administradores</h2>
+    <!-- Botón de volver con el mismo estilo que login.html -->
+    <a href="index.html" class="back-button" aria-label="Volver al inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
 
-    <form id="formLogin" action="../backend/api/login_admin.php" method="post">
+    <div class="login-container">
+        <h2>Acceso Administradores</h2>
 
-        <div class="input-group">
-            <label>Correo electrónico</label>
-            <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
-        </div>
+        <form id="formLogin" action="../backend/api/login_admin.php" method="post">
 
-        <div class="input-group">
-            <label>Contraseña</label>
-            <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
-        </div>
+            <div class="input-group">
+                <label>Correo electrónico</label>
+                <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
+            </div>
 
-        <div id="mensajeLogin"></div>
+            <div class="input-group">
+                <label>Contraseña</label>
+                <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+            </div>
 
-        <button type="submit">Ingresar</button>
+            <div id="mensajeLogin"></div>
 
-        <p class="registro">
-            ¿Eres usuario?
-            <a href="login.html">Inicia sesión aquí</a>
-        </p>
-    </form>
-</div>
+            <button type="submit">Ingresar</button>
 
-<script src="js/validaciones.js"></script>
+            <!-- Enlace para recuperar contraseña -->
+            <p class="registro olvido">
+                ¿Olvidaste tu contraseña? 
+                <a href="olvido_contraseña.html">Ingresa aquí</a>
+            </p>
+
+            <p class="registro">
+                ¿Eres usuario?
+                <a href="login.html">Inicia sesión aquí</a>
+            </p>
+        </form>
+    </div>
+
+    <script src="js/validaciones.js"></script>
 </body>
 </html>

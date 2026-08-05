@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperación de Contraseña</title>
+
+    <!-- Font Awesome para el ícono de flecha -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Hoja de estilos específica para esta página -->
+    <link rel="stylesheet" href="style_olvido.css">
+</head>
+<body>
+
+    <!-- Botón de volver -->
+    <a href="index.html" class="back-button" aria-label="Volver al inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="olvido-container">
+        <h2>Recuperación de contraseña</h2>
+
+        <form id="formRecuperar" action="#" method="post">
+            <div class="input-group">
+                <label>Correo electrónico</label>
+                <input type="email" name="correo" id="correoRecuperacion" placeholder="Ingresa tu correo">
+            </div>
+
+            <div id="mensajeRecuperacion"></div>
+
+            <button type="submit" id="btnRecuperar">Recuperar</button>
+
+            <div class="mensaje-info">
+                <i class="fas fa-info-circle"></i> Te enviaremos un enlace para restablecer tu contraseña.
+            </div>
+
+            <p class="registro">
+                ¿Ya recordaste tu contraseña?
+                <a href="login.html">Inicia sesión</a>
+            </p>
+        </form>
+    </div>
+
+    <!-- JavaScript para simular el envío -->
+    <script>
+        (function() {
+            const form = document.getElementById('formRecuperar');
+            const btn = document.getElementById('btnRecuperar');
+            const mensaje = document.getElementById('mensajeRecuperacion');
+            const correoInput = document.getElementById('correoRecuperacion');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const correo = correoInput.value.trim();
+
+                if (correo === '') {
+                    mensaje.innerHTML = '<span style="color: #dc3545; font-weight: bold;">Por favor ingresa tu correo electrónico.</span>';
+                    return;
+                }
+
+                mensaje.innerHTML = '<span style="color: #28a745; font-weight: bold;"><i class="fas fa-check-circle"></i> Se ha enviado un enlace a tu correo para restablecer tu contraseña.</span>';
+                btn.disabled = true;
+                btn.textContent = 'Enviado ✓';
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Recuperar';
+                    setTimeout(() => {
+                        mensaje.innerHTML = '';
+                    }, 2000);
+                }, 3000);
+            });
+        })();
+    </script>
+
+</body>
+</html>
