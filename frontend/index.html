@@ -93,9 +93,10 @@
                 Descubre paisajes vibrantes con las tarifas más bajas del mercado, diseñadas exclusivamente para nuestra gente por <span class="text-primary font-bold">AMV</span>.
               </h2>
               <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                <button class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-primary text-white text-base font-bold shadow-xl hover:scale-105 transition-all">
+                <!-- Botón "Ver Planes Locales" redirige a login.html -->
+                <a href="login.html" class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-primary text-white text-base font-bold shadow-xl hover:scale-105 transition-all">
                   Ver Planes Locales
-                </button>
+                </a>
                 <button class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-white/10 backdrop-blur-md border border-white/20 text-white text-base font-bold hover:bg-white/20 transition-all">
                   Explorar Destinos
                 </button>
@@ -222,7 +223,10 @@
                   </div>
                 </div>
                 <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">Historia, color y la mejor energía del caribe colombiano.</p>
-                <button class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base">Ver Plan</button>
+                <!-- Botón "Ver Plan" redirige a login.html -->
+                <a href="login.html" class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base block text-center">
+                  Ver Plan
+                </a>
               </div>
             </div>
             <!-- Card 2 -->
@@ -245,7 +249,9 @@
                   </div>
                 </div>
                 <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">Verdes infinitos y el aroma del mejor café del mundo.</p>
-                <button class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base">Ver Plan</button>
+                <a href="login.html" class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base block text-center">
+                  Ver Plan
+                </a>
               </div>
             </div>
             <!-- Card 3 -->
@@ -268,7 +274,9 @@
                   </div>
                 </div>
                 <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">La ciudad de la eterna primavera y su transformación.</p>
-                <button class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base">Ver Plan</button>
+                <a href="login.html" class="w-full py-3 rounded-xl bg-primary text-white font-bold transition-all hover:brightness-110 text-sm sm:text-base block text-center">
+                  Ver Plan
+                </a>
               </div>
             </div>
           </div>
@@ -330,25 +338,22 @@
     </div>
   </div>
 
-  <!-- JavaScript del menú hamburguesa (embebido para garantizar funcionamiento) -->
+  <!-- JavaScript del menú hamburguesa (embebido) -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const menuBtn = document.getElementById('menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
 
-      // Verificar que los elementos existen
       if (!menuBtn || !mobileMenu) {
         console.error('No se encontraron los elementos del menú');
         return;
       }
 
-      // Abrir/cerrar menú al hacer clic en el botón
       menuBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         mobileMenu.classList.toggle('hidden');
       });
 
-      // Cerrar menú al hacer clic en cualquier enlace dentro del menú
       const menuLinks = mobileMenu.querySelectorAll('a');
       menuLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -356,7 +361,6 @@
         });
       });
 
-      // Cerrar menú al hacer clic fuera de él
       document.addEventListener('click', function(e) {
         if (!mobileMenu.classList.contains('hidden') &&
             !mobileMenu.contains(e.target) &&
