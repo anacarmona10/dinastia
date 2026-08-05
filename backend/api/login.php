@@ -33,7 +33,7 @@ if (!empty($errores)) {
 }
 
 // Buscar el usuario por correo (SOLO en la tabla usuarios)
-$stmt = $pdo->prepare("SELECT id, nombreCompleto, correo, contraseña, tipoDocumento, numeroDocumento FROM usuarios WHERE correo = ?");
+$stmt = $pdo->prepare('SELECT id, "nombreCompleto", correo, contraseña, "tipoDocumento", "numeroDocumento" FROM usuarios WHERE correo = ?');
 $stmt->execute([$correo]);
 $usuario = $stmt->fetch();
 
