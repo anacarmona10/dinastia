@@ -1,0 +1,176 @@
+/* style_olvido.css - Estilos específicos para la página de recuperación */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), 
+                url("imagenes/Iglesia.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+/* Contenedor principal - similar al login */
+.olvido-container {
+    background: #ffffff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    width: 380px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* Título */
+.olvido-container h2 {
+    color: #000;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+}
+
+/* Grupo de input */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    color: #2d2d2d;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.olvido-container input {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 2px solid #e3b0ff;
+    background: #ffffff;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: 0.3s;
+}
+
+.olvido-container input::placeholder {
+    color: #666;
+}
+
+.olvido-container input:focus {
+    border-color: #d100ff;
+    box-shadow: 0 0 0 3px rgba(209, 0, 255, 0.2);
+}
+
+/* Botón Recuperar - mismo degradado */
+.olvido-container button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #c800ff, #EF1D9C);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.olvido-container button[type="submit"]:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+}
+
+.olvido-container button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mensaje informativo */
+.mensaje-info {
+    margin-top: 15px;
+    color: #555;
+    font-size: 14px;
+}
+
+.mensaje-info i {
+    color: #c800ff;
+    margin-right: 6px;
+}
+
+/* Enlace de registro (volver a login) */
+.registro {
+    margin-top: 20px;
+    color: #333;
+}
+
+.registro a {
+    color: #c800ff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.registro a:hover {
+    color: #EF1D9C;
+}
+
+/* Botón de volver (flecha) - idéntico al de login */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
+}
+
+/* Mensaje de éxito/error dentro del formulario */
+#mensajeRecuperacion {
+    margin: 5px 0 10px 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Responsive para móviles */
+@media (max-width: 500px) {
+    .olvido-container {
+        width: 90%;
+        padding: 25px 20px;
+    }
+    .olvido-container h2 {
+        font-size: 1.3rem;
+    }
+    .olvido-container input {
+        font-size: 13px;
+        padding: 11px;
+    }
+    .olvido-container button[type="submit"] {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
