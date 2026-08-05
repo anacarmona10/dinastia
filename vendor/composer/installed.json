@@ -279,7 +279,7 @@
             },
             "time": "2026-01-25T14:56:51+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "PHPStan\\PhpDocParser\\": [
@@ -798,7 +798,7 @@
                     "dev-master": "2.0.x-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Psr\\Container\\": "src/"
@@ -854,7 +854,7 @@
                     "dev-master": "3.x-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Psr\\Log\\": "src"
@@ -914,7 +914,7 @@
                     "dev-master": "1.x-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Radebatz\\TypeInfoExtras\\": "src"
@@ -2080,7 +2080,7 @@
             },
             "time": "2026-06-16T11:50:14+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Console\\": ""
@@ -2163,7 +2163,7 @@
                     "dev-main": "3.7-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "function.php"
@@ -2231,7 +2231,7 @@
             },
             "time": "2026-06-27T08:31:18+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Finder\\": ""
@@ -2311,7 +2311,7 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -2394,7 +2394,7 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -2479,7 +2479,7 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -2571,7 +2571,7 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -2660,7 +2660,7 @@
                     "dev-main": "3.7-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Contracts\\Service\\": ""
@@ -2751,7 +2751,7 @@
             },
             "time": "2026-05-23T15:23:29+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "Resources/functions.php"
@@ -2838,7 +2838,7 @@
             },
             "time": "2026-04-22T15:21:55+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\TypeInfo\\": ""
@@ -2927,7 +2927,7 @@
                 "Resources/bin/yaml-lint"
             ],
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Yaml\\": ""
@@ -3075,7 +3075,7 @@
                     "dev-master": "6.x-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "OpenApi\\": "src"
