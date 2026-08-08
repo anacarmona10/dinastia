@@ -38,14 +38,20 @@ try {
     // 3. Si se agregaron imágenes nuevas, se guardan (se suman a las que ya tenía)
     if (!empty($_FILES['imagenes']['name'][0])) {
 
-        $carpeta = "../imagenes/";
+        $carpeta = __DIR__ . '/../../frontend/imagenes/';
+
+        if (!is_dir($carpeta) && !mkdir($carpeta, 0755, true) && !is_dir($carpeta)) {
+            throw new Exception("No se pudo preparar la carpeta de imagenes");
+        }
 
         foreach ($_FILES['imagenes']['tmp_name'] as $key => $tmp_name) {
 
-            $nombre = time() . "_" . $_FILES['imagenes']['name'][$key];
+            $nombre = bin2hex(random_bytes(8)) . "_" . basename($_FILES['imagenes']['name'][$key]);
             $ruta = $carpeta . $nombre;
 
-            move_uploaded_file($tmp_name, $ruta);
+            if (!move_uploaded_file($tmp_name, $ruta)) {
+                throw new Exception("No se pudo guardar una de las imagenes");
+            }
 
             $sql_img = "INSERT INTO imagenes_viajes (viaje_id, url) VALUES (?, ?)";
             $stmt_img = $pdo->prepare($sql_img);

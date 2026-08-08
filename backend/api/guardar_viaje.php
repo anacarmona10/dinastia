@@ -1,68 +1,73 @@
 <?php
 session_start();
-require "conexion.php";
+header('Content-Type: application/json; charset=utf-8');
 
-// Solo un admin con sesión iniciada puede guardar viajes
+require 'conexion.php';
+
 if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admin') {
-    header('Content-Type: application/json');
     http_response_code(403);
     echo json_encode([
-        "success" => false,
-        "error" => "Debes iniciar sesión como administrador"
+        'success' => false,
+        'error' => 'Debes iniciar sesion como administrador',
     ]);
     exit;
 }
 
 try {
-    // 1. Recibir datos
-    $destino = $_POST['destino'];
-    $descripcion = $_POST['descripcion'];
-    $precio = $_POST['precio'];
-    $fecha_salida = $_POST['fecha_salida'];
-    $fecha_regreso = $_POST['fecha_regreso'];
-    $admin_id = $_SESSION['admin_id']; // ahora viene de la sesión, no fijo
+    $destino = trim($_POST['destino'] ?? '');
+    $descripcion = trim($_POST['descripcion'] ?? '');
+    $precio = $_POST['precio'] ?? '';
+    $fechaSalida = $_POST['fecha_salida'] ?? '';
+    $fechaRegreso = $_POST['fecha_regreso'] ?? '';
+    $adminId = $_SESSION['admin_id'] ?? null;
 
-    // 2. Insertar viaje
-    $sql = "INSERT INTO viajes (destino, descripcion, precio, fecha_salida, fecha_regreso, admin_id)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    if (!$destino || !$descripcion || $precio === '' || !$fechaSalida || !$fechaRegreso || !$adminId) {
+        throw new InvalidArgumentException('Completa todos los datos del viaje');
+    }
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$destino, $descripcion, $precio, $fecha_salida, $fecha_regreso, $admin_id]);
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare(
+        'INSERT INTO viajes (destino, descripcion, precio, fecha_salida, fecha_regreso, admin_id)
+         VALUES (?, ?, ?, ?, ?, ?)
+         RETURNING id'
+    );
+    $stmt->execute([$destino, $descripcion, $precio, $fechaSalida, $fechaRegreso, $adminId]);
+    $viajeId = $stmt->fetchColumn();
 
-    // 3. Obtener ID del viaje recién creado
-    $viaje_id = $pdo->lastInsertId();
-
-    // 4. Guardar imágenes
     if (!empty($_FILES['imagenes']['name'][0])) {
+        $carpetaImagenes = __DIR__ . '/../../frontend/imagenes/';
 
-        $carpeta = "../imagenes/"; // crea esta carpeta
+        if (!is_dir($carpetaImagenes) && !mkdir($carpetaImagenes, 0755, true) && !is_dir($carpetaImagenes)) {
+            throw new RuntimeException('No se pudo preparar la carpeta de imagenes');
+        }
 
-        foreach ($_FILES['imagenes']['tmp_name'] as $key => $tmp_name) {
+        foreach ($_FILES['imagenes']['tmp_name'] as $indice => $archivoTemporal) {
+            $nombre = bin2hex(random_bytes(8)) . '_' . basename($_FILES['imagenes']['name'][$indice]);
+            $rutaImagen = $carpetaImagenes . $nombre;
 
-            $nombre = time() . "_" . $_FILES['imagenes']['name'][$key];
-            $ruta = $carpeta . $nombre;
+            if (!move_uploaded_file($archivoTemporal, $rutaImagen)) {
+                throw new RuntimeException('No se pudo guardar una de las imagenes');
+            }
 
-            move_uploaded_file($tmp_name, $ruta);
-
-            // guardar en BD
-            $sql_img = "INSERT INTO imagenes_viajes (viaje_id, url) VALUES (?, ?)";
-            $stmt_img = $pdo->prepare($sql_img);
-            $stmt_img->execute([$viaje_id, $nombre]);
+            $stmtImagen = $pdo->prepare('INSERT INTO imagenes_viajes (viaje_id, url) VALUES (?, ?)');
+            $stmtImagen->execute([$viajeId, $nombre]);
         }
     }
 
-    header('Content-Type: application/json');
+    $pdo->commit();
+    echo json_encode([
+        'success' => true,
+        'mensaje' => 'Viaje guardado correctamente',
+    ]);
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
 
-echo json_encode([
-    "success" => true,
-    "mensaje" => "Viaje guardado correctamente"
-]);
-
-} catch(PDOException $e) {
-    header('Content-Type: application/json');
-
-echo json_encode([
-    "success" => false,
-    "error" => $e->getMessage()
-]);
+    error_log($e->getMessage());
+    http_response_code($e instanceof InvalidArgumentException ? 422 : 500);
+    echo json_encode([
+        'success' => false,
+        'error' => $e instanceof InvalidArgumentException ? $e->getMessage() : 'No fue posible guardar el viaje',
+    ]);
 }
