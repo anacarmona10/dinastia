@@ -1,12 +1,13 @@
 <?php
 $host = 'ep-damp-rain-acyqtue1-pooler.sa-east-1.aws.neon.tech';
+$endpoint = 'ep-damp-rain-acyqtue1';
 $dbname = 'neondb';
 $user = 'neondb_owner';
 $password = 'npg_YQiMJTHGC5K8';
 
 try {
     $pdo = new PDO(
-        "pgsql:host=$host;port=5432;dbname=$dbname;sslmode=require",
+        "pgsql:host=$host;port=5432;dbname=$dbname;sslmode=require;options=endpoint=$endpoint",
         $user,
         $password
     );
