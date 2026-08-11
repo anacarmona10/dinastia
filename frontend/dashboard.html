@@ -1,127 +1,243 @@
 <!DOCTYPE html>
 <html class="light" lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Mi Dashboard - Dinastía AMV</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Mi Dashboard - Dinastía AMV</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
     tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#ec5b13",
-                    "background-light": "#f8f6f6",
-                    "background-dark": "#221610",
-                },
-                fontFamily: {
-                    "display": ["Public Sans", "sans-serif"]
-                },
-                borderRadius: {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-                },
-            },
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
         },
+      },
     }
-</script>
-<style>
+  </script>
+  <style>
     body { font-family: 'Public Sans', sans-serif; }
-</style>
+    .gradient-btn {
+      background: linear-gradient(to right, #c800ff, #EF1D9C);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+  </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
 <div class="layout-container flex h-full grow flex-col">
 
-<!-- Barra de navegación -->
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+  <!-- Barra de navegación -->
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
     <div class="flex items-center gap-3 text-primary">
-        <span class="material-symbols-outlined text-3xl font-bold">explore</span>
-        <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">AMV <span class="text-primary">Explora</span></h2>
+      <span class="material-symbols-outlined text-3xl font-bold">explore</span>
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">Dinastía <span class="text-primary">AMV</span></h2>
     </div>
-    <div class="flex items-center gap-6">
-        <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300">
-            ¡Hola de nuevo!
-        </span>
-        <a href="../backend/api/logout.php" class="flex items-center gap-1 text-sm font-bold text-primary hover:opacity-80 transition-opacity">
-            <span class="material-symbols-outlined text-lg">logout</span>
-            Cerrar sesión
-        </a>
+    <div class="flex items-center gap-4 md:gap-6">
+      <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300">
+        ¡Hola, viajero!
+      </span>
+      <a href="index.html" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
+        <span class="material-symbols-outlined text-lg">home</span>
+        <span class="hidden sm:inline">Inicio</span>
+      </a>
+      <a href="../backend/api/logout.php" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="hidden sm:inline">Cerrar sesión</span>
+      </a>
     </div>
-</header>
+  </header>
 
-<main class="flex-1 px-6 md:px-20 py-10">
+  <main class="flex-1 px-6 md:px-20 py-10">
 
     <!-- Bienvenida -->
     <section class="mb-10">
-        <h1 class="text-3xl font-black tracking-tight mb-2">Mi Dashboard</h1>
-        <p class="text-slate-600 dark:text-slate-400">Aquí puedes ver tus reservas, explorar nuevos viajes y administrar tu perfil.</p>
+      <h1 class="text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100">¡Bienvenido de nuevo!</h1>
+      <p class="text-slate-600 dark:text-slate-400 text-lg">Aquí puedes ver tus reservas, explorar nuevos viajes y administrar tu perfil.</p>
     </section>
 
     <!-- Tarjetas de resumen -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
-            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">confirmation_number</span>
-            <div>
-                <p class="text-2xl font-black">0</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Reservas activas</p>
-            </div>
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">confirmation_number</span>
+        <div>
+          <p class="text-3xl font-black text-primary">0</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Reservas activas</p>
         </div>
-        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
-            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">travel_explore</span>
-            <div>
-                <p class="text-2xl font-black">0</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Viajes realizados</p>
-            </div>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">travel_explore</span>
+        <div>
+          <p class="text-3xl font-black text-accent">0</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Viajes realizados</p>
         </div>
-        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4">
-            <span class="material-symbols-outlined text-3xl text-primary bg-primary/10 p-3 rounded-full">favorite</span>
-            <div>
-                <p class="text-2xl font-black">0</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Destinos favoritos</p>
-            </div>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full">favorite</span>
+        <div>
+          <p class="text-3xl font-black text-pink-500">0</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Destinos favoritos</p>
         </div>
+      </div>
     </section>
 
     <!-- Mis reservas -->
     <section class="mb-12">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-black">Mis reservas</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-black">Mis reservas</h2>
+        <a href="index.html#precios" class="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1">
+          Explorar destinos <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </a>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-8 text-center text-slate-500 dark:text-slate-400 card-hover">
+        <span class="material-symbols-outlined text-5xl mb-4 block text-primary/40">inbox</span>
+        <p class="text-lg font-medium">Aún no tienes reservas.</p>
+        <p class="text-sm mt-1">Explora nuestros destinos y reserva tu próximo viaje.</p>
+        <a href="index.html#precios" class="inline-block mt-4 px-6 py-2 rounded-full gradient-btn text-white font-bold text-sm shadow-lg shadow-primary/30">
+          Ver destinos
+        </a>
+      </div>
+    </section>
+
+    <!-- Destinos destacados (similar al index) -->
+    <section class="mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-black">Destinos destacados</h2>
+        <a href="index.html#precios" class="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1">
+          Ver todos <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
+          <div class="relative w-full aspect-[4/3] overflow-hidden">
+            <img alt="Cartagena" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvExoATYYi5sDh08TyPPpKcGBFiwHlycMmkBk5FC0OdZHqlImdFAXBLAxvA5dJzz0UzTvI6sns2Y4gg9yNq5PC5vDCQsjUqUxP3MrXpKQ0vcjYULysOsHoF1LCxQIAYzrcAXOsFo0_NpASTBhkFMThKRPE9WDT3fv2k8u5TF4thJQgKsXAX-AG_XlUx_uqxTAjmwvEcFJoKXsSvJ49YJIye1LHjRQw13CrFFvBDC8WvO78oaKxO8_9D9YyzfgoboksblDE0tcvsEo" />
+            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-35% Dcto</div>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-1">
+              <div>
+                <h4 class="text-lg font-bold">Cartagena de Indias</h4>
+                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Costa Caribe
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-500 line-through">$850.000</p>
+                <p class="text-xl font-black text-primary">$549.900</p>
+              </div>
+            </div>
+            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+              Ver Plan
+            </a>
+          </div>
         </div>
-        <div class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-8 text-center text-slate-500 dark:text-slate-400">
-            <span class="material-symbols-outlined text-4xl mb-2 block">inbox</span>
-            Aún no tienes reservas. Explora nuestros destinos y reserva tu próximo viaje.
+        <!-- Card 2 -->
+        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
+          <div class="relative w-full aspect-[4/3] overflow-hidden">
+            <img alt="Eje Cafetero" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvPrz-UJLgGXIH0Xj9xFFkT2pAErtARb9_kUsDaWTeNYoK90WuIr-r4f2Z5NE5T77dRYqDNb4PGgKUraUCh0Hnvx1jS8_zSwPsWNzowYY8gwjFPiVUfmWhF4wZtVb9aAV_fLElFnKQb44pSi34O-KCUpy8K3_eMvLHUQ6owRySIsVcdQDtOQUKamSenZHRMrBXSDSmnMgpmFyvVtuwSrpIxgrgPo2W70ONswYkq_4l3RS0eX0wLZf0xdtAbT2t0jQUZRqM9teIQik" />
+            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-45% Dcto</div>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-1">
+              <div>
+                <h4 class="text-lg font-bold">Eje Cafetero</h4>
+                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Quindío
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-500 line-through">$620.000</p>
+                <p class="text-xl font-black text-primary">$341.000</p>
+              </div>
+            </div>
+            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+              Ver Plan
+            </a>
+          </div>
         </div>
-        <!-- Cuando se conecte con la tabla "reservas", cada fila se puede pintar aquí -->
+        <!-- Card 3 -->
+        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
+          <div class="relative w-full aspect-[4/3] overflow-hidden">
+            <img alt="Medellín" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmvzIkEu7h8e83Z31QwWqQ7n5su1eKBEyRUobk1YJybkCWUwvqHDMfmC0jbhWQPCxubuHzk8cjKAfVr5eRMpk2COpC666qd6uUTkr8VnoYPZi0fhVpwoL1qD-1OHHHgcuPZqGOmcfp5ou0eF1sRahYPKZlSjxkwOsbRAnxHu3e_HcHZQutsJ24A30ECbAROL3MDJXjdnIa1mSqVJlcw6d-czAR56c8jxneUMLQzgBO1q3KrXJXRW911pQmSPrVyWNToinxExApd3M" />
+            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-30% Dcto</div>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-1">
+              <div>
+                <h4 class="text-lg font-bold">Medellín</h4>
+                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Antioquia
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-500 line-through">$710.000</p>
+                <p class="text-xl font-black text-primary">$497.000</p>
+              </div>
+            </div>
+            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+              Ver Plan
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Accesos rápidos -->
     <section>
-        <h2 class="text-xl font-black mb-4">Accesos rápidos</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <a href="index.html" class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 hover:scale-[1.02] transition-transform">
-                <span class="material-symbols-outlined text-3xl text-primary">explore</span>
-                <div>
-                    <p class="font-bold">Explorar viajes</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles</p>
-                </div>
-            </a>
-            <a href="#" class="rounded-xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 hover:scale-[1.02] transition-transform">
-                <span class="material-symbols-outlined text-3xl text-primary">person</span>
-                <div>
-                    <p class="font-bold">Mi perfil</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos personales</p>
-                </div>
-            </a>
-        </div>
+      <h2 class="text-2xl font-black mb-4">Accesos rápidos</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <a href="index.html#precios" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">explore</span>
+          <div>
+            <p class="font-bold text-lg">Explorar viajes</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles</p>
+          </div>
+        </a>
+        <a href="#" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">person</span>
+          <div>
+            <p class="font-bold text-lg">Mi perfil</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos personales</p>
+          </div>
+        </a>
+      </div>
     </section>
 
-</main>
+  </main>
+
+  <!-- Footer simple -->
+  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
+  </footer>
 
 </div>
 </div>
