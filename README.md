@@ -11,7 +11,7 @@ Dinastía AMV no busca “ser mejor” que los “e- commerce” que se encuentr
 
 # Tecnologías usadas
 
-PHP
+PHP 8.2
 HTML
 CSS
 
