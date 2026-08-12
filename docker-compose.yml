@@ -1,0 +1,18 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dinastia-web
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    volumes:
+      - imagenes_dinastia:/var/www/html/frontend/imagenes
+      - sesiones_dinastia:/var/lib/php/sessions
+    restart: unless-stopped
+
+volumes:
+  imagenes_dinastia:
+  sesiones_dinastia:
