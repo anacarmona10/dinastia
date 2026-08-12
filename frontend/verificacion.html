@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Correo</title>
+
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Estilos específicos (misma carpeta) -->
+    <link rel="stylesheet" href="style_verificacion.css">
+</head>
+<body>
+
+    <!-- Botón volver al inicio -->
+    <a href="index.html" class="back-button" aria-label="Volver al inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="verificacion-container">
+        <h2>Verificación de identidad</h2>
+
+        <div class="icono-correo">
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <p class="mensaje-principal">
+            Hemos enviado un código de verificación a tu correo electrónico.
+        </p>
+
+        <p class="correo-destino" id="correoDestino"></p>
+
+        <form id="formVerificacion" method="POST" action="#">
+            <div class="input-group">
+                <label>Código de verificación</label>
+                <input type="text" id="codigoVerificacion" 
+                       placeholder="Código de 6 dígitos" 
+                       maxlength="6" 
+                       autocomplete="off"
+                       inputmode="numeric"
+                       pattern="[0-9]*">
+            </div>
+
+            <div id="mensajeVerificacion"></div>
+
+            <button type="submit" id="btnVerificar">Verificar</button>
+        </form>
+
+        <div class="reenviar">
+            <p class="no-recibiste">¿No recibiste el código?</p>
+            <p class="ayuda">Verifica que el correo ingresado sea correcto o</p>
+            <button id="btnReenviar" class="reenviar-btn" disabled>
+                <i class="fas fa-redo-alt"></i> Reenviar código
+            </button>
+            <!-- Temporizador -->
+            <div id="temporizador" class="temporizador">
+                <i class="fas fa-clock"></i> 
+                Tiempo para reenviar: <span id="contador">60</span>s
+            </div>
+            <div id="mensajeReenvio"></div>
+        </div>
+
+        <p class="volver-login">
+            ¿Ya verificaste? <a href="login.html">Inicia sesión</a>
+        </p>
+    </div>
+
+    <script src="js/verificacion.js"></script>
+</body>
+</html>

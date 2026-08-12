@@ -13,7 +13,7 @@ function validarContrasena(pass) {
 }
 
 // ==============================================
-// VALIDACIÓN REGISTRO (envío tradicional)
+// VALIDACIÓN REGISTRO (redirige a verificación)
 // ==============================================
 function validarRegistro(event) {
     event.preventDefault();
@@ -56,8 +56,9 @@ function validarRegistro(event) {
         return;
     }
 
-    // Si todo válido, envía el formulario normalmente
-    document.getElementById('formRegistro').submit();
+    // Si todo es válido, guardar correo en localStorage y redirigir
+    localStorage.setItem('correoRegistro', correo);
+    window.location.href = 'verificacion.html';
 }
 
 // ==============================================
@@ -86,7 +87,8 @@ function validarLogin(event) {
         return;
     }
 
-    document.getElementById('formLogin').submit();
+    // Si todo válido, redirigir al dashboard (simulación)
+    window.location.href = 'dashboard.html';
 }
 
 // ==============================================
