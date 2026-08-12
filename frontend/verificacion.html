@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificación de Correo</title>
-
-    <!-- Font Awesome para íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- Estilos específicos (misma carpeta) -->
     <link rel="stylesheet" href="style_verificacion.css">
 </head>
 <body>
 
-    <!-- Botón volver al inicio -->
     <a href="index.html" class="back-button" aria-label="Volver al inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
@@ -53,7 +48,6 @@
             <button id="btnReenviar" class="reenviar-btn" disabled>
                 <i class="fas fa-redo-alt"></i> Reenviar código
             </button>
-            <!-- Temporizador -->
             <div id="temporizador" class="temporizador">
                 <i class="fas fa-clock"></i> 
                 Tiempo para reenviar: <span id="contador">60</span>s
@@ -66,6 +60,7 @@
         </p>
     </div>
 
+    <!-- NUEVO: JavaScript que usa fetch para comunicarse con el backend -->
     <script src="js/verificacion.js"></script>
 </body>
 </html>

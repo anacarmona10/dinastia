@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Administrador</title>
 
-    <!-- Font Awesome para el ícono de flecha -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Hoja de estilos compartida -->
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-    <!-- Botón de volver con el mismo estilo que login.html -->
+    <!-- Botón volver -->
     <a href="index.html" class="back-button" aria-label="Volver al inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
@@ -21,23 +21,28 @@
     <div class="login-container">
         <h2>Acceso Administradores</h2>
 
-        <form id="formLogin" action="../backend/api/login_admin.php" method="post">
+        <!-- FORMULARIO CON ACTION AL BACKEND REAL -->
+        <form id="formLoginAdmin" method="POST" action="../backend/api/login_admin.php">
 
             <div class="input-group">
                 <label>Correo electrónico</label>
-                <input type="email" name="correo" id="correoLogin" placeholder="Ingresa tu correo">
+                <input type="email" name="correo" id="correoLoginAdmin" placeholder="Ingresa tu correo" required>
             </div>
 
             <div class="input-group">
                 <label>Contraseña</label>
-                <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+                <input type="password" name="contraseña" id="contraseñaLoginAdmin" placeholder="Ingresa tu contraseña" required>
             </div>
 
-            <div id="mensajeLogin"></div>
+            <!-- Mostrar mensaje de error si viene en la URL -->
+            <?php if (isset($_GET['error'])): ?>
+                <div id="mensajeLoginAdmin" style="color:#dc3545; margin:10px 0; font-weight:bold;">
+                    <?php echo htmlspecialchars($_GET['error']); ?>
+                </div>
+            <?php endif; ?>
 
             <button type="submit">Ingresar</button>
 
-            <!-- Enlace para recuperar contraseña -->
             <p class="registro olvido">
                 ¿Olvidaste tu contraseña? 
                 <a href="olvido_contraseña.html">Ingresa aquí</a>
@@ -50,6 +55,20 @@
         </form>
     </div>
 
-    <script src="js/validaciones.js"></script>
+    <!-- Solo validación simple de campos vacíos (opcional) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formLoginAdmin');
+            form.addEventListener('submit', function(e) {
+                const correo = document.getElementById('correoLoginAdmin').value.trim();
+                const pass = document.getElementById('contraseñaLoginAdmin').value.trim();
+                if (correo === '' || pass === '') {
+                    e.preventDefault();
+                    alert('Por favor completa todos los campos.');
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

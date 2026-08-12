@@ -1,0 +1,8 @@
+.git
+.env
+.env.*
+!.env.example
+backend/vendor
+backend/__test__
+docs
+.phpunit.result.cache
