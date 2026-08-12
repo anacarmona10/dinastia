@@ -1,4 +1,4 @@
-// verificacion.js - Lógica de la página de verificación
+// verificacion.js - Con conexión real al backend
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formVerificacion');
@@ -9,138 +9,137 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnReenviar = document.getElementById('btnReenviar');
     const mensajeReenvio = document.getElementById('mensajeReenvio');
     const contadorSpan = document.getElementById('contador');
-    const temporizadorDiv = document.getElementById('temporizador');
 
-    // --- Variables del temporizador ---
+    // Obtener correo almacenado en localStorage (lo puso Registro.html)
+    const correo = localStorage.getItem('correoRegistro');
+    if (!correo) {
+        // Si no hay correo, redirigir a registro
+        window.location.href = 'Registro.html';
+        return;
+    }
+    correoDestino.textContent = `📧 ${correo}`;
+
+    // --- Temporizador (solo frontend, el backend también controla límites) ---
     let tiempoRestante = 60;
     let intervalo = null;
 
-    // Obtener el correo del localStorage (guardado al registrarse)
-    const correo = localStorage.getItem('correoRegistro') || 'tu correo electrónico';
-    correoDestino.textContent = `📧 ${correo}`;
-
-    // --- Simular envío de código (al cargar la página) ---
-    let codigoEnviado = '';
-    function generarCodigo() {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-    }
-
-    function enviarCodigo() {
-        codigoEnviado = generarCodigo();
-        console.log('Código enviado (simulado):', codigoEnviado);
-        // Mostrar mensaje de reenvío exitoso
-        mensajeReenvio.innerHTML = '<span style="color: #28a745;">✅ Se ha reenviado el código a tu correo.</span>';
-        mensajeReenvio.style.color = '#28a745';
-        setTimeout(() => {
-            mensajeReenvio.innerHTML = '';
-        }, 4000);
-
-        // Reiniciar el temporizador
-        reiniciarTemporizador();
-    }
-
-    // --- Funciones del temporizador ---
     function iniciarTemporizador() {
-        // Si ya hay un intervalo, lo limpiamos
-        if (intervalo) {
-            clearInterval(intervalo);
-        }
-        // Deshabilitar botón de reenvío
+        if (intervalo) clearInterval(intervalo);
         btnReenviar.disabled = true;
-        // Actualizar el contador en la UI
         contadorSpan.textContent = tiempoRestante;
-
-        intervalo = setInterval(function() {
+        intervalo = setInterval(() => {
             tiempoRestante--;
             contadorSpan.textContent = tiempoRestante;
-
             if (tiempoRestante <= 0) {
                 clearInterval(intervalo);
                 intervalo = null;
                 btnReenviar.disabled = false;
-                contadorSpan.textContent = '0';
-                // Mostrar mensaje de que ya se puede reenviar
-                mensajeReenvio.innerHTML = '<span style="color: #c800ff;">✅ Ya puedes reenviar el código nuevamente.</span>';
-                setTimeout(() => {
-                    mensajeReenvio.innerHTML = '';
-                }, 3000);
+                mensajeReenvio.innerHTML = '<span style="color: #c800ff;">✅ Ya puedes reenviar el código.</span>';
+                setTimeout(() => { mensajeReenvio.innerHTML = ''; }, 3000);
             }
         }, 1000);
     }
 
     function reiniciarTemporizador() {
-        // Detener el intervalo actual
-        if (intervalo) {
-            clearInterval(intervalo);
-            intervalo = null;
-        }
-        // Reiniciar tiempo a 60 segundos
+        if (intervalo) clearInterval(intervalo);
         tiempoRestante = 60;
-        // Iniciar de nuevo
         iniciarTemporizador();
     }
 
-    // --- Enviar código al cargar la página por primera vez ---
-    enviarCodigo();
+    // Al cargar la página, pedir al backend que envíe el código (si no se ha enviado)
+    async function solicitarCodigoInicial() {
+        try {
+            const formData = new FormData();
+            formData.append('correo', correo);
+            const response = await fetch('../backend/api/enviar_codigo_inicial.php', {
+                method: 'POST',
+                body: formData
+            });
+            const resultado = await response.json();
+            if (!resultado.success) {
+                mensajeReenvio.innerHTML = `<span style="color: #dc3545;">${resultado.error}</span>`;
+            } else {
+                console.log('Código enviado correctamente');
+            }
+        } catch (error) {
+            console.error('Error al solicitar código:', error);
+        }
+    }
+    solicitarCodigoInicial();
+    iniciarTemporizador(); // empieza el contador de 60s
 
-    // --- Evento de reenvío ---
-    btnReenviar.addEventListener('click', function() {
-        // Deshabilitar el botón inmediatamente para evitar múltiples clics
+    // --- Evento Reenviar código ---
+    btnReenviar.addEventListener('click', async function() {
         btnReenviar.disabled = true;
         btnReenviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        setTimeout(() => {
-            enviarCodigo();
+
+        try {
+            const formData = new FormData();
+            formData.append('correo', correo);
+            const response = await fetch('../backend/api/reenviar_codigo.php', {
+                method: 'POST',
+                body: formData
+            });
+            const resultado = await response.json();
+            if (resultado.success) {
+                mensajeReenvio.innerHTML = `<span style="color: #28a745;">✅ ${resultado.message}</span>`;
+                reiniciarTemporizador(); // reinicia el contador de 60s
+            } else {
+                mensajeReenvio.innerHTML = `<span style="color: #dc3545;">${resultado.error}</span>`;
+            }
+        } catch (error) {
+            mensajeReenvio.innerHTML = `<span style="color: #dc3545;">Error de conexión con el servidor</span>`;
+        } finally {
             btnReenviar.innerHTML = '<i class="fas fa-redo-alt"></i> Reenviar código';
-            // Nota: enviarCodigo() ya reinicia el temporizador
-        }, 1500);
+            // Si el temporizador ya lo habilita, no lo deshabilitamos aquí
+        }
     });
 
-    // --- Evento de verificación ---
-    form.addEventListener('submit', function(e) {
+    // --- Evento Verificar código ---
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const codigoIngresado = inputCodigo.value.trim();
-
-        // Validar que no esté vacío
-        if (codigoIngresado === '') {
-            mensajeDiv.innerHTML = '<span style="color: #dc3545;">Por favor ingresa el código de verificación.</span>';
+        const codigo = inputCodigo.value.trim();
+        if (codigo === '' || !/^\d{6}$/.test(codigo)) {
+            mensajeDiv.innerHTML = '<span style="color: #dc3545;">Ingresa un código de 6 dígitos válido.</span>';
             return;
         }
 
-        // Validar que sean 6 dígitos
-        if (!/^\d{6}$/.test(codigoIngresado)) {
-            mensajeDiv.innerHTML = '<span style="color: #dc3545;">El código debe tener 6 dígitos numéricos.</span>';
-            return;
-        }
+        btnVerificar.disabled = true;
+        mensajeDiv.innerHTML = '<span style="color: #555;">Verificando...</span>';
 
-        // Verificar si coincide con el código enviado (simulado)
-        if (codigoIngresado === codigoEnviado) {
-            // Código correcto
-            mensajeDiv.innerHTML = '<span style="color: #28a745;">✅ Código verificado correctamente. Serás redirigido...</span>';
-            btnVerificar.disabled = true;
-            // Limpiar el correo del localStorage (opcional)
-            localStorage.removeItem('correoRegistro');
-            // Detener el temporizador
-            if (intervalo) {
-                clearInterval(intervalo);
-                intervalo = null;
+        try {
+            const formData = new FormData();
+            formData.append('correo', correo);
+            formData.append('codigo', codigo);
+            const response = await fetch('../backend/api/verificar_codigo.php', {
+                method: 'POST',
+                body: formData
+            });
+            const resultado = await response.json();
+
+            if (resultado.success) {
+                mensajeDiv.innerHTML = `<span style="color: #28a745;">✅ ${resultado.message}</span>`;
+                localStorage.removeItem('correoRegistro');
+                // Redirigir a login después de 2 segundos
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                mensajeDiv.innerHTML = `<span style="color: #dc3545;">${resultado.error}</span>`;
+                inputCodigo.value = '';
+                inputCodigo.focus();
+                btnVerificar.disabled = false;
             }
-            // Redirigir a login después de 2 segundos
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
-        } else {
-            // Código incorrecto
-            mensajeDiv.innerHTML = '<span style="color: #dc3545;">❌ Código incorrecto. Intenta de nuevo o reenvía el código.</span>';
-            inputCodigo.value = '';
-            inputCodigo.focus();
+        } catch (error) {
+            mensajeDiv.innerHTML = `<span style="color: #dc3545;">Error de conexión con el servidor</span>`;
+            btnVerificar.disabled = false;
         }
     });
 
-    // --- Limpiar mensaje al escribir ---
+    // Limpiar mensajes al escribir
     inputCodigo.addEventListener('input', function() {
         mensajeDiv.innerHTML = '';
-        // Solo permitir dígitos
         this.value = this.value.replace(/\D/g, '');
     });
 });
