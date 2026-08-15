@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pasarela de Pagos - AMV</title>
+
+    <!-- Tailwind CDN (opcional, se puede mantener) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="style_pagos.css">
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 bg-background-light">
+
+    <!-- Botón volver (similar a otros formularios) -->
+    <a href="index.html" class="absolute top-5 left-5 z-10 w-11 h-11 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-slate-700 hover:bg-primary hover:text-white transition shadow-md" aria-label="Volver al inicio">
+        <i class="fas fa-arrow-left text-lg"></i>
+    </a>
+
+    <div class="container-pago w-full">
+        <div class="card-pago">
+
+            <!-- Logo / Título -->
+            <div class="flex items-center gap-3 mb-1">
+                <span class="material-symbols-outlined text-3xl text-primary">payments</span>
+                <h2 class="text-2xl font-black tracking-tight text-slate-800">
+                    Pasarela de <span class="text-primary">Pagos</span>
+                </h2>
+            </div>
+            <p class="text-slate-500 text-sm mb-6">Elige tu método de pago favorito y completa tu reserva</p>
+
+            <!-- Resumen del pedido (ejemplo) -->
+            <div class="detalle-articulo flex justify-between items-center mb-6">
+                <div>
+                    <p class="font-semibold text-slate-800">Cartagena de Indias</p>
+                    <p class="text-xs text-slate-500">3 noches · 2 personas · 12-15 Jun</p>
+                </div>
+                <div class="total-pago text-xl">$549.900</div>
+            </div>
+
+            <!-- Formulario (solo visual, sin acción real) -->
+            <form id="formPago" action="#" method="POST">
+
+                <!-- Métodos de pago -->
+                <div class="space-y-3 mb-6">
+                    <p class="label-pago text-sm">Selecciona un método</p>
+
+                    <!-- PSE -->
+                    <label class="metodo-pago activo">
+                        <input type="radio" name="metodo" value="pse" checked />
+                        <span class="icono-metodo"><i class="fas fa-university"></i></span>
+                        <span class="flex-1 font-medium">PSE (Transferencia bancaria)</span>
+                        <span class="badge-popular">Popular</span>
+                    </label>
+
+                    <!-- Nequi -->
+                    <label class="metodo-pago">
+                        <input type="radio" name="metodo" value="nequi" />
+                        <span class="icono-metodo"><i class="fas fa-mobile-alt"></i></span>
+                        <span class="flex-1 font-medium">Nequi</span>
+                        <span class="badge-popular">Popular</span>
+                    </label>
+
+                    <!-- Daviplata -->
+                    <label class="metodo-pago">
+                        <input type="radio" name="metodo" value="daviplata" />
+                        <span class="icono-metodo"><i class="fas fa-money-bill-wave"></i></span>
+                        <span class="flex-1 font-medium">Daviplata</span>
+                    </label>
+
+                    <!-- Efecty / Gana -->
+                    <label class="metodo-pago">
+                        <input type="radio" name="metodo" value="efecty" />
+                        <span class="icono-metodo"><i class="fas fa-receipt"></i></span>
+                        <span class="flex-1 font-medium">Efecty / Gana</span>
+                    </label>
+
+                    <!-- Tarjeta de crédito / débito -->
+                    <label class="metodo-pago">
+                        <input type="radio" name="metodo" value="tarjeta" />
+                        <span class="icono-metodo"><i class="fas fa-credit-card"></i></span>
+                        <span class="flex-1 font-medium">Tarjeta de crédito / débito</span>
+                    </label>
+                </div>
+
+                <!-- Campos dinámicos para tarjeta -->
+                <div id="camposTarjeta" class="space-y-4" style="display: none;">
+                    <div>
+                        <label class="label-pago text-sm">Número de tarjeta</label>
+                        <input type="text" class="campo-input" placeholder="1234 5678 9012 3456" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-pago text-sm">Fecha expiración</label>
+                            <input type="text" class="campo-input" placeholder="MM/AA" />
+                        </div>
+                        <div>
+                            <label class="label-pago text-sm">CVC</label>
+                            <input type="text" class="campo-input" placeholder="123" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-pago text-sm">Nombre del titular</label>
+                        <input type="text" class="campo-input" placeholder="Como aparece en la tarjeta" />
+                    </div>
+                </div>
+
+                <!-- Campos Nequi -->
+                <div id="camposNequi" class="space-y-4" style="display: none;">
+                    <div>
+                        <label class="label-pago text-sm">Número de celular</label>
+                        <input type="text" class="campo-input" placeholder="300 123 4567" />
+                    </div>
+                </div>
+
+                <!-- Campos Daviplata -->
+                <div id="camposDaviplata" class="space-y-4" style="display: none;">
+                    <div>
+                        <label class="label-pago text-sm">Número de celular</label>
+                        <input type="text" class="campo-input" placeholder="300 123 4567" />
+                    </div>
+                </div>
+
+                <!-- Efecty (mensaje informativo) -->
+                <div id="camposEfecty" class="text-sm text-slate-500 italic" style="display: none;">
+                    <i class="fas fa-info-circle text-primary mr-1"></i>
+                    Recibirás un código de pago para cancelar en cualquier punto Efecty.
+                </div>
+
+                <div class="separador"></div>
+
+                <!-- Botón de pago -->
+                <button type="submit" class="gradient-btn">
+                    <i class="fas fa-lock mr-2"></i> Pagar ahora
+                </button>
+
+                <p class="text-xs text-slate-400 text-center mt-4">
+                    <i class="fas fa-shield-alt text-primary mr-1"></i>
+                    Tus datos están seguros. Pago 100% protegido.
+                </p>
+            </form>
+
+            <!-- Iconos de métodos (decoración) -->
+            <div class="flex justify-center gap-4 mt-6 text-2xl text-slate-300">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fas fa-university"></i>
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para mostrar/ocultar campos según el método -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const radios = document.querySelectorAll('input[name="metodo"]');
+            const tarjetaDiv = document.getElementById('camposTarjeta');
+            const nequiDiv = document.getElementById('camposNequi');
+            const daviplataDiv = document.getElementById('camposDaviplata');
+            const efectyDiv = document.getElementById('camposEfecty');
+
+            function ocultarTodos() {
+                tarjetaDiv.style.display = 'none';
+                nequiDiv.style.display = 'none';
+                daviplataDiv.style.display = 'none';
+                efectyDiv.style.display = 'none';
+            }
+
+            function actualizarCampos(valor) {
+                ocultarTodos();
+                if (valor === 'tarjeta') {
+                    tarjetaDiv.style.display = 'block';
+                } else if (valor === 'nequi') {
+                    nequiDiv.style.display = 'block';
+                } else if (valor === 'daviplata') {
+                    daviplataDiv.style.display = 'block';
+                } else if (valor === 'efecty') {
+                    efectyDiv.style.display = 'block';
+                }
+            }
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.querySelectorAll('.metodo-pago').forEach(el => {
+                        el.classList.remove('activo');
+                    });
+                    this.closest('.metodo-pago').classList.add('activo');
+                    actualizarCampos(this.value);
+                });
+            });
+
+            const seleccionado = document.querySelector('input[name="metodo"]:checked');
+            if (seleccionado) {
+                actualizarCampos(seleccionado.value);
+                seleccionado.closest('.metodo-pago').classList.add('activo');
+            }
+        });
+    </script>
+
+</body>
+</html>

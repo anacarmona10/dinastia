@@ -1,0 +1,174 @@
+/* style_pagos.css - Estilos para la pasarela de pagos */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Public Sans', sans-serif;
+    background: #f8f6f6;
+}
+
+.container-pago {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.card-pago {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 2rem 1.8rem;
+    border: 1px solid rgba(200, 0, 255, 0.10);
+}
+
+/* BOTÓN DE VOLVER - Mismo estilo que login/registro */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
+}
+
+/* Gradiente para botón principal */
+.gradient-btn {
+    background: linear-gradient(to right, #c800ff, #EF1D9C);
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.gradient-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(200, 0, 255, 0.30);
+}
+
+/* Métodos de pago */
+.metodo-pago {
+    border: 2px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.metodo-pago:hover {
+    border-color: #c800ff;
+    background: rgba(200, 0, 255, 0.04);
+}
+
+.metodo-pago.activo {
+    border-color: #c800ff;
+    background: rgba(200, 0, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.15);
+}
+
+.metodo-pago input[type="radio"] {
+    accent-color: #c800ff;
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* Campos de entrada */
+.campo-input {
+    border: 2px solid #e3b0ff;
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    width: 100%;
+    transition: 0.3s;
+    background: white;
+    font-family: 'Public Sans', sans-serif;
+}
+
+.campo-input:focus {
+    border-color: #c800ff;
+    box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.20);
+    outline: none;
+}
+
+.label-pago {
+    font-weight: 600;
+    color: #2d2d2d;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+/* Iconos de método */
+.icono-metodo {
+    font-size: 1.5rem;
+    width: 2rem;
+    text-align: center;
+    color: #c800ff;
+}
+
+.badge-popular {
+    background: #ff4d00;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
+}
+
+.separador {
+    border-top: 2px dashed #e5e7eb;
+    margin: 1.5rem 0;
+}
+
+.total-pago {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #c800ff;
+}
+
+.detalle-articulo {
+    background: #f9f5ff;
+    border-radius: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-left: 4px solid #c800ff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .card-pago {
+        padding: 1.5rem 1rem;
+    }
+    .metodo-pago {
+        padding: 0.6rem 0.8rem;
+    }
+    .total-pago {
+        font-size: 1.4rem;
+    }
+}
