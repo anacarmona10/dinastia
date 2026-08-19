@@ -8,46 +8,58 @@
 
 body {
     font-family: 'Public Sans', sans-serif;
-    background: #f8f6f6;
+    background: #f0f0f0; /* Fondo gris claro sólido */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
 
 .container-pago {
     max-width: 600px;
     margin: 0 auto;
     padding: 1.5rem;
+    width: 100%;
 }
 
 .card-pago {
-    background: white;
+    background: #ffffff;
     border-radius: 1.5rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     padding: 2rem 1.8rem;
     border: 1px solid rgba(200, 0, 255, 0.10);
 }
 
-/* BOTÓN DE VOLVER - Mismo estilo que login/registro */
+/* ============================================
+   BOTÓN DE RETROCESO - Armonizado con el fondo
+   ============================================ */
 .back-button {
-    position: absolute;
+    position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 10;
-    width: 45px;
-    height: 45px;
+    z-index: 100;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(6px);
+    background: #ffffff;
     border-radius: 50%;
-    color: white;
-    font-size: 20px;
+    color: #555555; /* Gris oscuro para combinar */
+    font-size: 22px;
     text-decoration: none;
-    transition: 0.3s ease;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #d0d0d0; /* Borde gris suave */
 }
 
 .back-button:hover {
-    background: rgba(255, 255, 255, 0.35);
+    background: #c800ff; /* Morado al pasar el mouse */
+    color: #ffffff;
     transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(200, 0, 255, 0.30);
+    border-color: #c800ff;
 }
 
 /* Gradiente para botón principal */
@@ -78,6 +90,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    background: #ffffff;
 }
 
 .metodo-pago:hover {
@@ -170,5 +183,12 @@ body {
     }
     .total-pago {
         font-size: 1.4rem;
+    }
+    .back-button {
+        top: 12px;
+        left: 12px;
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
     }
 }

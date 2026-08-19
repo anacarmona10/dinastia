@@ -49,6 +49,91 @@
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(0,0,0,0.12);
     }
+    /* Estilos para modales */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: #000;
+    }
+    .modal-content .campo-input {
+      border: 2px solid #e3b0ff;
+      border-radius: 0.75rem;
+      padding: 0.7rem 1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .modal-content .campo-input:focus {
+      border-color: #c800ff;
+      box-shadow: 0 0 0 3px rgba(200,0,255,0.2);
+      outline: none;
+    }
+    .modal-botones {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+    .modal-botones button {
+      padding: 0.6rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-cerrar-modal {
+      background: #e5e7eb;
+      color: #333;
+    }
+    .btn-cerrar-modal:hover {
+      background: #d1d5db;
+    }
+    .btn-guardar-modal {
+      background: linear-gradient(to right, #c800ff, #EF1D9C);
+      color: white;
+    }
+    .btn-guardar-modal:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(200,0,255,0.3);
+    }
+    .btn-eliminar {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-eliminar:hover {
+      background: #c82333;
+    }
+    .mensaje-modal {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
@@ -57,22 +142,22 @@
 
   <!-- Barra de navegación -->
   <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    
+    <!-- LOGO NORMAL (sin enlace) -->
     <div class="flex items-center gap-3 text-primary">
       <span class="material-symbols-outlined text-3xl font-bold">explore</span>
       <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">Dinastía <span class="text-primary">AMV</span></h2>
     </div>
+
     <div class="flex items-center gap-4 md:gap-6">
-      <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300">
+      <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300" id="saludoUsuario">
         ¡Hola, viajero!
       </span>
-      <a href="index.html" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
-        <span class="material-symbols-outlined text-lg">home</span>
-        <span class="hidden sm:inline">Inicio</span>
-      </a>
-      <a href="../backend/api/logout.php" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
+      <!-- Botón Cerrar sesión (abre modal de confirmación) -->
+      <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
         <span class="material-symbols-outlined text-lg">logout</span>
         <span class="hidden sm:inline">Cerrar sesión</span>
-      </a>
+      </button>
     </div>
   </header>
 
@@ -80,11 +165,11 @@
 
     <!-- Bienvenida -->
     <section class="mb-10">
-      <h1 class="text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100">¡Bienvenido de nuevo!</h1>
+      <h1 class="text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100" id="tituloBienvenida">¡Bienvenido de nuevo!</h1>
       <p class="text-slate-600 dark:text-slate-400 text-lg">Aquí puedes ver tus reservas, explorar nuevos viajes y administrar tu perfil.</p>
     </section>
 
-    <!-- Tarjetas de resumen - intercambio de colores rosa/naranja -->
+    <!-- Tarjetas de resumen -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
       <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
         <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">confirmation_number</span>
@@ -93,7 +178,6 @@
           <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Reservas activas</p>
         </div>
       </div>
-      <!-- Viajes realizados → ahora ROSA -->
       <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
         <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full">travel_explore</span>
         <div>
@@ -101,7 +185,6 @@
           <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Viajes realizados</p>
         </div>
       </div>
-      <!-- Destinos favoritos → ahora NARANJA -->
       <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
         <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">favorite</span>
         <div>
@@ -138,7 +221,7 @@
         </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Card 1 -->
+        <!-- Card 1: Cartagena -->
         <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
           <div class="relative w-full aspect-[4/3] overflow-hidden">
             <img alt="Cartagena" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvExoATYYi5sDh08TyPPpKcGBFiwHlycMmkBk5FC0OdZHqlImdFAXBLAxvA5dJzz0UzTvI6sns2Y4gg9yNq5PC5vDCQsjUqUxP3MrXpKQ0vcjYULysOsHoF1LCxQIAYzrcAXOsFo0_NpASTBhkFMThKRPE9WDT3fv2k8u5TF4thJQgKsXAX-AG_XlUx_uqxTAjmwvEcFJoKXsSvJ49YJIye1LHjRQw13CrFFvBDC8WvO78oaKxO8_9D9YyzfgoboksblDE0tcvsEo" />
@@ -157,12 +240,13 @@
                 <p class="text-xl font-black text-primary">$549.900</p>
               </div>
             </div>
-            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+            <a href="pagos.html?destino=Cartagena%20de%20Indias&precio=549900&descripcion=Historia%2C%20color%20y%20la%20mejor%20energ%C3%ADa%20del%20caribe%20colombiano&fechas=12-15%20Jun&noches=3&personas=2" 
+               class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
               Ver Plan
             </a>
           </div>
         </div>
-        <!-- Card 2 -->
+        <!-- Card 2: Eje Cafetero -->
         <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
           <div class="relative w-full aspect-[4/3] overflow-hidden">
             <img alt="Eje Cafetero" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvPrz-UJLgGXIH0Xj9xFFkT2pAErtARb9_kUsDaWTeNYoK90WuIr-r4f2Z5NE5T77dRYqDNb4PGgKUraUCh0Hnvx1jS8_zSwPsWNzowYY8gwjFPiVUfmWhF4wZtVb9aAV_fLElFnKQb44pSi34O-KCUpy8K3_eMvLHUQ6owRySIsVcdQDtOQUKamSenZHRMrBXSDSmnMgpmFyvVtuwSrpIxgrgPo2W70ONswYkq_4l3RS0eX0wLZf0xdtAbT2t0jQUZRqM9teIQik" />
@@ -181,12 +265,13 @@
                 <p class="text-xl font-black text-primary">$341.000</p>
               </div>
             </div>
-            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+            <a href="pagos.html?destino=Eje%20Cafetero&precio=341000&descripcion=Verdes%20infinitos%20y%20el%20aroma%20del%20mejor%20caf%C3%A9%20del%20mundo&fechas=10-13%20Jul&noches=3&personas=2" 
+               class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
               Ver Plan
             </a>
           </div>
         </div>
-        <!-- Card 3 -->
+        <!-- Card 3: Medellín -->
         <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
           <div class="relative w-full aspect-[4/3] overflow-hidden">
             <img alt="Medellín" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmvzIkEu7h8e83Z31QwWqQ7n5su1eKBEyRUobk1YJybkCWUwvqHDMfmC0jbhWQPCxubuHzk8cjKAfVr5eRMpk2COpC666qd6uUTkr8VnoYPZi0fhVpwoL1qD-1OHHHgcuPZqGOmcfp5ou0eF1sRahYPKZlSjxkwOsbRAnxHu3e_HcHZQutsJ24A30ECbAROL3MDJXjdnIa1mSqVJlcw6d-czAR56c8jxneUMLQzgBO1q3KrXJXRW911pQmSPrVyWNToinxExApd3M" />
@@ -205,7 +290,8 @@
                 <p class="text-xl font-black text-primary">$497.000</p>
               </div>
             </div>
-            <a href="login.html" class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
+            <a href="pagos.html?destino=Medell%C3%ADn&precio=497000&descripcion=La%20ciudad%20de%20la%20eterna%20primavera%20y%20su%20transformaci%C3%B3n&fechas=05-09%20Ago&noches=4&personas=2" 
+               class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
               Ver Plan
             </a>
           </div>
@@ -224,13 +310,14 @@
             <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles</p>
           </div>
         </a>
-        <a href="#" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <!-- Mi perfil (abre modal) -->
+        <button id="btnMiPerfil" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover w-full text-left">
           <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">person</span>
           <div>
             <p class="font-bold text-lg">Mi perfil</p>
             <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos personales</p>
           </div>
-        </a>
+        </button>
       </div>
     </section>
 
@@ -243,5 +330,153 @@
 
 </div>
 </div>
+
+<!-- ==================== MODAL PERFIL ==================== -->
+<div class="modal-overlay" id="modalPerfil">
+  <div class="modal-content">
+    <h3>Mi perfil</h3>
+    <form id="formPerfil">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">Nombre completo</label>
+        <input type="text" id="perfil_nombre" class="campo-input" value="Viajero Ejemplo" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">Correo electrónico</label>
+        <input type="email" id="perfil_correo" class="campo-input" value="viajero@email.com" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">Nueva contraseña (opcional)</label>
+        <input type="password" id="perfil_password" class="campo-input" placeholder="Dejar en blanco para no cambiar">
+      </div>
+      <div id="mensajePerfil" class="mensaje-modal"></div>
+      <div class="modal-botones">
+        <button type="button" class="btn-cerrar-modal" id="btnCerrarPerfil">Cancelar</button>
+        <button type="submit" class="btn-guardar-modal" id="btnGuardarPerfil">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL CONFIRMAR CIERRE ==================== -->
+<div class="modal-overlay" id="modalConfirmarCierre">
+  <div class="modal-content text-center">
+    <h3>¿Seguro que quieres cerrar sesión?</h3>
+    <p class="text-slate-600 mt-2">Se cerrará tu sesión actual y volverás a la página de inicio.</p>
+    <div class="modal-botones justify-center mt-6">
+      <button class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+      <button class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // =============================================
+  // 1. CARGAR DATOS DEL PERFIL DESDE localStorage
+  // =============================================
+  function cargarPerfil() {
+    const nombreGuardado = localStorage.getItem('usuario_nombre');
+    const correoGuardado = localStorage.getItem('usuario_correo');
+    if (nombreGuardado) {
+      document.getElementById('perfil_nombre').value = nombreGuardado;
+      document.getElementById('saludoUsuario').textContent = '¡Hola, ' + nombreGuardado + '!';
+      document.getElementById('tituloBienvenida').textContent = '¡Bienvenido de nuevo, ' + nombreGuardado + '!';
+    }
+    if (correoGuardado) {
+      document.getElementById('perfil_correo').value = correoGuardado;
+    }
+  }
+  cargarPerfil();
+
+  // =============================================
+  // 2. MODAL PERFIL - Guardar cambios en localStorage
+  // =============================================
+  const modalPerfil = document.getElementById('modalPerfil');
+  const btnMiPerfil = document.getElementById('btnMiPerfil');
+  const btnCerrarPerfil = document.getElementById('btnCerrarPerfil');
+  const formPerfil = document.getElementById('formPerfil');
+
+  btnMiPerfil.addEventListener('click', function() {
+    modalPerfil.classList.add('active');
+    document.getElementById('mensajePerfil').innerHTML = '';
+  });
+
+  btnCerrarPerfil.addEventListener('click', function() {
+    modalPerfil.classList.remove('active');
+  });
+
+  modalPerfil.addEventListener('click', function(e) {
+    if (e.target === modalPerfil) {
+      modalPerfil.classList.remove('active');
+    }
+  });
+
+  formPerfil.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre = document.getElementById('perfil_nombre').value.trim();
+    const correo = document.getElementById('perfil_correo').value.trim();
+    const password = document.getElementById('perfil_password').value;
+    const mensajeDiv = document.getElementById('mensajePerfil');
+
+    if (nombre === '' || correo === '') {
+      mensajeDiv.innerHTML = '<span style="color:#dc3545;">Nombre y correo son obligatorios.</span>';
+      return;
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem('usuario_nombre', nombre);
+    localStorage.setItem('usuario_correo', correo);
+    // Si se ingresó nueva contraseña, guardarla (solo para simulación)
+    if (password !== '') {
+      localStorage.setItem('usuario_password', password);
+    }
+
+    // Actualizar saludo en la interfaz
+    document.getElementById('saludoUsuario').textContent = '¡Hola, ' + nombre + '!';
+    document.getElementById('tituloBienvenida').textContent = '¡Bienvenido de nuevo, ' + nombre + '!';
+
+    mensajeDiv.innerHTML = '<span style="color:#28a745;">✅ Perfil actualizado correctamente.</span>';
+    setTimeout(() => {
+      modalPerfil.classList.remove('active');
+    }, 1500);
+  });
+
+  // =============================================
+  // 3. MODAL CONFIRMAR CIERRE DE SESIÓN
+  // =============================================
+  const modalCierre = document.getElementById('modalConfirmarCierre');
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+  const btnNoCerrar = document.getElementById('btnNoCerrar');
+  const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+  btnCerrarSesion.addEventListener('click', function(e) {
+    e.preventDefault();
+    modalCierre.classList.add('active');
+  });
+
+  btnNoCerrar.addEventListener('click', function() {
+    modalCierre.classList.remove('active');
+  });
+
+  btnSiCerrar.addEventListener('click', function() {
+    // Limpiar datos simulados (opcional)
+    // localStorage.removeItem('usuario_nombre');
+    // localStorage.removeItem('usuario_correo');
+    window.location.href = 'index.html';
+  });
+
+  modalCierre.addEventListener('click', function(e) {
+    if (e.target === modalCierre) {
+      modalCierre.classList.remove('active');
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (modalPerfil.classList.contains('active')) modalPerfil.classList.remove('active');
+      if (modalCierre.classList.contains('active')) modalCierre.classList.remove('active');
+    }
+  });
+</script>
+
 </body>
 </html>

@@ -20,9 +20,9 @@
 
 <body class="min-h-screen flex items-center justify-center p-4 bg-background-light">
 
-    <!-- Botón volver (similar a otros formularios) -->
-    <a href="index.html" class="absolute top-5 left-5 z-10 w-11 h-11 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-slate-700 hover:bg-primary hover:text-white transition shadow-md" aria-label="Volver al inicio">
-        <i class="fas fa-arrow-left text-lg"></i>
+    <!-- Botón volver (ahora apunta a dashboard.html) -->
+    <a href="dashboard.html" class="back-button" aria-label="Volver al dashboard">
+        <i class="fas fa-arrow-left"></i>
     </a>
 
     <div class="container-pago w-full">
@@ -37,13 +37,14 @@
             </div>
             <p class="text-slate-500 text-sm mb-6">Elige tu método de pago favorito y completa tu reserva</p>
 
-            <!-- Resumen del pedido (ejemplo) -->
-            <div class="detalle-articulo flex justify-between items-center mb-6">
+            <!-- Resumen del pedido (dinámico según parámetros URL) -->
+            <div class="detalle-articulo flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-6" id="resumenPedido">
                 <div>
-                    <p class="font-semibold text-slate-800">Cartagena de Indias</p>
-                    <p class="text-xs text-slate-500">3 noches · 2 personas · 12-15 Jun</p>
+                    <p class="font-semibold text-slate-800 text-lg" id="nombreDestino">Cartagena de Indias</p>
+                    <p class="text-sm text-slate-500" id="descripcionDestino">Historia, color y la mejor energía del caribe colombiano.</p>
+                    <p class="text-xs text-slate-400" id="fechasDestino">3 noches · 2 personas · 12-15 Jun</p>
                 </div>
-                <div class="total-pago text-xl">$549.900</div>
+                <div class="total-pago text-xl" id="precioDestino">$549.900</div>
             </div>
 
             <!-- Formulario (solo visual, sin acción real) -->
@@ -162,6 +163,24 @@
     <!-- Script para mostrar/ocultar campos según el método -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Leer parámetros de la URL ---
+            const params = new URLSearchParams(window.location.search);
+            const destino = params.get('destino') || 'Cartagena de Indias';
+            const precio = params.get('precio') || '549900';
+            const descripcion = params.get('descripcion') || 'Historia, color y la mejor energía del caribe colombiano.';
+            const fechas = params.get('fechas') || '12-15 Jun';
+            const noches = params.get('noches') || '3';
+            const personas = params.get('personas') || '2';
+
+            // --- Actualizar el resumen del pedido ---
+            document.getElementById('nombreDestino').textContent = destino;
+            document.getElementById('descripcionDestino').textContent = descripcion;
+            document.getElementById('fechasDestino').textContent = `${noches} noches · ${personas} personas · ${fechas}`;
+            // Formatear precio con separador de miles
+            const precioFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(precio);
+            document.getElementById('precioDestino').textContent = precioFormateado;
+
+            // --- Lógica de métodos de pago (igual que antes) ---
             const radios = document.querySelectorAll('input[name="metodo"]');
             const tarjetaDiv = document.getElementById('camposTarjeta');
             const nequiDiv = document.getElementById('camposNequi');
