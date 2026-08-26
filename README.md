@@ -36,3 +36,27 @@ CSS
   /js         = Scripts de validación
   /imagenes   = Imágenes del sitio
   style_*.css = Hojas de estilo
+
+# Qué es github actions?
+
+GitHub Actions es una plataforma de automatización integrada en GitHub que te permite compilar, probar y desplegar tu código automáticamente mediante flujos de trabajo (workflows) basados en archivos YAML, ejecutando tareas específicas (como verificar errores o subir a producción) cada vez que ocurre un evento en tu repositorio, como un push o un pull request.
+
+# Qué es N-ginx?
+
+Es un servidor web de código abierto y alto rendimiento diseñado principalmente para administrar de manera eficiente grandes volúmenes de tráfico en internet.
+
+A diferencia de los servidores tradicionales, funciona mediante una arquitectura asíncrona orientada a eventos. Esto le permite procesar miles de conexiones simultáneas usando muy poca memoria del sistema.
+
+# Qué es BPS?
+
+BPS se refiere principalmente a un Business Process Server (Servidor de Procesos de Negocio), que es un componente encargado de orquestar, ejecutar y automatizar flujos de trabajo (workflows) lógicos complejos entre diferentes sistemas y APIs; aunque en fases de pruebas de rendimiento también se utiliza en minúsculas (bps) para medir los bits por segundo y calcular el ancho de banda que consume la aplicación.
+
+# Qué es HOST?
+
+Un HOST (o anfitrión) es cualquier dispositivo conectado a una red que posee una dirección IP única y que comparte o aloja recursos, servicios o datos para otros usuarios o equipos.
+
+Puede ser un servidor físico en la nube que aloja una página web (como en los servicios de hosting), una máquina virtual donde ejecutas tus contenedores de Docker, o incluso tu propia computadora cuando programas y accedes a ella de forma local a través de la dirección de bucle invertido (localhost).
+
+# Qué es un dominio?
+
+En internet, un dominio es el nombre único y exclusivo que se le asigna a un sitio web para que los usuarios puedan acceder a él fácilmente, funcionando como una dirección amigable que traduce las complejas direcciones IP numéricas de los servidores en palabras memorizables (por ejemplo, traduciendo 142.251.40.174 a google.com).
