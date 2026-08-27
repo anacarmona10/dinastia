@@ -142,3 +142,5 @@ vite.config.ts.timestamp-*
 # Vendor
 backend/vendor
 hash.php
+testsprite_tests/tmp/
+testsprite_tests/tmp/config.json
