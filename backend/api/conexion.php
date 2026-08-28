@@ -1,30 +1,31 @@
 <?php
 
-$host = getenv('DB_HOST');
-$port = getenv('DB_PORT') ?: '5432';
-$dbname = getenv('DB_NAME');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASSWORD');
-$sslmode = getenv('DB_SSLMODE') ?: 'require';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-if (!$host || !$dbname || !$user || !$password) {
-    http_response_code(500);
-    die('Faltan las variables de conexión de base de datos.');
-}
+use Dotenv\Dotenv;
+
+// Cargar las variables del archivo .env
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+// Obtener las credenciales
+$host = $_ENV['DB_HOST'];
+$endpoint = $_ENV['DB_ENDPOINT'];
+$dbname = $_ENV['DB_NAME'];
+$user = $_ENV['DB_USER'];
+$password = $_ENV['DB_PASSWORD'];
 
 try {
     $pdo = new PDO(
-        "pgsql:host={$host};port={$port};dbname={$dbname};sslmode={$sslmode};channel_binding=require",
+        "pgsql:host=$host;port=5432;dbname=$dbname;sslmode=require;options=endpoint=$endpoint",
         $user,
-        $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]
+        $password
     );
+
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    error_log('Error de conexión a Neon: ' . $e->getMessage());
-    http_response_code(500);
-    die('No fue posible conectar a la base de datos.');
+    die("Error de conexión: " . $e->getMessage());
 }
 ?>
