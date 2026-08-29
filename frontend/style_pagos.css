@@ -1,5 +1,8 @@
 /* style_pagos.css - Estilos para la pasarela de pagos */
 
+/* ============================================
+   ESTILOS DEL HEADER (idénticos al dashboard)
+   ============================================ */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -8,14 +11,41 @@
 
 body {
     font-family: 'Public Sans', sans-serif;
-    background: #f0f0f0; /* Fondo gris claro sólido */
+    background-color: #f8f6f6; /* background-light */
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 1rem;
+    justify-content: flex-start;
+    padding: 0;
 }
 
+/* En modo oscuro */
+.dark body {
+    background-color: #020C1C;
+}
+
+/* El header ya tiene las clases de Tailwind en el HTML,
+   pero añadimos estilos de respaldo */
+header {
+    background-color: rgba(248, 246, 246, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(200, 0, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+}
+
+.dark header {
+    background-color: rgba(2, 12, 28, 0.8);
+    border-bottom-color: rgba(200, 0, 255, 0.15);
+}
+
+/* ============================================
+   RESTO DE ESTILOS (pagos)
+   ============================================ */
 .container-pago {
     max-width: 600px;
     margin: 0 auto;
@@ -31,38 +61,6 @@ body {
     border: 1px solid rgba(200, 0, 255, 0.10);
 }
 
-/* ============================================
-   BOTÓN DE RETROCESO - Armonizado con el fondo
-   ============================================ */
-.back-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 100;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ffffff;
-    border-radius: 50%;
-    color: #555555; /* Gris oscuro para combinar */
-    font-size: 22px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid #d0d0d0; /* Borde gris suave */
-}
-
-.back-button:hover {
-    background: #c800ff; /* Morado al pasar el mouse */
-    color: #ffffff;
-    transform: scale(1.08);
-    box-shadow: 0 4px 16px rgba(200, 0, 255, 0.30);
-    border-color: #c800ff;
-}
-
-/* Gradiente para botón principal */
 .gradient-btn {
     background: linear-gradient(to right, #c800ff, #EF1D9C);
     transition: all 0.3s ease;
@@ -80,7 +78,6 @@ body {
     box-shadow: 0 8px 25px rgba(200, 0, 255, 0.30);
 }
 
-/* Métodos de pago */
 .metodo-pago {
     border: 2px solid #e5e7eb;
     border-radius: 1rem;
@@ -111,7 +108,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Campos de entrada */
 .campo-input {
     border: 2px solid #e3b0ff;
     border-radius: 0.75rem;
@@ -135,7 +131,6 @@ body {
     margin-bottom: 0.3rem;
 }
 
-/* Iconos de método */
 .icono-metodo {
     font-size: 1.5rem;
     width: 2rem;
@@ -173,7 +168,6 @@ body {
     border-left: 4px solid #c800ff;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
     .card-pago {
         padding: 1.5rem 1rem;
@@ -183,12 +177,5 @@ body {
     }
     .total-pago {
         font-size: 1.4rem;
-    }
-    .back-button {
-        top: 12px;
-        left: 12px;
-        width: 42px;
-        height: 42px;
-        font-size: 18px;
     }
 }
