@@ -1,229 +1,93 @@
 <!DOCTYPE html>
-<html class="light" lang="es">
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pasarela de Pagos - AMV</title>
-
-    <!-- Tailwind CDN (opcional, se puede mantener) -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
-    
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="style_pagos.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagar reserva - Dinastía AMV</title>
+  <link rel="stylesheet" href="style_pagos.css">
 </head>
+<body>
+  <a href="dashboard.html" class="back-button" aria-label="Volver">←</a>
 
-<body class="min-h-screen flex items-center justify-center p-4 bg-background-light">
+  <main class="container-pago">
+    <section class="card-pago">
+      <h1>Completa tu reserva</h1>
+      <p>Serás enviado a Stripe para realizar un pago seguro.</p>
 
-    <!-- Botón volver (ahora apunta a dashboard.html) -->
-    <a href="dashboard.html" class="back-button" aria-label="Volver al dashboard">
-        <i class="fas fa-arrow-left"></i>
-    </a>
+      <div class="detalle-articulo">
+        <p id="mensajeViaje">Preparando información del viaje…</p>
+      </div>
 
-    <div class="container-pago w-full">
-        <div class="card-pago">
+      <form id="formPago">
+        <label class="label-pago" for="cantidadPersonas">
+          Número de viajeros
+        </label>
 
-            <!-- Logo / Título -->
-            <div class="flex items-center gap-3 mb-1">
-                <span class="material-symbols-outlined text-3xl text-primary">payments</span>
-                <h2 class="text-2xl font-black tracking-tight text-slate-800">
-                    Pasarela de <span class="text-primary">Pagos</span>
-                </h2>
-            </div>
-            <p class="text-slate-500 text-sm mb-6">Elige tu método de pago favorito y completa tu reserva</p>
+        <input
+          id="cantidadPersonas"
+          class="campo-input"
+          type="number"
+          min="1"
+          max="10"
+          value="1"
+          required
+        >
 
-            <!-- Resumen del pedido (dinámico según parámetros URL) -->
-            <div class="detalle-articulo flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-6" id="resumenPedido">
-                <div>
-                    <p class="font-semibold text-slate-800 text-lg" id="nombreDestino">Cartagena de Indias</p>
-                    <p class="text-sm text-slate-500" id="descripcionDestino">Historia, color y la mejor energía del caribe colombiano.</p>
-                    <p class="text-xs text-slate-400" id="fechasDestino">3 noches · 2 personas · 12-15 Jun</p>
-                </div>
-                <div class="total-pago text-xl" id="precioDestino">$549.900</div>
-            </div>
+        <div class="separador"></div>
 
-            <!-- Formulario (solo visual, sin acción real) -->
-            <form id="formPago" action="#" method="POST">
+        <button id="botonPagar" type="submit" class="gradient-btn">
+          Pagar de forma segura con Stripe
+        </button>
 
-                <!-- Métodos de pago -->
-                <div class="space-y-3 mb-6">
-                    <p class="label-pago text-sm">Selecciona un método</p>
+        <p id="mensajePago"></p>
+      </form>
+    </section>
+  </main>
 
-                    <!-- PSE -->
-                    <label class="metodo-pago activo">
-                        <input type="radio" name="metodo" value="pse" checked />
-                        <span class="icono-metodo"><i class="fas fa-university"></i></span>
-                        <span class="flex-1 font-medium">PSE (Transferencia bancaria)</span>
-                        <span class="badge-popular">Popular</span>
-                    </label>
+  <script>
+    const parametros = new URLSearchParams(window.location.search);
+    const viajeId = Number(parametros.get('viaje_id'));
 
-                    <!-- Nequi -->
-                    <label class="metodo-pago">
-                        <input type="radio" name="metodo" value="nequi" />
-                        <span class="icono-metodo"><i class="fas fa-mobile-alt"></i></span>
-                        <span class="flex-1 font-medium">Nequi</span>
-                        <span class="badge-popular">Popular</span>
-                    </label>
+    const mensajeViaje = document.getElementById('mensajeViaje');
+    const mensajePago = document.getElementById('mensajePago');
+    const botonPagar = document.getElementById('botonPagar');
 
-                    <!-- Daviplata -->
-                    <label class="metodo-pago">
-                        <input type="radio" name="metodo" value="daviplata" />
-                        <span class="icono-metodo"><i class="fas fa-money-bill-wave"></i></span>
-                        <span class="flex-1 font-medium">Daviplata</span>
-                    </label>
+    if (!Number.isInteger(viajeId) || viajeId < 1) {
+      mensajeViaje.textContent = 'No se recibió un viaje válido.';
+      botonPagar.disabled = true;
+    } else {
+      mensajeViaje.textContent = `Reserva del viaje #${viajeId}`;
+    }
 
-                    <!-- Efecty / Gana -->
-                    <label class="metodo-pago">
-                        <input type="radio" name="metodo" value="efecty" />
-                        <span class="icono-metodo"><i class="fas fa-receipt"></i></span>
-                        <span class="flex-1 font-medium">Efecty / Gana</span>
-                    </label>
+    document.getElementById('formPago').addEventListener('submit', async (evento) => {
+      evento.preventDefault();
 
-                    <!-- Tarjeta de crédito / débito -->
-                    <label class="metodo-pago">
-                        <input type="radio" name="metodo" value="tarjeta" />
-                        <span class="icono-metodo"><i class="fas fa-credit-card"></i></span>
-                        <span class="flex-1 font-medium">Tarjeta de crédito / débito</span>
-                    </label>
-                </div>
+      botonPagar.disabled = true;
+      mensajePago.textContent = 'Redirigiendo a Stripe…';
 
-                <!-- Campos dinámicos para tarjeta -->
-                <div id="camposTarjeta" class="space-y-4" style="display: none;">
-                    <div>
-                        <label class="label-pago text-sm">Número de tarjeta</label>
-                        <input type="text" class="campo-input" placeholder="1234 5678 9012 3456" />
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="label-pago text-sm">Fecha expiración</label>
-                            <input type="text" class="campo-input" placeholder="MM/AA" />
-                        </div>
-                        <div>
-                            <label class="label-pago text-sm">CVC</label>
-                            <input type="text" class="campo-input" placeholder="123" />
-                        </div>
-                    </div>
-                    <div>
-                        <label class="label-pago text-sm">Nombre del titular</label>
-                        <input type="text" class="campo-input" placeholder="Como aparece en la tarjeta" />
-                    </div>
-                </div>
-
-                <!-- Campos Nequi -->
-                <div id="camposNequi" class="space-y-4" style="display: none;">
-                    <div>
-                        <label class="label-pago text-sm">Número de celular</label>
-                        <input type="text" class="campo-input" placeholder="300 123 4567" />
-                    </div>
-                </div>
-
-                <!-- Campos Daviplata -->
-                <div id="camposDaviplata" class="space-y-4" style="display: none;">
-                    <div>
-                        <label class="label-pago text-sm">Número de celular</label>
-                        <input type="text" class="campo-input" placeholder="300 123 4567" />
-                    </div>
-                </div>
-
-                <!-- Efecty (mensaje informativo) -->
-                <div id="camposEfecty" class="text-sm text-slate-500 italic" style="display: none;">
-                    <i class="fas fa-info-circle text-primary mr-1"></i>
-                    Recibirás un código de pago para cancelar en cualquier punto Efecty.
-                </div>
-
-                <div class="separador"></div>
-
-                <!-- Botón de pago -->
-                <button type="submit" class="gradient-btn">
-                    <i class="fas fa-lock mr-2"></i> Pagar ahora
-                </button>
-
-                <p class="text-xs text-slate-400 text-center mt-4">
-                    <i class="fas fa-shield-alt text-primary mr-1"></i>
-                    Tus datos están seguros. Pago 100% protegido.
-                </p>
-            </form>
-
-            <!-- Iconos de métodos (decoración) -->
-            <div class="flex justify-center gap-4 mt-6 text-2xl text-slate-300">
-                <i class="fab fa-cc-visa"></i>
-                <i class="fab fa-cc-mastercard"></i>
-                <i class="fab fa-cc-amex"></i>
-                <i class="fas fa-university"></i>
-                <i class="fas fa-mobile-alt"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script para mostrar/ocultar campos según el método -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Leer parámetros de la URL ---
-            const params = new URLSearchParams(window.location.search);
-            const destino = params.get('destino') || 'Cartagena de Indias';
-            const precio = params.get('precio') || '549900';
-            const descripcion = params.get('descripcion') || 'Historia, color y la mejor energía del caribe colombiano.';
-            const fechas = params.get('fechas') || '12-15 Jun';
-            const noches = params.get('noches') || '3';
-            const personas = params.get('personas') || '2';
-
-            // --- Actualizar el resumen del pedido ---
-            document.getElementById('nombreDestino').textContent = destino;
-            document.getElementById('descripcionDestino').textContent = descripcion;
-            document.getElementById('fechasDestino').textContent = `${noches} noches · ${personas} personas · ${fechas}`;
-            // Formatear precio con separador de miles
-            const precioFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(precio);
-            document.getElementById('precioDestino').textContent = precioFormateado;
-
-            // --- Lógica de métodos de pago (igual que antes) ---
-            const radios = document.querySelectorAll('input[name="metodo"]');
-            const tarjetaDiv = document.getElementById('camposTarjeta');
-            const nequiDiv = document.getElementById('camposNequi');
-            const daviplataDiv = document.getElementById('camposDaviplata');
-            const efectyDiv = document.getElementById('camposEfecty');
-
-            function ocultarTodos() {
-                tarjetaDiv.style.display = 'none';
-                nequiDiv.style.display = 'none';
-                daviplataDiv.style.display = 'none';
-                efectyDiv.style.display = 'none';
-            }
-
-            function actualizarCampos(valor) {
-                ocultarTodos();
-                if (valor === 'tarjeta') {
-                    tarjetaDiv.style.display = 'block';
-                } else if (valor === 'nequi') {
-                    nequiDiv.style.display = 'block';
-                } else if (valor === 'daviplata') {
-                    daviplataDiv.style.display = 'block';
-                } else if (valor === 'efecty') {
-                    efectyDiv.style.display = 'block';
-                }
-            }
-
-            radios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    document.querySelectorAll('.metodo-pago').forEach(el => {
-                        el.classList.remove('activo');
-                    });
-                    this.closest('.metodo-pago').classList.add('activo');
-                    actualizarCampos(this.value);
-                });
-            });
-
-            const seleccionado = document.querySelector('input[name="metodo"]:checked');
-            if (seleccionado) {
-                actualizarCampos(seleccionado.value);
-                seleccionado.closest('.metodo-pago').classList.add('activo');
-            }
+      try {
+        const respuesta = await fetch('../backend/api/crear_checkout_stripe.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            viaje_id: viajeId,
+            cantidad_personas: Number(document.getElementById('cantidadPersonas').value)
+          })
         });
-    </script>
 
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.ok) {
+          throw new Error(datos.error || 'No fue posible iniciar el pago');
+        }
+
+        window.location.assign(datos.url);
+      } catch (error) {
+        mensajePago.textContent = error.message;
+        botonPagar.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

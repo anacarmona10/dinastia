@@ -88,7 +88,7 @@ function validarLogin(event) {
     }
 
     // Si todo válido, redirigir al dashboard (simulación)
-    window.location.href = 'dashboard.html';
+    event.currentTarget.submit();
 }
 
 // ==============================================
