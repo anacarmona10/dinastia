@@ -150,11 +150,16 @@
     </div>
 
     <div class="flex items-center gap-4 md:gap-6">
-      <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300" id="saludoUsuario">
+      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50" id="saludoUsuario">
+        <span class="material-symbols-outlined text-primary text-base">account_circle</span>
         ¡Hola, viajero!
-      </span>
+      </a>
+      <a href="perfil.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg text-primary">person</span>
+        <span class="hidden sm:inline">Mi Perfil</span>
+      </a>
       <!-- Botón Cerrar sesión (abre modal de confirmación) -->
-      <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
+      <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
         <span class="material-symbols-outlined text-lg">logout</span>
         <span class="hidden sm:inline">Cerrar sesión</span>
       </button>
@@ -310,14 +315,14 @@
             <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles</p>
           </div>
         </a>
-        <!-- Mi perfil (abre modal) -->
-        <button id="btnMiPerfil" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover w-full text-left">
+        <!-- Mi perfil (enlace directo a perfil.html) -->
+        <a href="perfil.html" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover w-full text-left">
           <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">person</span>
           <div>
             <p class="font-bold text-lg">Mi perfil</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos personales</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos, contraseñas y reservas</p>
           </div>
-        </button>
+        </a>
       </div>
     </section>
 

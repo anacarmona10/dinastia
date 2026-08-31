@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Mi Perfil - Dinastía AMV</title>
+
+  <!-- Tailwind CSS CDN con plugins de formularios -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Tipografía Oficial Public Sans & Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- jsPDF CDN para la generación y descarga de comprobantes en PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Configuración oficial de Tailwind estandarizada con dashboard.html e index.html -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Estilos estandarizados -->
+  <link rel="stylesheet" href="style_perfil.css">
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+  <!-- ====================================================================
+       BARRA DE NAVEGACIÓN SUPERIOR (Estandarizada con dashboard.html)
+       ==================================================================== -->
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    
+    <!-- Logo Dinastía AMV -->
+    <a href="dashboard.html" class="flex items-center gap-3 text-primary group">
+      <span class="material-symbols-outlined text-3xl font-bold group-hover:scale-105 transition-transform">explore</span>
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
+        Dinastía <span class="text-primary">AMV</span>
+      </h2>
+    </a>
+
+    <!-- Acciones de Cabecera -->
+    <div class="flex items-center gap-4 md:gap-6">
+      <!-- Enlace a Dashboard -->
+      <a href="dashboard.html" class="flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span class="hidden sm:inline">Dashboard</span>
+      </a>
+
+      <!-- Simulador de Roles para pruebas -->
+      <div class="hidden md:flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full text-xs font-semibold text-primary">
+        <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+        <label for="selectSimuladorRol" class="cursor-pointer">Rol:</label>
+        <select id="selectSimuladorRol" class="bg-transparent border-none p-0 text-xs font-bold text-primary focus:ring-0 cursor-pointer">
+          <option value="usuario">Viajero</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+
+      <!-- Saludo Usuario -->
+      <span class="hidden sm:inline text-sm font-bold text-primary" id="saludoUsuario">
+        ¡Hola, viajero!
+      </span>
+
+      <!-- Botón Cerrar Sesión -->
+      <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="hidden sm:inline">Cerrar sesión</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       CONTENIDO PRINCIPAL
+       ==================================================================== -->
+  <main class="flex-1 px-6 md:px-20 py-10">
+
+    <!-- Encabezado de la Sección -->
+    <section class="mb-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100" id="tituloBienvenida">
+            Mi Perfil
+          </h1>
+          <p class="text-slate-600 dark:text-slate-400 text-lg">
+            Administra tus datos personales, configuración de seguridad y consulta el historial de tus viajes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tarjetas de Resumen (Estandarizadas con dashboard.html) -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+      <!-- Tarjeta 1: Usuario & Identidad -->
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <div id="avatarIniciales" class="w-14 h-14 rounded-full gradient-btn text-white font-black text-xl flex items-center justify-center shadow-md shadow-primary/30 flex-shrink-0">
+          AM
+        </div>
+        <div class="overflow-hidden">
+          <p id="perfilNombreDisplay" class="text-lg font-black text-slate-900 dark:text-slate-100 truncate">Ana María Valencia</p>
+          <p id="perfilCorreoDisplay" class="text-xs text-slate-500 dark:text-slate-400 truncate">anamaria.valencia@dinastia.com</p>
+          <span id="badgeRolUsuario" class="inline-block mt-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+            Viajero Registrado
+          </span>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Reservas Activas -->
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full flex-shrink-0">confirmation_number</span>
+        <div>
+          <p id="statReservasActivas" class="text-3xl font-black text-primary">1</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Reservas activas</p>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Viajes Realizados -->
+      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+        <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full flex-shrink-0">travel_explore</span>
+        <div>
+          <p id="statViajesRealizados" class="text-3xl font-black text-pink-500">2</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Viajes realizados</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRID DE 12 COLUMNAS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+
+      <!-- ================================================================
+           COLUMNA IZQUIERDA (4 de 12 en escritorio): DATOS Y SEGURIDAD
+           ================================================================ -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- BLOQUE 1: INFORMACIÓN PERSONAL (EDITABLE) -->
+        <section class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 md:p-8 card-hover" aria-labelledby="tituloInfoPersonal">
+          <div class="flex items-center justify-between pb-4 mb-6 border-b border-primary/10">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-2xl text-primary font-bold">person</span>
+              <h2 id="tituloInfoPersonal" class="text-xl font-black text-slate-900 dark:text-slate-100">
+                Datos Personales
+              </h2>
+            </div>
+            <!-- Botón Editar Perfil inicial -->
+            <button 
+              id="btnEditarPerfil" 
+              type="button" 
+              class="px-4 py-1.5 rounded-full btn-outline text-xs font-bold"
+              aria-label="Habilitar edición de campos de perfil"
+            >
+              <span class="material-symbols-outlined text-sm">edit</span>
+              Editar Perfil
+            </button>
+          </div>
+
+          <!-- Formulario de Datos Personales -->
+          <form id="formPerfil" novalidate>
+            <div>
+              <label for="nombreCompleto" class="label-campo">Nombre completo</label>
+              <input 
+                type="text" 
+                id="nombreCompleto" 
+                name="nombreCompleto" 
+                class="campo-input" 
+                value="Ana María Valencia" 
+                readonly 
+                required 
+              />
+              <p id="errorNombre" class="text-red-500 text-xs mb-2 hidden font-semibold" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="tipoDocumento" class="label-campo">Tipo de documento</label>
+              <select 
+                id="tipoDocumento" 
+                name="tipoDocumento" 
+                class="campo-input cursor-pointer" 
+                disabled 
+                required 
+              >
+                <option value="CC">Cédula de Ciudadanía (CC)</option>
+                <option value="TI">Tarjeta de Identidad (TI)</option>
+                <option value="CE">Cédula de Extranjería (CE)</option>
+                <option value="PAS">Pasaporte</option>
+                <option value="PEP">Permiso Especial de Permanencia (PEP)</option>
+              </select>
+              <p id="errorTipoDoc" class="text-red-500 text-xs mb-2 hidden font-semibold" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="numeroDocumento" class="label-campo">Número de documento</label>
+              <input 
+                type="text" 
+                id="numeroDocumento" 
+                name="numeroDocumento" 
+                class="campo-input" 
+                value="1023456789" 
+                readonly 
+                required 
+              />
+              <p id="errorNumDoc" class="text-red-500 text-xs mb-2 hidden font-semibold" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="correo" class="label-campo">Correo electrónico</label>
+              <input 
+                type="email" 
+                id="correo" 
+                name="correo" 
+                class="campo-input" 
+                value="anamaria.valencia@dinastia.com" 
+                readonly 
+                required 
+              />
+              <p id="errorCorreo" class="text-red-500 text-xs mb-2 hidden font-semibold" role="alert"></p>
+            </div>
+
+            <!-- Botones de Acción al Editar (Guardar / Cancelar) -->
+            <div id="contenedorBotonesEdicion" class="hidden mt-4 pt-4 border-t border-primary/10 flex items-center justify-end gap-3">
+              <button 
+                id="btnCancelarPerfil" 
+                type="button" 
+                class="px-4 py-2 rounded-full btn-ghost-custom text-xs font-bold"
+              >
+                Cancelar
+              </button>
+              <button 
+                id="btnGuardarPerfil" 
+                type="submit" 
+                class="px-5 py-2 rounded-full gradient-btn text-xs font-bold"
+              >
+                <span class="material-symbols-outlined text-sm">save</span>
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- BLOQUE 2: SEGURIDAD (CAMBIO DE CONTRASEÑA) -->
+        <section class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 md:p-8 card-hover" aria-labelledby="tituloSeguridad">
+          <div class="flex items-center gap-2 pb-4 mb-4 border-b border-primary/10">
+            <span class="material-symbols-outlined text-2xl text-primary font-bold">lock_reset</span>
+            <h2 id="tituloSeguridad" class="text-xl font-black text-slate-900 dark:text-slate-100">
+              Seguridad
+            </h2>
+          </div>
+
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">
+            Actualiza tu contraseña para mantener protegida tu cuenta y tus datos de reservas.
+          </p>
+
+          <button 
+            id="btnAbrirModalPassword" 
+            type="button" 
+            class="w-full py-3 rounded-full btn-outline text-sm font-bold shadow-sm"
+          >
+            <span class="material-symbols-outlined text-lg">key</span>
+            Cambiar Contraseña
+          </button>
+        </section>
+
+        <!-- BLOQUE 4: ACCESO PANEL DE ADMINISTRACIÓN (SOLO ADMINS) -->
+        <section id="bloqueAdmin" class="rounded-2xl bg-orange-50/50 dark:bg-orange-950/20 border-2 border-dashed border-accent/40 p-6 md:p-8 card-hover hidden" aria-labelledby="tituloAdminPanel">
+          <div class="flex items-center gap-2 mb-2 text-accent">
+            <span class="material-symbols-outlined text-2xl font-bold">shield_person</span>
+            <h2 id="tituloAdminPanel" class="text-lg font-black text-slate-900 dark:text-slate-100">
+              Panel de Administración
+            </h2>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">
+            Tienes permisos de administrador. Accede para crear y actualizar planes turísticos.
+          </p>
+          <button 
+            id="btnIrAdmin" 
+            type="button" 
+            class="w-full py-2.5 rounded-full gradient-btn-accent text-white text-xs font-bold shadow-md shadow-accent/20"
+          >
+            Ir al Panel de Administración →
+          </button>
+        </section>
+
+      </div>
+
+      <!-- ================================================================
+           COLUMNA DERECHA (8 de 12 en escritorio): HISTORIAL DE RESERVAS
+           ================================================================ -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- BLOQUE 3: HISTORIAL DE VIAJES Y RESERVAS -->
+        <section class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 md:p-8 card-hover" aria-labelledby="tituloHistorialViajes">
+          
+          <!-- Encabezado y Pestañas de Filtro -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-primary/10">
+            <div>
+              <h2 id="tituloHistorialViajes" class="text-2xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-3xl font-bold">luggage</span>
+                Mis Reservas
+              </h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                Consulta tus viajes programados y descarga tus comprobantes de pago oficiales.
+              </p>
+            </div>
+
+            <!-- Pestañas Estandarizadas -->
+            <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-800 rounded-full" role="tablist">
+              <button 
+                id="tabProximos" 
+                type="button" 
+                class="tab-viaje-btn active" 
+                role="tab" 
+                aria-selected="true"
+              >
+                Próximos viajes
+                <span id="badgeCountProximos" class="tab-viaje-badge">2</span>
+              </button>
+              <button 
+                id="tabPasados" 
+                type="button" 
+                class="tab-viaje-btn" 
+                role="tab" 
+                aria-selected="false"
+              >
+                Reservas anteriores
+                <span id="badgeCountPasados" class="tab-viaje-badge">2</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Contenedor Dinámico de Tarjetas de Reserva (Grid 2 columnas) -->
+          <div id="contenedorReservas" class="grid grid-cols-1 md:grid-cols-2 gap-6" role="tabpanel">
+            <!-- Inyectado dinámicamente mediante JS con el diseño de cards de dashboard.html -->
+          </div>
+
+          <!-- Estado Vacío (Empty State) -->
+          <div id="emptyStateReservas" class="hidden text-center py-12 px-4">
+            <span class="material-symbols-outlined text-6xl text-primary/40 mb-3 block">inbox</span>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">Aún no tienes reservas en esta sección</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+              Explora nuestros destinos colombianos y reserva tu próximo viaje inolvidable.
+            </p>
+            <a 
+              href="dashboard.html" 
+              class="px-6 py-2.5 rounded-full gradient-btn text-sm font-bold shadow-lg shadow-primary/30 inline-block"
+            >
+              Explorar destinos
+            </a>
+          </div>
+
+        </section>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       PIE DE PÁGINA (Idéntico a dashboard.html)
+       ==================================================================== -->
+  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
+  </footer>
+
+</div>
+</div>
+
+<!-- ====================================================================
+     MODAL 1: CAMBIO DE CONTRASEÑA (Estandarizado con dashboard.html)
+     ==================================================================== -->
+<div class="modal-overlay" id="modalPassword" role="dialog" aria-modal="true" aria-labelledby="tituloModalPassword">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-3">
+      <h3 id="tituloModalPassword" class="text-xl font-black text-slate-900">Cambiar Contraseña</h3>
+      <button type="button" id="btnCerrarModalPassword" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1">&times;</button>
+    </div>
+    <form id="formPassword">
+      <div>
+        <label class="label-campo">Contraseña actual</label>
+        <input type="password" id="passwordActual" class="campo-input" placeholder="••••••••" required>
+      </div>
+      <div>
+        <label class="label-campo">Nueva contraseña</label>
+        <input type="password" id="passwordNueva" class="campo-input" placeholder="Mínimo 6 caracteres, 1 mayúscula, 1 número" required>
+        
+        <!-- Medidor de fuerza -->
+        <div class="strength-track">
+          <div id="strengthFill" class="strength-fill"></div>
+        </div>
+        <div class="flex justify-between text-xs mb-2">
+          <span id="strengthLabel" class="font-bold text-slate-400">Seguridad: -</span>
+        </div>
+
+        <!-- Checklist HU-01 -->
+        <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-1 text-slate-600 mb-3 border border-slate-100">
+          <div id="reqLength" class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs">radio_button_unchecked</span>
+            <span>Mínimo 6 caracteres</span>
+          </div>
+          <div id="reqUpper" class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs">radio_button_unchecked</span>
+            <span>Al menos una letra mayúscula (A-Z)</span>
+          </div>
+          <div id="reqNumber" class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs">radio_button_unchecked</span>
+            <span>Al menos un número (0-9)</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="label-campo">Confirmar nueva contraseña</label>
+        <input type="password" id="passwordConfirmar" class="campo-input" placeholder="Repite la nueva contraseña" required>
+      </div>
+
+      <div id="mensajeModalPassword" class="mensaje-modal"></div>
+
+      <div class="modal-botones">
+        <button type="button" class="btn-cerrar-modal" id="btnCancelarModalPassword">Cancelar</button>
+        <button type="submit" class="btn-guardar-modal">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ====================================================================
+     MODAL 2: DETALLE DE RESERVA DE VIAJE
+     ==================================================================== -->
+<div class="modal-overlay" id="modalDetalleReserva" role="dialog" aria-modal="true" aria-labelledby="tituloModalDetalle">
+  <div class="modal-content max-w-xl">
+    <div class="flex items-center justify-between mb-3">
+      <h3 id="tituloModalDetalle" class="text-xl font-black text-slate-900">Detalle del Plan Turístico</h3>
+      <button type="button" id="btnCerrarModalDetalle" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1">&times;</button>
+    </div>
+    
+    <div id="detalleReservaContenido" class="space-y-4 max-h-[55vh] overflow-y-auto pr-1">
+      <!-- Inyectado dinámicamente -->
+    </div>
+
+    <div class="modal-botones justify-between pt-4 border-t border-slate-100">
+      <button type="button" class="btn-cerrar-modal" onclick="document.getElementById('modalDetalleReserva').classList.remove('active')">Cerrar</button>
+      <button type="button" id="btnDescargarDesdeDetalle" class="btn-guardar-modal flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">download</span>
+        Descargar Comprobante PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================================
+     MODAL 3: CONFIRMACIÓN DE CIERRE DE SESIÓN (Idéntico a dashboard.html)
+     ==================================================================== -->
+<div class="modal-overlay" id="modalConfirmarCierre">
+  <div class="modal-content text-center">
+    <h3 class="text-xl font-black mb-2">¿Seguro que quieres cerrar sesión?</h3>
+    <p class="text-slate-600 text-sm mt-1">Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+    <div class="modal-botones justify-center mt-6">
+      <button class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+      <button class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor Toast -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Script interactivo del perfil -->
+<script src="js/perfil.js"></script>
+
+</body>
+</html>
