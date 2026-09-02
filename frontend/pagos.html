@@ -1,93 +1,515 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Pagar reserva - Dinastía AMV</title>
+
+  <!-- Tailwind CSS CDN con plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fuentes oficiales y Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Configuración de Tailwind idéntica a dashboard y perfil -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Estilos de soporte para pagos y modales -->
   <link rel="stylesheet" href="style_pagos.css">
+
+  <style>
+    body { font-family: 'Public Sans', sans-serif; }
+    .gradient-btn {
+      background: linear-gradient(to right, #c800ff, #EF1D9C);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+    }
+    .campo-input {
+      border: 2px solid #e3b0ff;
+      border-radius: 0.75rem;
+      padding: 0.7rem 1rem;
+      width: 100%;
+      transition: 0.3s;
+      background: white;
+      outline: none;
+    }
+    .campo-input:focus {
+      border-color: #c800ff;
+      box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.20);
+    }
+    /* Estilos del modal de confirmación */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #000;
+    }
+    .modal-botones {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+    .modal-botones button {
+      padding: 0.6rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-cerrar-modal {
+      background: #e5e7eb;
+      color: #333;
+    }
+    .btn-cerrar-modal:hover {
+      background: #d1d5db;
+    }
+    .btn-eliminar {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-eliminar:hover {
+      background: #c82333;
+    }
+  </style>
 </head>
-<body>
-  <a href="dashboard.html" class="back-button" aria-label="Volver">←</a>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
 
-  <main class="container-pago">
-    <section class="card-pago">
-      <h1>Completa tu reserva</h1>
-      <p>Serás enviado a Stripe para realizar un pago seguro.</p>
+  <!-- ====================================================================
+       BARRA DE NAVEGACIÓN SUPERIOR (Idéntica al dashboard)
+       El logo funciona como botón de retroceso hacia el dashboard
+       ==================================================================== -->
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    
+    <!-- Logo funcionando como botón de retroceso -->
+    <a href="dashboard.html" id="btnVolverLogo" class="flex items-center gap-3 text-primary group transition-transform" title="Volver al dashboard">
+      <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full group-hover:scale-105 transition-transform shadow-sm">
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
+        Dinastía <span class="text-primary">AMV</span>
+      </h2>
+    </a>
 
-      <div class="detalle-articulo">
-        <p id="mensajeViaje">Preparando información del viaje…</p>
+    <!-- Opciones del usuario en cabecera -->
+    <div class="flex items-center gap-4 md:gap-6">
+      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50 dark:hover:bg-white/5" id="saludoUsuario">
+        <span class="material-symbols-outlined text-primary text-base">account_circle</span>
+        ¡Hola, viajero!
+      </a>
+      <a href="perfil.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg text-primary">person</span>
+        <span class="hidden sm:inline">Mi Perfil</span>
+      </a>
+      <!-- Botón Cerrar sesión (abre modal de confirmación) -->
+      <button id="btnCerrarSesion" type="button" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="hidden sm:inline">Cerrar sesión</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       CONTENIDO PRINCIPAL (Tarjeta de pago moderna y organizada)
+       ==================================================================== -->
+  <main class="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+    <div class="w-full max-w-lg">
+
+      <!-- Botón secundario para volver visible y elegante -->
+      <div class="mb-4">
+        <a href="dashboard.html" id="linkVolverDashboard" class="inline-flex items-center gap-1.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors group">
+          <span class="material-symbols-outlined text-base group-hover:-translate-x-1 transition-transform">arrow_back</span>
+          <span>Volver al catálogo de viajes</span>
+        </a>
       </div>
 
-      <form id="formPago">
-        <label class="label-pago" for="cantidadPersonas">
-          Número de viajeros
-        </label>
+      <!-- Tarjeta de pago -->
+      <section class="bg-white dark:bg-white/5 rounded-3xl border border-primary/15 shadow-xl shadow-purple-500/5 p-6 sm:p-8 backdrop-blur-sm relative overflow-hidden card-hover">
+        
+        <!-- Línea decorativa superior con gradiente de marca -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-pink-500 to-accent"></div>
 
-        <input
-          id="cantidadPersonas"
-          class="campo-input"
-          type="number"
-          min="1"
-          max="10"
-          value="1"
-          required
-        >
+        <!-- Encabezado de la tarjeta -->
+        <div class="flex items-start gap-3.5 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 shadow-inner">
+            <span class="material-symbols-outlined text-2xl font-bold">verified_user</span>
+          </div>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
+              Completa tu reserva
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              Serás enviado a Stripe para realizar un pago seguro y protegido.
+            </p>
+          </div>
+        </div>
 
-        <div class="separador"></div>
+        <!-- Detalle del artículo / viaje -->
+        <div class="rounded-2xl bg-purple-50/70 dark:bg-purple-950/20 border border-primary/20 p-4 mb-6">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary text-2xl mt-0.5 flex-shrink-0">flight_takeoff</span>
+            <div class="flex-1 min-w-0">
+              <p id="mensajeViaje" class="text-base font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
+                Preparando información del viaje…
+              </p>
+              
+              <!-- Información detallada del viaje (se llena si está disponible) -->
+              <div id="infoViajeDetalle" class="hidden mt-2.5 pt-2 border-t border-primary/15 text-xs space-y-1.5 text-slate-600 dark:text-slate-300">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-xs text-primary">calendar_month</span>
+                  <span id="destinoFechas" class="font-medium"></span>
+                </div>
+                <div class="flex items-center justify-between pt-1 font-semibold">
+                  <span class="text-slate-500 dark:text-slate-400">Precio unitario:</span>
+                  <span id="precioUnitario" class="font-bold text-primary text-sm"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <button id="botonPagar" type="submit" class="gradient-btn">
-          Pagar de forma segura con Stripe
-        </button>
+        <!-- Formulario de Pago -->
+        <form id="formPago">
+          <div class="mb-5">
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2" for="cantidadPersonas">
+              Número de viajeros
+            </label>
+            <div class="flex items-center gap-3">
+              <button 
+                type="button" 
+                id="btnRestarPersona" 
+                class="w-11 h-11 rounded-xl border-2 border-primary/20 bg-purple-50/60 hover:bg-purple-100 dark:bg-purple-950/30 dark:hover:bg-purple-900/40 text-primary font-black text-xl flex items-center justify-center transition-colors cursor-pointer select-none"
+                aria-label="Restar un viajero"
+              >–</button>
+              
+              <input
+                id="cantidadPersonas"
+                class="campo-input text-center font-black text-lg text-slate-800 dark:text-slate-100"
+                type="number"
+                min="1"
+                max="10"
+                value="1"
+                required
+              >
+              
+              <button 
+                type="button" 
+                id="btnSumarPersona" 
+                class="w-11 h-11 rounded-xl border-2 border-primary/20 bg-purple-50/60 hover:bg-purple-100 dark:bg-purple-950/30 dark:hover:bg-purple-900/40 text-primary font-black text-xl flex items-center justify-center transition-colors cursor-pointer select-none"
+                aria-label="Sumar un viajero"
+              >+</button>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 text-center">Permite de 1 a 10 viajeros por reserva</p>
+          </div>
 
-        <p id="mensajePago"></p>
-      </form>
-    </section>
+          <!-- Resumen de total estimado -->
+          <div id="contenedorTotal" class="hidden mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/50">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Total estimado:</span>
+              <span id="precioTotal" class="text-2xl font-black text-primary">$0</span>
+            </div>
+          </div>
+
+          <div class="border-t border-dashed border-primary/20 my-6"></div>
+
+          <!-- Botón de Pago con Stripe -->
+          <button 
+            id="botonPagar" 
+            type="submit" 
+            class="gradient-btn w-full py-3.5 px-6 rounded-full text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/25 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span class="material-symbols-outlined text-lg">lock</span>
+            <span>Pagar de forma segura con Stripe</span>
+          </button>
+
+          <!-- Notificación de estado -->
+          <p id="mensajePago" class="text-center text-sm font-semibold mt-3 min-h-[1.25rem]"></p>
+
+          <!-- Sellos de confianza y métodos de pago -->
+          <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80 text-center">
+            <div class="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+              <span class="material-symbols-outlined text-sm">security</span>
+              <span>Encriptación SSL de 256 bits y garantía Dinastía AMV</span>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500">
+              Pagos procesados de forma segura con tarjetas de crédito, débito y PSE a través de Stripe.
+            </p>
+          </div>
+        </form>
+
+      </section>
+
+    </div>
   </main>
 
-  <script>
-    const parametros = new URLSearchParams(window.location.search);
-    const viajeId = Number(parametros.get('viaje_id'));
+  <!-- ====================================================================
+       PIE DE PÁGINA (Idéntico a dashboard.html)
+       ==================================================================== -->
+  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
+  </footer>
 
-    const mensajeViaje = document.getElementById('mensajeViaje');
-    const mensajePago = document.getElementById('mensajePago');
-    const botonPagar = document.getElementById('botonPagar');
+</div>
+</div>
 
-    if (!Number.isInteger(viajeId) || viajeId < 1) {
-      mensajeViaje.textContent = 'No se recibió un viaje válido.';
-      botonPagar.disabled = true;
-    } else {
-      mensajeViaje.textContent = `Reserva del viaje #${viajeId}`;
+<!-- ====================================================================
+     MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN (Idéntico al dashboard)
+     ==================================================================== -->
+<div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
+  <div class="modal-content text-center">
+    <h3 id="tituloModalCierre" class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
+    <p class="text-slate-600 text-sm mt-1">Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+    <div class="modal-botones justify-center mt-6">
+      <button type="button" class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+      <button type="button" class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================================
+     SCRIPTS DE FUNCIONALIDAD
+     ==================================================================== -->
+<script>
+  // 1. Cargar saludo personalizado si existe en localStorage
+  const nombreGuardado = localStorage.getItem('usuario_nombre');
+  if (nombreGuardado) {
+    const saludoUsuario = document.getElementById('saludoUsuario');
+    if (saludoUsuario) {
+      saludoUsuario.innerHTML = `<span class="material-symbols-outlined text-primary text-base">account_circle</span> ¡Hola, ${nombreGuardado}!`;
     }
+  }
 
-    document.getElementById('formPago').addEventListener('submit', async (evento) => {
-      evento.preventDefault();
-
-      botonPagar.disabled = true;
-      mensajePago.textContent = 'Redirigiendo a Stripe…';
-
-      try {
-        const respuesta = await fetch('../backend/api/crear_checkout_stripe.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({
-            viaje_id: viajeId,
-            cantidad_personas: Number(document.getElementById('cantidadPersonas').value)
-          })
-        });
-
-        const datos = await respuesta.json();
-
-        if (!respuesta.ok || !datos.ok) {
-          throw new Error(datos.error || 'No fue posible iniciar el pago');
-        }
-
-        window.location.assign(datos.url);
-      } catch (error) {
-        mensajePago.textContent = error.message;
-        botonPagar.disabled = false;
+  // 2. El logo funciona como botón de retroceso
+  const btnVolverLogo = document.getElementById('btnVolverLogo');
+  if (btnVolverLogo) {
+    btnVolverLogo.addEventListener('click', function(e) {
+      if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+        e.preventDefault();
+        window.history.back();
       }
     });
-  </script>
+  }
+
+  // 3. Modal de confirmación para cerrar sesión (idéntico al dashboard)
+  const modalCierre = document.getElementById('modalConfirmarCierre');
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+  const btnNoCerrar = document.getElementById('btnNoCerrar');
+  const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+  if (btnCerrarSesion && modalCierre) {
+    btnCerrarSesion.addEventListener('click', function(e) {
+      e.preventDefault();
+      modalCierre.classList.add('active');
+    });
+
+    if (btnNoCerrar) {
+      btnNoCerrar.addEventListener('click', function() {
+        modalCierre.classList.remove('active');
+      });
+    }
+
+    if (btnSiCerrar) {
+      btnSiCerrar.addEventListener('click', function() {
+        window.location.href = 'index.html';
+      });
+    }
+
+    modalCierre.addEventListener('click', function(e) {
+      if (e.target === modalCierre) {
+        modalCierre.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modalCierre.classList.contains('active')) {
+        modalCierre.classList.remove('active');
+      }
+    });
+  }
+
+  // 4. Parámetros de la URL y gestión de la reserva
+  const parametros = new URLSearchParams(window.location.search);
+  const viajeId = Number(parametros.get('viaje_id'));
+
+  const mensajeViaje = document.getElementById('mensajeViaje');
+  const mensajePago = document.getElementById('mensajePago');
+  const botonPagar = document.getElementById('botonPagar');
+  const cantidadPersonas = document.getElementById('cantidadPersonas');
+
+  let precioUnitario = 0;
+
+  if (!Number.isInteger(viajeId) || viajeId < 1) {
+    mensajeViaje.textContent = 'No se recibió un viaje válido.';
+    botonPagar.disabled = true;
+  } else {
+    mensajeViaje.textContent = `Reserva del viaje #${viajeId}`;
+
+    // Consultar detalles públicos del viaje para enriquecer la tarjeta
+    fetch('../backend/api/listar_viajes_publicos.php')
+      .then(res => res.json())
+      .then(datos => {
+        if (datos && datos.success && Array.isArray(datos.viajes)) {
+          const viaje = datos.viajes.find(v => Number(v.id) === viajeId);
+          if (viaje) {
+            mensajeViaje.textContent = viaje.destino ? `Reserva: ${viaje.destino}` : `Reserva del viaje #${viajeId}`;
+            precioUnitario = Number(viaje.precio) || 0;
+
+            const contenedorDetalle = document.getElementById('infoViajeDetalle');
+            const destinoFechas = document.getElementById('destinoFechas');
+            const precioUnitarioElem = document.getElementById('precioUnitario');
+
+            if (viaje.fecha_salida && destinoFechas) {
+              destinoFechas.textContent = `${viaje.fecha_salida} al ${viaje.fecha_regreso || 'Por confirmar'}`;
+            }
+
+            if (precioUnitario > 0 && precioUnitarioElem) {
+              precioUnitarioElem.textContent = '$' + precioUnitario.toLocaleString('es-CO') + ' COP';
+              document.getElementById('contenedorTotal')?.classList.remove('hidden');
+            }
+
+            contenedorDetalle?.classList.remove('hidden');
+            actualizarTotal();
+          }
+        }
+      })
+      .catch(() => {
+        // En caso de error de red, se mantiene el mensaje por defecto
+      });
+  }
+
+  // Función para actualizar el total según cantidad de personas
+  function actualizarTotal() {
+    if (precioUnitario > 0) {
+      const cantidad = Math.max(1, Math.min(10, Number(cantidadPersonas.value) || 1));
+      const total = precioUnitario * cantidad;
+      const precioTotalElem = document.getElementById('precioTotal');
+      if (precioTotalElem) {
+        precioTotalElem.textContent = '$' + total.toLocaleString('es-CO') + ' COP';
+      }
+    }
+  }
+
+  // Botones de incremento / decremento
+  const btnRestar = document.getElementById('btnRestarPersona');
+  const btnSumar = document.getElementById('btnSumarPersona');
+
+  if (btnRestar && btnSumar && cantidadPersonas) {
+    btnRestar.addEventListener('click', () => {
+      let actual = parseInt(cantidadPersonas.value) || 1;
+      if (actual > 1) {
+        cantidadPersonas.value = actual - 1;
+        actualizarTotal();
+      }
+    });
+
+    btnSumar.addEventListener('click', () => {
+      let actual = parseInt(cantidadPersonas.value) || 1;
+      if (actual < 10) {
+        cantidadPersonas.value = actual + 1;
+        actualizarTotal();
+      }
+    });
+
+    cantidadPersonas.addEventListener('input', () => {
+      let val = parseInt(cantidadPersonas.value);
+      if (isNaN(val) || val < 1) cantidadPersonas.value = 1;
+      if (val > 10) cantidadPersonas.value = 10;
+      actualizarTotal();
+    });
+  }
+
+  // 5. Envío del formulario hacia la pasarela de Stripe
+  document.getElementById('formPago').addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+
+    botonPagar.disabled = true;
+    mensajePago.className = 'text-center text-sm font-semibold mt-3 text-primary animate-pulse';
+    mensajePago.textContent = 'Redirigiendo a Stripe…';
+
+    try {
+      const respuesta = await fetch('../backend/api/crear_checkout_stripe.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          viaje_id: viajeId,
+          cantidad_personas: Number(document.getElementById('cantidadPersonas').value)
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.ok) {
+        throw new Error(datos.error || 'No fue posible iniciar el pago');
+      }
+
+      window.location.assign(datos.url);
+    } catch (error) {
+      mensajePago.className = 'text-center text-sm font-semibold mt-3 text-red-500';
+      mensajePago.textContent = error.message;
+      botonPagar.disabled = false;
+    }
+  });
+</script>
 </body>
 </html>

@@ -1,12 +1,312 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Pago recibido</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Pago exitoso - Dinastía AMV</title>
+
+  <!-- Tailwind CSS CDN con plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fuentes oficiales y Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Configuración oficial de Tailwind estandarizada -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Public Sans', sans-serif; }
+    .gradient-btn {
+      background: linear-gradient(to right, #c800ff, #EF1D9C);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+    }
+    /* Estilos del modal de confirmación */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #000;
+    }
+    .modal-botones {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+    .modal-botones button {
+      padding: 0.6rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-cerrar-modal {
+      background: #e5e7eb;
+      color: #333;
+    }
+    .btn-cerrar-modal:hover {
+      background: #d1d5db;
+    }
+    .btn-eliminar {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-eliminar:hover {
+      background: #c82333;
+    }
+  </style>
 </head>
-<body>
-  <h1>Pago recibido</h1>
-  <p>Estamos confirmando tu reserva.</p>
-  <a href="dashboard.html">Ir al dashboard</a>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+  <!-- ====================================================================
+       BARRA DE NAVEGACIÓN SUPERIOR (Estandarizada con dashboard y pagos)
+       El logo funciona como botón de retroceso hacia el dashboard
+       ==================================================================== -->
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    
+    <!-- Logo funcionando como botón de retroceso -->
+    <a href="dashboard.html" id="btnVolverLogo" class="flex items-center gap-3 text-primary group transition-transform" title="Volver al dashboard">
+      <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full group-hover:scale-105 transition-transform shadow-sm">
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
+        Dinastía <span class="text-primary">AMV</span>
+      </h2>
+    </a>
+
+    <!-- Opciones del usuario en cabecera -->
+    <div class="flex items-center gap-4 md:gap-6">
+      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50 dark:hover:bg-white/5" id="saludoUsuario">
+        <span class="material-symbols-outlined text-primary text-base">account_circle</span>
+        ¡Hola, viajero!
+      </a>
+      <a href="perfil.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg text-primary">person</span>
+        <span class="hidden sm:inline">Mi Perfil</span>
+      </a>
+      <!-- Botón Cerrar sesión (abre modal de confirmación) -->
+      <button id="btnCerrarSesion" type="button" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="hidden sm:inline">Cerrar sesión</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       CONTENIDO PRINCIPAL (Confirmación de pago exitoso)
+       ==================================================================== -->
+  <main class="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+    <div class="w-full max-w-lg">
+
+      <!-- Tarjeta de éxito -->
+      <section class="bg-white dark:bg-white/5 rounded-3xl border border-primary/15 shadow-xl shadow-purple-500/5 p-6 sm:p-10 text-center backdrop-blur-sm relative overflow-hidden card-hover">
+        
+        <!-- Línea decorativa superior con gradiente verde a morado -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-primary"></div>
+
+        <!-- Ícono circular animado de éxito -->
+        <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/10 ring-8 ring-emerald-50 dark:ring-emerald-950/20">
+          <span class="material-symbols-outlined text-5xl font-black">check_circle</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100 mb-2">
+          ¡Pago recibido con éxito!
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-6">
+          Estamos confirmando tu reserva. ¡Tu próxima aventura está lista para comenzar!
+        </p>
+
+        <!-- Caja de información y confirmación -->
+        <div class="rounded-2xl bg-purple-50/70 dark:bg-purple-950/20 border border-primary/20 p-4 mb-6 text-left">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary text-2xl mt-0.5 flex-shrink-0">task_alt</span>
+            <div class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1">
+              <p class="font-bold text-slate-900 dark:text-slate-100">Transacción completada</p>
+              <p>Tu pago fue procesado exitosamente a través de Stripe de manera segura.</p>
+              <div id="infoSessionId" class="hidden pt-1 text-[11px] text-slate-500 font-mono break-all"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="space-y-3">
+          <a href="perfil.html" class="gradient-btn w-full py-3.5 px-6 rounded-full text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/25 cursor-pointer block">
+            <span class="material-symbols-outlined text-lg">receipt_long</span>
+            <span>Ver mis reservas en Mi Perfil</span>
+          </a>
+
+          <a href="dashboard.html" class="w-full py-3 px-6 rounded-full border-2 border-primary/20 hover:bg-purple-50 dark:hover:bg-white/5 text-primary font-bold text-sm flex items-center justify-center gap-2 transition-colors block">
+            <span class="material-symbols-outlined text-lg">dashboard</span>
+            <span>Ir al dashboard</span>
+          </a>
+        </div>
+
+        <!-- Mensaje de soporte -->
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-6">
+          Te enviaremos los detalles completos y tu comprobante oficial al correo registrado.
+        </p>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       PIE DE PÁGINA (Idéntico a dashboard.html)
+       ==================================================================== -->
+  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
+  </footer>
+
+</div>
+</div>
+
+<!-- ====================================================================
+     MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN (Idéntico al dashboard)
+     ==================================================================== -->
+<div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
+  <div class="modal-content text-center">
+    <h3 id="tituloModalCierre" class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
+    <p class="text-slate-600 text-sm mt-1">Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+    <div class="modal-botones justify-center mt-6">
+      <button type="button" class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+      <button type="button" class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================================
+     SCRIPTS DE FUNCIONALIDAD
+     ==================================================================== -->
+<script>
+  // 1. Cargar saludo personalizado si existe en localStorage
+  const nombreGuardado = localStorage.getItem('usuario_nombre');
+  if (nombreGuardado) {
+    const saludoUsuario = document.getElementById('saludoUsuario');
+    if (saludoUsuario) {
+      saludoUsuario.innerHTML = `<span class="material-symbols-outlined text-primary text-base">account_circle</span> ¡Hola, ${nombreGuardado}!`;
+    }
+  }
+
+  // 2. El logo funciona como botón de retroceso
+  const btnVolverLogo = document.getElementById('btnVolverLogo');
+  if (btnVolverLogo) {
+    btnVolverLogo.addEventListener('click', function(e) {
+      if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+        e.preventDefault();
+        window.history.back();
+      }
+    });
+  }
+
+  // 3. Modal de confirmación para cerrar sesión (idéntico al dashboard)
+  const modalCierre = document.getElementById('modalConfirmarCierre');
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+  const btnNoCerrar = document.getElementById('btnNoCerrar');
+  const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+  if (btnCerrarSesion && modalCierre) {
+    btnCerrarSesion.addEventListener('click', function(e) {
+      e.preventDefault();
+      modalCierre.classList.add('active');
+    });
+
+    if (btnNoCerrar) {
+      btnNoCerrar.addEventListener('click', function() {
+        modalCierre.classList.remove('active');
+      });
+    }
+
+    if (btnSiCerrar) {
+      btnSiCerrar.addEventListener('click', function() {
+        window.location.href = 'index.html';
+      });
+    }
+
+    modalCierre.addEventListener('click', function(e) {
+      if (e.target === modalCierre) {
+        modalCierre.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modalCierre.classList.contains('active')) {
+        modalCierre.classList.remove('active');
+      }
+    });
+  }
+
+  // 4. Mostrar sesión de pago si viene en la URL
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  if (sessionId) {
+    const infoElem = document.getElementById('infoSessionId');
+    if (infoElem) {
+      infoElem.textContent = 'ID de sesión: ' + sessionId;
+      infoElem.classList.remove('hidden');
+    }
+  }
+</script>
 </body>
 </html>
