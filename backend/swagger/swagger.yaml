@@ -1,118 +1,719 @@
 openapi: 3.0.0
 info:
-  title: API Agencia AMV
-  description: Documentación de la API para la agencia de viajes
+  title: API Dinastía AMV - Agencia de Viajes
+  description: |
+    Documentación oficial e interactiva de la API para la plataforma **Dinastía AMV**.
+    
+    Esta API permite gestionar:
+    - **Autenticación y Sesiones**: Login diferenciado para usuarios y administradores, y cierre de sesión.
+    - **Usuarios**: Registro de nuevos clientes con encriptación segura.
+    - **Planes Turísticos (Viajes)**: Catálogo público y operaciones CRUD exclusivas para administradores (creación, edición con soporte para subida de múltiples imágenes).
+    - **Pasarela de Pagos (Stripe)**: Generación de sesiones de pago con Stripe Checkout y manejo de webhooks para actualización automática de transacciones.
+    - **Servicios de Utilidad**: Comprobación del servicio de correo con PHPMailer.
   version: 1.0.0
+  contact:
+    name: Soporte Dinastía AMV
+    email: soporte@dinastia.com
+
 servers:
-  - url: http://localhost/dinastia  #Cambiar en caso de tener otro nombre - Documentación swagger en http://localhost/dinastia/swagger/index.html
-    description: Servidor local XAMPP
+  - url: http://localhost/dinastia/backend
+    description: Servidor local XAMPP (Ruta estándar)
+  - url: http://localhost:8080/backend
+    description: Contenedor Docker (Puerto 8080)
+  - url: ..
+    description: Servidor dinámico relativo (Detecta host y puerto automáticamente)
+
+tags:
+  - name: Autenticación
+    description: Inicio y cierre de sesión para usuarios y administradores.
+  - name: Usuarios
+    description: Registro y gestión de cuentas de usuarios cliente.
+  - name: Viajes
+    description: Consulta del catálogo turístico público y administración de planes turísticos.
+  - name: Pagos (Stripe)
+    description: Integración con Stripe Checkout y recepción de webhooks de eventos de pago.
+  - name: Utilidades
+    description: Servicios auxiliares y verificación de dependencias del sistema.
 
 paths:
+  # =========================================================================
+  # AUTENTICACIÓN
+  # =========================================================================
   /api/login.php:
     post:
-      summary: Iniciar sesión
-      tags: [Autenticación]
+      summary: Iniciar sesión de usuario regular
+      description: |
+        Autentica a un usuario cliente contra la tabla `usuarios`.
+        
+        Al autenticarse con éxito:
+        - Inicia una sesión PHP (`$_SESSION['user_id']`, `$_SESSION['user_nombre']`, `$_SESSION['tipo_usuario'] = 'usuario'`).
+        - Retorna un código HTTP `302` redirigiendo a `../../frontend/dashboard.html`.
+        
+        Si las credenciales son incorrectas o la validación falla, muestra una página HTML con los errores.
+      tags:
+        - Autenticación
       requestBody:
         required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              required: [correo, contraseña]
-              properties:
-                correo:
-                  type: string
-                  format: email
-                  example: usuario@ejemplo.com
-                contraseña:
-                  type: string
-                  format: password
-                  example: miPassword123
-                tipo_usuario:
-                  type: string
-                  enum: [usuario, admin]
-                  default: usuario
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '302':
-          description: Redirige a index.html o InterfazAdmin.html según el tipo
+          description: Inicio de sesión exitoso. Redirige al panel del usuario (`dashboard.html`).
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: PHPSESSID=abc123456; path=/; HttpOnly
+              description: Cookie de sesión PHP.
+            Location:
+              schema:
+                type: string
+                example: ../../frontend/dashboard.html
+              description: Destino de la redirección.
+        '200':
+          description: Credenciales inválidas o campos faltantes. Retorna vista HTML informativa con los errores detectados.
+          content:
+            text/html:
+              schema:
+                type: string
 
-  /api/registrar_usuario.php:
+  /api/login_admin.php:
     post:
-      summary: Registrar nuevo usuario
-      tags: [Usuarios]
+      summary: Iniciar sesión de administrador
+      description: |
+        Autentica exclusivamente a usuarios administradores contra la tabla `admins`.
+        
+        Al autenticarse con éxito:
+        - Inicia la sesión PHP con rol administrativo (`$_SESSION['admin_id']`, `$_SESSION['tipo_usuario'] = 'admin'`).
+        - Retorna un código HTTP `302` redirigiendo a `../../frontend/interfazAdmin.php`.
+      tags:
+        - Autenticación
       requestBody:
         required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              required: [nombreCompleto, tipoDocumento, numeroDocumento, correo, contraseña, confirmar_contraseña]
-              properties:
-                nombreCompleto:
-                  type: string
-                  example: Juan Pérez
-                tipoDocumento:
-                  type: string
-                  enum: [CC, CE, TI, PP]
-                numeroDocumento:
-                  type: string
-                  example: "1234567890"
-                correo:
-                  type: string
-                  format: email
-                  example: juan@ejemplo.com
-                contraseña:
-                  type: string
-                  minLength: 6
-                confirmar_contraseña:
-                  type: string
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '302':
+          description: Inicio de sesión administrativo exitoso. Redirige al panel de administración (`interfazAdmin.php`).
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: PHPSESSID=abc123456; path=/; HttpOnly
+            Location:
+              schema:
+                type: string
+                example: ../../frontend/interfazAdmin.php
+        '200':
+          description: Credenciales inválidas o campos vacíos. Retorna vista HTML con la lista de errores.
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /api/logout.php:
+    get:
+      summary: Cerrar sesión activa
+      description: |
+        Destruye la sesión PHP activa (válido tanto para usuarios regulares como administradores) y redirige a la pantalla de inicio de sesión respectiva (`login_admin.html` para administradores o `login.html` para clientes).
+      tags:
+        - Autenticación
+      responses:
+        '302':
+          description: Sesión cerrada con éxito. Redirige al login correspondiente.
+          headers:
+            Location:
+              schema:
+                type: string
+                example: ../../frontend/login.html
+
+  # =========================================================================
+  # USUARIOS
+  # =========================================================================
+  /api/registrar_usuario.php:
+    post:
+      summary: Registrar nuevo cliente
+      description: |
+        Crea una nueva cuenta de usuario en el sistema, validando documento, formato de correo y longitud de contraseña. La contraseña se almacena de forma segura usando hash BCrypt.
+      tags:
+        - Usuarios
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegistroUsuarioRequest'
       responses:
         '200':
-          description: Registro exitoso o mensaje de error HTML
+          description: Resultado del registro en formato HTML. Puede ser confirmación de éxito ("¡Registro exitoso!") con enlace al login, o listado de errores de validación (por ejemplo, correo duplicado o contraseñas no coincidentes).
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirección al index si la petición no se envió por método POST.
+
+  # =========================================================================
+  # VIAJES (PLANES TURÍSTICOS)
+  # =========================================================================
+  /api/listar_viajes_publicos.php:
+    get:
+      summary: Obtener catálogo público de planes turísticos
+      description: |
+        Retorna la lista de todos los viajes registrados con sus respectivas imágenes asociadas.
+        
+        **No requiere autenticación**, permitiendo su consumo directo por el catálogo público y la página de reservas.
+      tags:
+        - Viajes
+      responses:
+        '200':
+          description: Catálogo de viajes cargado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaViajesResponse'
+        '500':
+          description: Error interno al consultar la base de datos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "No fue posible cargar los viajes."
+
+  /api/listar_viajes.php:
+    get:
+      summary: Listar viajes para el panel de administración
+      description: |
+        Retorna la lista completa de viajes junto a sus imágenes para su visualización y gestión en la interfaz administrativa.
+        
+        **Requiere autenticación con rol de administrador**.
+      tags:
+        - Viajes
+      responses:
+        '200':
+          description: Lista de viajes obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaViajesResponse'
+        '403':
+          description: Acceso denegado (no hay sesión de administrador activa).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "Debes iniciar sesión como administrador"
+        '500':
+          description: Error de base de datos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
 
   /api/guardar_viaje.php:
     post:
-      summary: Guardar un nuevo viaje (admin)
-      tags: [Viajes]
+      summary: Crear un nuevo plan turístico (Admin)
+      description: |
+        Registra un nuevo plan turístico en la base de datos y guarda las imágenes subidas en el servidor (`frontend/imagenes/`).
+        
+        **Requiere sesión activa de administrador**.
+      tags:
+        - Viajes
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
-              type: object
-              required: [destino, descripcion, precio, fecha_salida, fecha_regreso]
-              properties:
-                destino:
-                  type: string
-                  example: Cartagena, Colombia
-                descripcion:
-                  type: string
-                  example: Paquete todo incluido 5 días
-                precio:
-                  type: number
-                  example: 1500000
-                fecha_salida:
-                  type: string
-                  format: date
-                  example: "2026-08-15"
-                fecha_regreso:
-                  type: string
-                  format: date
-                  example: "2026-08-20"
-                imagenes:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
+              $ref: '#/components/schemas/GuardarViajeRequest'
       responses:
         '200':
-          description: Resultado de la operación
+          description: Viaje guardado correctamente.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  mensaje:
-                    type: string
+                $ref: '#/components/schemas/RespuestaExito'
+              example:
+                success: true
+                mensaje: "Viaje guardado correctamente"
+        '403':
+          description: Acceso denegado por falta de permisos de administrador.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "Debes iniciar sesion como administrador"
+        '422':
+          description: Datos incompletos o inválidos en el formulario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "Completa todos los datos del viaje"
+        '500':
+          description: Error al procesar o guardar los datos e imágenes en el servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "No fue posible guardar el viaje"
+
+  /api/actualizar_viaje.php:
+    post:
+      summary: Actualizar un plan turístico existente (Admin)
+      description: |
+        Modifica los datos de un plan turístico por su `id` y permite anexar nuevas imágenes que se sumarán a las ya existentes.
+        
+        **Requiere sesión activa de administrador**.
+      tags:
+        - Viajes
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ActualizarViajeRequest'
+      responses:
+        '200':
+          description: Viaje actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaExito'
+              example:
+                success: true
+                mensaje: "Viaje actualizado correctamente"
+        '403':
+          description: Acceso no autorizado (sin sesión de administrador).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "Debes iniciar sesión como administrador"
+        '500':
+          description: Error al actualizar los datos en la base de datos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              example:
+                success: false
+                error: "Falta el id del viaje a actualizar"
+
+  # =========================================================================
+  # PAGOS (STRIPE)
+  # =========================================================================
+  /api/crear_checkout_stripe.php:
+    post:
+      summary: Iniciar pasarela de pago con Stripe Checkout
+      description: |
+        Genera una sesión de pago en Stripe Checkout en pesos colombianos (COP).
+        
+        - Registra una transacción con estado `PENDING` en la tabla `pagos`.
+        - Configura las URLs de éxito (`pago_exitoso.html`) y cancelación (`pago_cancelado.html`).
+        - Retorna la URL oficial de Stripe para redirigir al cliente.
+        
+        **Requiere inicio de sesión de usuario regular**.
+      tags:
+        - Pagos (Stripe)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrearCheckoutRequest'
+      responses:
+        '200':
+          description: Sesión de Stripe Checkout generada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrearCheckoutResponse'
+              example:
+                ok: true
+                url: "https://checkout.stripe.com/c/pay/cs_test_a1b2c3d4e5f6g7h8"
+        '401':
+          description: Usuario no autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaErrorStripe'
+              example:
+                ok: false
+                error: "Debes iniciar sesión para pagar"
+        '404':
+          description: El viaje seleccionado no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaErrorStripe'
+              example:
+                ok: false
+                error: "Viaje no encontrado"
+        '405':
+          description: Método HTTP no permitido (debe ser POST).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaErrorStripe'
+              example:
+                ok: false
+                error: "Método no permitido"
+        '422':
+          description: Datos de reserva fuera de rango (ej. cantidad de personas < 1 o > 10).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaErrorStripe'
+              example:
+                ok: false
+                error: "Datos de reserva inválidos"
+        '500':
+          description: Error al comunicarse con la API de Stripe o variables de entorno no configuradas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaErrorStripe'
+              example:
+                ok: false
+                error: "Stripe no está configurado"
+
+  /api/webhook_stripe.php:
+    post:
+      summary: Webhook de notificación de eventos de Stripe
+      description: |
+        Endpoint asíncrono para recibir eventos y cambios de estado desde Stripe.
+        
+        - Valida la autenticidad del evento usando la firma criptográfica enviada en la cabecera `Stripe-Signature` y el secreto `STRIPE_WEBHOOK_SECRET`.
+        - Implementa idempotencia en la tabla `stripe_eventos`.
+        - Actualiza el estado del pago (`APPROVED`, `FAILED`, `EXPIRED`) en la base de datos al completarse la sesión de pago.
+      tags:
+        - Pagos (Stripe)
+      parameters:
+        - name: Stripe-Signature
+          in: header
+          required: true
+          description: Firma criptográfica provista por Stripe para verificar la autenticidad del webhook.
+          schema:
+            type: string
+            example: t=1614555800,v1=5257a869e7ecebeda32affa62cd...
+      requestBody:
+        required: true
+        description: Payload JSON crudo del evento enviado por los servidores de Stripe.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: evt_1J2b3c4d5e6f7g8h
+                type:
+                  type: string
+                  example: checkout.session.completed
+                data:
+                  type: object
+      responses:
+        '200':
+          description: Evento procesado o registrado exitosamente.
+        '400':
+          description: Firma de Stripe inválida o payload mal formado.
+        '500':
+          description: Error interno del servidor o clave de webhook no configurada.
+
+  # =========================================================================
+  # UTILIDADES
+  # =========================================================================
+  /api/enviar_correo.php:
+    get:
+      summary: Comprobar estado de la librería PHPMailer
+      description: |
+        Verifica que el autoloader de Composer cargue correctamente las dependencias de PHPMailer para el envío de correos en el sistema.
+      tags:
+        - Utilidades
+      responses:
+        '200':
+          description: PHPMailer disponible y funcionando.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "PHPMailer está funcionando correctamente."
+
+# =============================================================================
+# COMPONENTES Y MODELOS DE DATOS
+# =============================================================================
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - correo
+        - contraseña
+      properties:
+        correo:
+          type: string
+          format: email
+          description: Correo electrónico registrado.
+          example: usuario@ejemplo.com
+        contraseña:
+          type: string
+          format: password
+          description: Contraseña de acceso.
+          example: miContraseñaSegura123
+
+    RegistroUsuarioRequest:
+      type: object
+      required:
+        - nombreCompleto
+        - tipoDocumento
+        - numeroDocumento
+        - correo
+        - contraseña
+        - confirmar_contraseña
+      properties:
+        nombreCompleto:
+          type: string
+          description: Nombre y apellidos completos del cliente.
+          example: Carlos Alberto Montoya
+        tipoDocumento:
+          type: string
+          description: Tipo de documento de identidad oficial.
+          enum:
+            - CC
+            - CE
+            - TI
+            - PP
+          example: CC
+        numeroDocumento:
+          type: string
+          description: Número del documento de identidad.
+          example: "1037654321"
+        correo:
+          type: string
+          format: email
+          description: Correo electrónico único del cliente.
+          example: carlos.montoya@ejemplo.com
+        contraseña:
+          type: string
+          format: password
+          minLength: 6
+          description: Contraseña con mínimo 6 caracteres.
+          example: secreta2026
+        confirmar_contraseña:
+          type: string
+          format: password
+          minLength: 6
+          description: Confirmación idéntica de la contraseña.
+          example: secreta2026
+
+    ImagenViaje:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del registro de la imagen.
+          example: 1
+        url:
+          type: string
+          description: Nombre del archivo de la imagen almacenado en el servidor.
+          example: "7f4c9a8b1234_cartagena.jpg"
+
+    Viaje:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del plan turístico.
+          example: 1
+        destino:
+          type: string
+          description: Nombre de la ciudad o destino turístico.
+          example: "Cartagena de Indias, Colombia"
+        descripcion:
+          type: string
+          description: Descripción detallada de las actividades y comodidades incluidas.
+          example: "Paquete todo incluido 5 días y 4 noches con tour a Islas del Rosario, alojamiento y alimentación."
+        precio:
+          type: number
+          description: Precio total por persona expresado en pesos colombianos (COP).
+          example: 1500000
+        fecha_salida:
+          type: string
+          format: date
+          description: Fecha de inicio del viaje (YYYY-MM-DD).
+          example: "2026-10-15"
+        fecha_regreso:
+          type: string
+          format: date
+          description: Fecha de finalización del viaje (YYYY-MM-DD).
+          example: "2026-10-20"
+        imagenes:
+          type: array
+          description: Lista de imágenes asociadas a la galería del plan turístico.
+          items:
+            $ref: '#/components/schemas/ImagenViaje'
+
+    ListaViajesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        viajes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Viaje'
+
+    GuardarViajeRequest:
+      type: object
+      required:
+        - destino
+        - descripcion
+        - precio
+        - fecha_salida
+        - fecha_regreso
+      properties:
+        destino:
+          type: string
+          description: Destino turístico.
+          example: "Eje Cafetero y Termales"
+        descripcion:
+          type: string
+          description: Descripción de los atractivos, hospedaje y traslados incluidos.
+          example: "Recorrido guiado por cafetales, entrada a termales de Santa Rosa y cabalgata."
+        precio:
+          type: number
+          description: Precio del paquete turístico.
+          example: 980000
+        fecha_salida:
+          type: string
+          format: date
+          description: Fecha de salida.
+          example: "2026-11-05"
+        fecha_regreso:
+          type: string
+          format: date
+          description: Fecha de regreso.
+          example: "2026-11-09"
+        imagenes:
+          type: array
+          description: Imágenes del destino (pueden subirse uno o varios archivos).
+          items:
+            type: string
+            format: binary
+
+    ActualizarViajeRequest:
+      type: object
+      required:
+        - id
+        - destino
+        - descripcion
+        - precio
+        - fecha_salida
+        - fecha_regreso
+      properties:
+        id:
+          type: integer
+          description: Identificador numérico del viaje a editar.
+          example: 1
+        destino:
+          type: string
+          description: Destino actualizado.
+          example: "Eje Cafetero y Termales Premium"
+        descripcion:
+          type: string
+          description: Nueva descripción del paquete turístico.
+          example: "Edición especial con transporte privado y visita al Valle de Cocora."
+        precio:
+          type: number
+          description: Nuevo valor del viaje.
+          example: 1150000
+        fecha_salida:
+          type: string
+          format: date
+          example: "2026-11-05"
+        fecha_regreso:
+          type: string
+          format: date
+          example: "2026-11-10"
+        imagenes:
+          type: array
+          description: Nuevas fotos a anexar a la galería del viaje.
+          items:
+            type: string
+            format: binary
+
+    CrearCheckoutRequest:
+      type: object
+      required:
+        - viaje_id
+      properties:
+        viaje_id:
+          type: integer
+          description: ID del plan turístico seleccionado.
+          example: 1
+        cantidad_personas:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          description: Número de cupos a comprar (entre 1 y 10).
+          example: 2
+
+    CrearCheckoutResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        url:
+          type: string
+          format: uri
+          description: Enlace oficial de Stripe Checkout para realizar el pago de la reserva.
+          example: "https://checkout.stripe.com/c/pay/cs_test_a1b2c3d4e5f6g7h8"
+
+    RespuestaExito:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        mensaje:
+          type: string
+          example: "Operación realizada con éxito"
+
+    RespuestaError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Descripción detallada del error"
+
+    RespuestaErrorStripe:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Descripción del error ocurrido"
