@@ -16,12 +16,12 @@ info:
     email: soporte@dinastia.com
 
 servers:
+  - url: ..
+    description: Servidor actual (Recomendado - Evita CORS y detecta puerto automáticamente)
   - url: http://localhost/dinastia/backend
     description: Servidor local XAMPP (Ruta estándar)
   - url: http://localhost:8080/backend
     description: Contenedor Docker (Puerto 8080)
-  - url: ..
-    description: Servidor dinámico relativo (Detecta host y puerto automáticamente)
 
 tags:
   - name: Autenticación
