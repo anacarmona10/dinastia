@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Catálogo de Planes Turísticos - Dinastía AMV</title>
+
+  <!-- Tailwind CSS CDN con plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Configuración oficial de Tailwind estandarizada con el sistema de diseño -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Estilos del catálogo -->
+  <link rel="stylesheet" href="style_catalogo.css">
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+  <!-- ====================================================================
+       CABECERA Y BARRA DE NAVEGACIÓN PÚBLICA (Estandarizada)
+       ==================================================================== -->
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
+    
+    <!-- Logo Dinastía AMV -->
+    <a href="index.html" class="flex items-center gap-3 text-primary group" title="Volver al inicio">
+      <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
+        Dinastía <span class="text-primary">AMV</span>
+      </h2>
+    </a>
+
+    <!-- Menú de Navegación -->
+    <div class="flex items-center gap-3 sm:gap-6">
+      <nav class="hidden md:flex items-center gap-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
+        <a href="index.html#destinos" class="hover:text-primary transition-colors">Destinos</a>
+        <a href="index.html#nosotros" class="hover:text-primary transition-colors">Nosotros</a>
+        <a href="index.html#precios" class="hover:text-primary transition-colors">Precios Locales</a>
+        <a href="dashboard.html" class="hover:text-primary transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">dashboard</span> Dashboard
+        </a>
+      </nav>
+
+      <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
+
+      <!-- Accesos Rápidos de Usuario -->
+      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50">
+        <span class="material-symbols-outlined text-primary text-lg">account_circle</span>
+        Mi Perfil
+      </a>
+
+      <!-- Botón Registrarse / Iniciar Sesión -->
+      <a href="login.html" class="px-5 py-2.5 rounded-full gradient-btn text-white text-xs sm:text-sm font-bold shadow-md shadow-primary/25">
+        Iniciar Sesión
+      </a>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       HERO BANNER DE EXPLORACIÓN
+       ==================================================================== -->
+  <section class="bg-gradient-to-r from-purple-900 via-primary to-pink-600 text-white py-10 px-4 sm:px-8 lg:px-20 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+      <div class="max-w-2xl text-center md:text-left">
+        <span class="inline-block px-3.5 py-1 rounded-full bg-yellow-400 text-slate-950 text-xs font-black uppercase tracking-wider mb-3">
+          Planes Turísticos en Colombia
+        </span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2">
+          Descubre los mejores destinos nacionales
+        </h1>
+        <p class="text-purple-100 text-sm sm:text-base leading-relaxed">
+          Filtra entre paquetes con tiquetes, hospedaje y actividades todo incluido al precio más bajo del mercado.
+        </p>
+      </div>
+
+      <!-- Botón Móvil para abrir filtros -->
+      <div class="lg:hidden w-full sm:w-auto">
+        <button 
+          id="btnAbrirDrawer" 
+          type="button" 
+          class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white text-slate-900 font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 hover:bg-purple-50 transition-all"
+        >
+          <span class="material-symbols-outlined text-primary text-xl">tune</span>
+          Filtros de Búsqueda
+          <span id="badgeFiltrosActivos" class="hidden bg-primary text-white text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       CONTENEDOR PRINCIPAL: SIDEBAR DE FILTROS + GRID DE PLANES
+       ==================================================================== -->
+  <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8 md:py-10 max-w-7xl w-full mx-auto">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- ================================================================
+           COLUMNA IZQUIERDA (3 de 12 en Desktop): BARRA DE FILTROS
+           ================================================================ -->
+      <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24 space-y-6">
+        
+        <div class="bg-white dark:bg-white/5 rounded-2xl border border-primary/15 shadow-sm p-6">
+          <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
+            <h2 class="text-lg font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-2xl font-bold">filter_alt</span>
+              Filtros
+            </h2>
+            <button 
+              id="btnLimpiarFiltros" 
+              type="button" 
+              class="text-xs font-bold text-primary hover:text-pink-600 transition-colors underline"
+            >
+              Limpiar todo
+            </button>
+          </div>
+
+          <form id="formFiltros" class="space-y-5" novalidate>
+            
+            <!-- 1. FILTRO: DESTINO CON AUTOCOMPLETADO -->
+            <div class="relative">
+              <label for="filtroDestino" class="label-filtro">Destino</label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="filtroDestino" 
+                  name="destino" 
+                  class="campo-filtro pr-8" 
+                  placeholder="Ej. Cartagena, Salento..."
+                  autocomplete="off"
+                />
+                <span class="material-symbols-outlined text-slate-400 absolute right-2.5 top-2.5 text-lg pointer-events-none">search</span>
+              </div>
+              <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+            </div>
+
+            <!-- 2. FILTRO: LUGAR DE SALIDA (ORIGEN) -->
+            <div>
+              <label for="filtroLugarSalida" class="label-filtro">Lugar de salida</label>
+              <select id="filtroLugarSalida" name="lugar_salida" class="campo-filtro cursor-pointer">
+                <option value="todos">Cualquier ciudad de origen</option>
+                <option value="Medellin">Medellín</option>
+                <option value="Bogota">Bogotá D.C.</option>
+                <option value="Cali">Cali</option>
+                <option value="Barranquilla">Barranquilla</option>
+                <option value="Bucaramanga">Bucaramanga</option>
+                <option value="Pereira">Pereira</option>
+              </select>
+            </div>
+
+            <!-- 3. FILTRO: RANGO DE PRECIO MÁXIMO -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="rangePrecioMax" class="label-filtro mb-0">Precio máximo</label>
+                <span id="valorPrecioMaxDisplay" class="text-xs font-black text-primary font-mono">$2.000.000</span>
+              </div>
+              <input 
+                type="range" 
+                id="rangePrecioMax" 
+                min="200000" 
+                max="2000000" 
+                step="50000" 
+                value="2000000" 
+                class="w-full accent-primary cursor-pointer" 
+              />
+              <div class="flex items-center justify-between text-[11px] text-slate-400 font-semibold mt-1">
+                <span>$200.000</span>
+                <span>$2.000.000+</span>
+              </div>
+              <!-- Inputs numéricos auxiliares -->
+              <input type="hidden" id="filtroPrecioMin" value="0">
+              <input type="hidden" id="filtroPrecioMax" value="2000000">
+            </div>
+
+            <!-- 4. FILTRO: DURACIÓN DEL VIAJE (RADIO PILLS) -->
+            <div>
+              <label class="label-filtro">Duración</label>
+              <div class="pill-radio-container">
+                <div class="pill-radio-item">
+                  <input type="radio" id="durTodas" name="duracion" value="todas" checked>
+                  <label for="durTodas" class="pill-radio-label">Cualquiera</label>
+                </div>
+                <div class="pill-radio-item">
+                  <input type="radio" id="dur13" name="duracion" value="1-3">
+                  <label for="dur13" class="pill-radio-label">1-3 días</label>
+                </div>
+                <div class="pill-radio-item">
+                  <input type="radio" id="dur46" name="duracion" value="4-6">
+                  <label for="dur46" class="pill-radio-label">4-6 días</label>
+                </div>
+                <div class="pill-radio-item">
+                  <input type="radio" id="dur79" name="duracion" value="7-9">
+                  <label for="dur79" class="pill-radio-label">7-9 días</label>
+                </div>
+                <div class="pill-radio-item">
+                  <input type="radio" id="dur10" name="duracion" value="10+">
+                  <label for="dur10" class="pill-radio-label">10+ días</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. FILTRO: FECHA DE SALIDA -->
+            <div>
+              <label for="filtroFechaSalida" class="label-filtro">Fecha de salida (a partir de)</label>
+              <input 
+                type="date" 
+                id="filtroFechaSalida" 
+                name="fecha_salida" 
+                class="campo-filtro cursor-pointer text-xs" 
+              />
+            </div>
+
+            <!-- BOTÓN APLICAR -->
+            <button 
+              id="btnAplicarFiltros" 
+              type="submit" 
+              class="w-full py-3 rounded-full gradient-btn text-xs font-black shadow-lg shadow-primary/25 mt-2"
+            >
+              <span class="material-symbols-outlined text-sm">search</span>
+              Aplicar Filtros
+            </button>
+
+          </form>
+        </div>
+
+      </aside>
+
+      <!-- ================================================================
+           COLUMNA DERECHA (8/9 de 12 en Desktop): RESULTADOS Y TARJETAS
+           ================================================================ -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-6" aria-label="Planes turísticos disponibles">
+        
+        <!-- BARRA SUPERIOR DE RESULTADOS Y ORDEN -->
+        <div class="bg-white dark:bg-white/5 rounded-2xl border border-primary/10 shadow-sm p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl font-bold">explore</span>
+            <p id="contadorResultados" class="text-sm font-extrabold text-slate-800 dark:text-slate-200" aria-live="polite">
+              Buscando planes turísticos...
+            </p>
+          </div>
+
+          <!-- Selector de Ordenamiento -->
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <label for="selectOrden" class="text-xs font-bold text-slate-500 whitespace-nowrap">Ordenar por:</label>
+            <select id="selectOrden" class="campo-filtro text-xs font-bold py-1.5 px-3 rounded-xl max-w-[200px] cursor-pointer">
+              <option value="destacados">Más destacados</option>
+              <option value="precio_asc">Precio: Menor a Mayor</option>
+              <option value="precio_desc">Precio: Mayor a Menor</option>
+              <option value="fecha_asc">Fecha más próxima</option>
+              <option value="duracion_desc">Mayor duración</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SKELETON LOADER (ESTADO DE CARGA) -->
+        <div id="skeletonLoader" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div class="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-slate-100">
+            <div class="skeleton h-48 w-full rounded-xl"></div>
+            <div class="skeleton h-5 w-3/4"></div>
+            <div class="skeleton h-4 w-1/2"></div>
+            <div class="skeleton h-10 w-full rounded-full mt-4"></div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-slate-100">
+            <div class="skeleton h-48 w-full rounded-xl"></div>
+            <div class="skeleton h-5 w-3/4"></div>
+            <div class="skeleton h-4 w-1/2"></div>
+            <div class="skeleton h-10 w-full rounded-full mt-4"></div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-slate-100">
+            <div class="skeleton h-48 w-full rounded-xl"></div>
+            <div class="skeleton h-5 w-3/4"></div>
+            <div class="skeleton h-4 w-1/2"></div>
+            <div class="skeleton h-10 w-full rounded-full mt-4"></div>
+          </div>
+        </div>
+
+        <!-- GRID DE TARJETAS DE PLANES (INYECCIÓN DINÁMICA) -->
+        <div id="gridPlanes" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Las tarjetas se generan mediante JS -->
+        </div>
+
+        <!-- ESTADO VACÍO (EMPTY STATE) -->
+        <div id="emptyState" class="hidden bg-white dark:bg-white/5 rounded-2xl border border-primary/10 p-12 text-center shadow-sm">
+          <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
+            <span class="material-symbols-outlined text-4xl">travel_explore</span>
+          </div>
+          <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 mb-2">
+            No encontramos planes que coincidan con tu búsqueda
+          </h3>
+          <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
+            Prueba ajustando el rango de precios, cambiando la ciudad de salida o seleccionando cualquier duración.
+          </p>
+          <button 
+            onclick="document.getElementById('btnLimpiarFiltros').click()" 
+            type="button" 
+            class="px-6 py-2.5 rounded-full gradient-btn text-xs font-bold shadow-md inline-flex items-center gap-1.5"
+          >
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            Ver todos los planes disponibles
+          </button>
+        </div>
+
+        <!-- ESTADO DE ERROR -->
+        <div id="errorState" class="hidden bg-red-50 border border-red-200 rounded-2xl p-8 text-center text-red-700">
+          <span class="material-symbols-outlined text-4xl text-red-500 mb-2 block">error</span>
+          <h3 class="font-bold text-base mb-1">Ocurrió un error al consultar el catálogo</h3>
+          <p class="text-xs text-red-600 mb-4">No fue posible conectar con el servidor de planes turísticos.</p>
+          <button onclick="location.reload()" type="button" class="px-4 py-2 bg-red-600 text-white rounded-full text-xs font-bold">
+            Reintentar
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       DRAWER MÓVIL DE FILTROS
+       ==================================================================== -->
+  <div id="drawerFiltros" class="drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="tituloDrawerFiltros">
+    <div class="drawer-container p-6 overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+        <h3 id="tituloDrawerFiltros" class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary font-bold">tune</span>
+          Filtros de Búsqueda
+        </h3>
+        <button id="btnCerrarDrawer" type="button" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1" aria-label="Cerrar filtros">&times;</button>
+      </div>
+      
+      <!-- Contenido del formulario móvil idéntico -->
+      <div class="text-xs text-slate-500 mb-4">Aplica los filtros para actualizar la lista de planes.</div>
+      
+      <!-- Botones de acción móvil -->
+      <div class="space-y-3 pt-2">
+        <button 
+          onclick="document.getElementById('formFiltros').dispatchEvent(new Event('submit'))" 
+          type="button" 
+          class="w-full py-3 rounded-full gradient-btn text-xs font-black shadow-lg"
+        >
+          Aplicar Filtros
+        </button>
+        <button 
+          onclick="document.getElementById('btnLimpiarFiltros').click()" 
+          type="button" 
+          class="w-full py-2.5 rounded-full btn-outline text-xs font-bold"
+        >
+          Limpiar Todo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL DE DETALLES DEL PLAN TURÍSTICO
+       ==================================================================== -->
+  <div id="modalDetallePlan" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tituloModalDetalle">
+    <div class="modal-content-catalogo p-6 sm:p-8">
+      
+      <div class="flex items-center justify-between pb-3 mb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-2xl font-bold">travel_explore</span>
+          <h3 id="tituloModalDetalle" class="text-lg sm:text-xl font-black text-slate-900">
+            Detalle del Plan Turístico
+          </h3>
+        </div>
+        <button id="btnCerrarModalPlan" type="button" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1" aria-label="Cerrar modal">&times;</button>
+      </div>
+
+      <!-- Contenido inyectado dinámicamente -->
+      <div id="modalPlanContenido" class="overflow-y-auto max-h-[65vh] pr-1">
+        <!-- Generado por catalogo.js -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       PIE DE PÁGINA ESTANDARIZADO
+       ==================================================================== -->
+  <footer class="px-6 md:px-20 py-8 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 <strong>Dinastía AMV</strong> · Todos los derechos reservados · RNT 45291 Colombia</p>
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="index.html#nosotros" class="hover:text-primary transition-colors">Términos y Condiciones</a>
+        <a href="index.html#contacto" class="hover:text-primary transition-colors">Atención al Viajero</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+<!-- Script del Catálogo -->
+<script src="js/catalogo.js"></script>
+
+</body>
+</html>

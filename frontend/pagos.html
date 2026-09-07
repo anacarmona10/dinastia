@@ -389,7 +389,9 @@
 
   // 4. Parámetros de la URL y gestión de la reserva
   const parametros = new URLSearchParams(window.location.search);
-  const viajeId = Number(parametros.get('viaje_id'));
+  const viajeId = Number(parametros.get('viaje_id') || parametros.get('plan_id') || parametros.get('id'));
+  const destinoUrl = parametros.get('destino');
+  const precioUrl = Number(parametros.get('precio'));
 
   const mensajeViaje = document.getElementById('mensajeViaje');
   const mensajePago = document.getElementById('mensajePago');
@@ -402,17 +404,29 @@
     mensajeViaje.textContent = 'No se recibió un viaje válido.';
     botonPagar.disabled = true;
   } else {
-    mensajeViaje.textContent = `Reserva del viaje #${viajeId}`;
+    mensajeViaje.textContent = destinoUrl ? `Reserva: ${decodeURIComponent(destinoUrl)}` : `Reserva del viaje #${viajeId}`;
 
-    // Consultar detalles públicos del viaje para enriquecer la tarjeta
-    fetch('../backend/api/listar_viajes_publicos.php')
+    if (precioUrl > 0) {
+      precioUnitario = precioUrl;
+      const contenedorDetalle = document.getElementById('infoViajeDetalle');
+      const precioUnitarioElem = document.getElementById('precioUnitario');
+      if (precioUnitarioElem) {
+        precioUnitarioElem.textContent = '$' + precioUnitario.toLocaleString('es-CO') + ' COP';
+        document.getElementById('contenedorTotal')?.classList.remove('hidden');
+      }
+      contenedorDetalle?.classList.remove('hidden');
+      actualizarTotal();
+    }
+
+    // Consultar API de planes o listar_viajes_publicos para obtener detalles de la BD
+    fetch('../backend/api/planes.php')
       .then(res => res.json())
       .then(datos => {
-        if (datos && datos.success && Array.isArray(datos.viajes)) {
-          const viaje = datos.viajes.find(v => Number(v.id) === viajeId);
+        if (datos && datos.success && Array.isArray(datos.data)) {
+          const viaje = datos.data.find(v => Number(v.id) === viajeId);
           if (viaje) {
             mensajeViaje.textContent = viaje.destino ? `Reserva: ${viaje.destino}` : `Reserva del viaje #${viajeId}`;
-            precioUnitario = Number(viaje.precio) || 0;
+            precioUnitario = Number(viaje.precio) || precioUnitario || 0;
 
             const contenedorDetalle = document.getElementById('infoViajeDetalle');
             const destinoFechas = document.getElementById('destinoFechas');
@@ -433,7 +447,7 @@
         }
       })
       .catch(() => {
-        // En caso de error de red, se mantiene el mensaje por defecto
+        // En caso de fallo de red se mantienen los datos recibidos por parámetro
       });
   }
 
