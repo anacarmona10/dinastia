@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil - Dinastía AMV</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+
+<body class="min-h-screen bg-slate-100 text-slate-900">
+  <header class="flex items-center justify-between bg-white px-6 py-4 shadow-sm md:px-20">
+    <a href="dashboard.html" class="font-black text-xl text-fuchsia-600">
+      Dinastía AMV
+    </a>
+
+    <a href="../backend/api/logout.php" class="font-semibold text-fuchsia-600 hover:text-orange-500">
+      Cerrar sesión
+    </a>
+  </header>
+
+  <main class="mx-auto max-w-2xl px-6 py-12">
+    <a href="dashboard.html" class="mb-6 inline-flex font-semibold text-fuchsia-600 hover:text-orange-500">
+      ← Volver al dashboard
+    </a>
+
+    <section class="rounded-3xl bg-white p-8 shadow-lg">
+      <h1 class="text-3xl font-black">Mi perfil</h1>
+      <p class="mt-2 text-slate-600">
+        Actualiza tus datos personales.
+      </p>
+
+      <form id="formPerfil" class="mt-8 space-y-5">
+        <div>
+          <label for="nombreCompleto" class="mb-2 block font-bold">Nombre completo</label>
+          <input id="nombreCompleto" type="text" required
+            class="w-full rounded-xl border-slate-300 px-4 py-3 focus:border-fuchsia-500 focus:ring-fuchsia-500">
+        </div>
+
+        <div>
+          <label for="tipoDocumento" class="mb-2 block font-bold">Tipo de documento</label>
+          <select id="tipoDocumento" required
+            class="w-full rounded-xl border-slate-300 px-4 py-3 focus:border-fuchsia-500 focus:ring-fuchsia-500">
+            <option value="">Selecciona una opción</option>
+            <option value="cc">Cédula de Ciudadanía</option>
+            <option value="ce">Cédula de Extranjería</option>
+            <option value="ppt">Permiso por Protección Temporal</option>
+            <option value="pep">Permiso Especial de Permanencia</option>
+            <option value="passport">Pasaporte</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="numeroDocumento" class="mb-2 block font-bold">Número de documento</label>
+          <input id="numeroDocumento" type="text" required
+            class="w-full rounded-xl border-slate-300 px-4 py-3 focus:border-fuchsia-500 focus:ring-fuchsia-500">
+        </div>
+
+        <div>
+          <label for="correo" class="mb-2 block font-bold">Correo electrónico</label>
+          <input id="correo" type="email" required
+            class="w-full rounded-xl border-slate-300 px-4 py-3 focus:border-fuchsia-500 focus:ring-fuchsia-500">
+        </div>
+
+        <button id="botonGuardar" type="submit"
+          class="w-full rounded-xl bg-fuchsia-600 px-5 py-3 font-bold text-white transition hover:bg-fuchsia-700 disabled:opacity-60">
+          Guardar cambios
+        </button>
+
+        <div id="mensajePerfil"></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="js/perfil.js"></script>
+</body>
+</html>

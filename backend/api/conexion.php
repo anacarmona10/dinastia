@@ -4,28 +4,35 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-// Cargar las variables del archivo .env
+// Docker entrega las variables del archivo .env al contenedor.
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$dotenv->safeLoad();
 
-// Obtener las credenciales
-$host = $_ENV['DB_HOST'];
-$endpoint = $_ENV['DB_ENDPOINT'];
-$dbname = $_ENV['DB_NAME'];
-$user = $_ENV['DB_USER'];
-$password = $_ENV['DB_PASSWORD'];
+$host = $_ENV['DB_HOST'] ?? '';
+$port = $_ENV['DB_PORT'] ?? '5432';
+$dbname = $_ENV['DB_NAME'] ?? '';
+$user = $_ENV['DB_USER'] ?? '';
+$password = $_ENV['DB_PASSWORD'] ?? '';
+$sslmode = $_ENV['DB_SSLMODE'] ?? 'require';
+
+if ($host === '' || $dbname === '' || $user === '' || $password === '') {
+    http_response_code(500);
+    exit('Error de configuración de la base de datos.');
+}
 
 try {
     $pdo = new PDO(
-        "pgsql:host=$host;port=5432;dbname=$dbname;sslmode=require;options=endpoint=$endpoint",
+        "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=$sslmode",
         $user,
-        $password
+        $password,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
     );
 
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 } catch (PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
+    error_log($e->getMessage());
+    http_response_code(500);
+    exit('No fue posible conectar con la base de datos.');
 }
-?>
