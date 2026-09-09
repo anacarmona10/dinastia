@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Dinastía AMV - Hoja de Estilos: Catálogo Público con Filtros (style_catalogo.css)
+   Sistema de Diseño: Public Sans, Violeta (#c800ff), Naranja (#ff4d00), Rosado (#EF1D9C)
+   ========================================================================== */
+
+body {
+  font-family: 'Public Sans', sans-serif;
+  color: #1E293B;
+  background-color: #f8f6f6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Botones y Gradientes
+   ========================================================================== */
+.gradient-btn {
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 14px rgba(200, 0, 255, 0.25);
+}
+
+.gradient-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+}
+
+.gradient-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #c800ff;
+  border: 2px solid #c800ff;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: rgba(200, 0, 255, 0.08);
+  border-color: #a800d7;
+  color: #a800d7;
+}
+
+.btn-ghost-custom {
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-ghost-custom:hover {
+  background: #d1d5db;
+  color: #111827;
+}
+
+/* ==========================================================================
+   Tarjetas de Viaje y Efectos
+   ========================================================================== */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(200, 0, 255, 0.12), 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   Campos de Formulario (Filtros)
+   ========================================================================== */
+.campo-filtro {
+  border: 1.5px solid #e3b0ff;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  width: 100%;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.campo-filtro:focus {
+  border-color: #c800ff;
+  box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.18);
+}
+
+.label-filtro {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+/* Pills de Duración */
+.pill-radio-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pill-radio-item {
+  position: relative;
+}
+
+.pill-radio-item input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.pill-radio-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  background-color: #f1f5f9;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pill-radio-item input[type="radio"]:checked + .pill-radio-label {
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(200, 0, 255, 0.3);
+}
+
+.pill-radio-label:hover {
+  background-color: #e2e8f0;
+}
+
+/* ==========================================================================
+   Range Slider de Precios
+   ========================================================================== */
+.price-slider-track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+.price-slider-fill {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  border-radius: 9999px;
+  left: 0%;
+  right: 0%;
+}
+
+.price-range-input {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.price-range-input::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #c800ff;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.price-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* ==========================================================================
+   Drawer Móvil de Filtros
+   ========================================================================== */
+.drawer-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 28, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-backdrop.active {
+  display: block;
+  opacity: 1;
+}
+
+.drawer-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: -100%;
+  width: 85%;
+  max-width: 360px;
+  background: #ffffff;
+  z-index: 1001;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-backdrop.active .drawer-container {
+  left: 0;
+}
+
+/* ==========================================================================
+   Modales (Detalle del Viaje)
+   ========================================================================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 12, 28, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content-catalogo {
+  background: white;
+  border-radius: 1.75rem;
+  max-width: 680px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.95);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active .modal-content-catalogo {
+  transform: scale(1);
+}
+
+/* ==========================================================================
+   Autocompletado Dropdown de Destinos
+   ========================================================================== */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1.5px solid #e3b0ff;
+  border-top: none;
+  border-radius: 0 0 0.75rem 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+.autocomplete-dropdown.show {
+  display: block;
+}
+
+.autocomplete-item {
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #334155;
+}
+
+.autocomplete-item:hover {
+  background: #faf5ff;
+  color: #c800ff;
+}
+
+/* Skeleton Loading Animation */
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

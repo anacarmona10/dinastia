@@ -45,15 +45,15 @@
       <!-- Top Navigation Bar -->
       <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 md:px-10 lg:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
         <div class="flex items-center gap-3 text-primary">
-          <span class="material-symbols-outlined text-3xl font-bold">explore</span>
+          <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm">
           <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">Dinastía <span class="text-primary">AMV</span></h2>
         </div>
         <!-- Menú horizontal visible a partir de tablet (md) -->
         <div class="hidden md:flex flex-1 justify-end gap-4 lg:gap-6 items-center">
           <nav class="flex items-center gap-3 lg:gap-4 flex-wrap">
+            <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="catalogo.html">Catálogo de Planes</a>
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#destinos">Destinos</a>
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#nosotros">Nosotros</a>
-            <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#historia">Historia</a>
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#precios">Precios Locales</a>
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#contacto">Contacto</a>
           </nav>
@@ -70,6 +70,9 @@
 
       <!-- Menú desplegable móvil -->
       <div id="mobile-menu" class="hidden md:hidden flex-col bg-white dark:bg-background-dark shadow-lg absolute top-20 left-0 w-full p-6 space-y-4 z-50 border-b border-primary/10 transition-all duration-300">
+        <a href="catalogo.html" class="text-gray-700 dark:text-gray-300 font-bold text-lg py-3 hover:text-primary transition-colors border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">explore</span> Catálogo de Planes
+        </a>
         <a href="#destinos" class="text-gray-700 dark:text-gray-300 font-medium text-lg py-3 hover:text-primary transition-colors border-b border-gray-100 dark:border-gray-800">Destinos</a>
         <a href="#nosotros" class="text-gray-700 dark:text-gray-300 font-medium text-lg py-3 hover:text-primary transition-colors border-b border-gray-100 dark:border-gray-800">Nosotros</a>
         <a href="#historia" class="text-gray-700 dark:text-gray-300 font-medium text-lg py-3 hover:text-primary transition-colors border-b border-gray-100 dark:border-gray-800">Historia</a>
@@ -93,14 +96,18 @@
                 Descubre paisajes vibrantes con las tarifas más bajas del mercado, diseñadas exclusivamente para nuestra gente por <span class="text-primary font-bold">AMV</span>.
               </h2>
               <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                <!-- Botón "Ver Planes Locales" redirige a login.html -->
-                <a href="login.html" class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-primary text-white text-base font-bold shadow-xl hover:scale-105 transition-all">
-                  Ver Planes Locales
+                <!-- Botón "Ver Catálogo Completo" redirige a catalogo.html -->
+                <a href="catalogo.html" class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-primary text-white text-base font-bold shadow-xl hover:scale-105 transition-all gap-2">
+                  <span class="material-symbols-outlined">explore</span>
+                  Explorar Catálogo
                 </a>
-                <button class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-white/10 backdrop-blur-md border border-white/20 text-white text-base font-bold hover:bg-white/20 transition-all">
-                  Explorar Destinos
-                </button>
+                <a href="catalogo.html" class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-6 bg-white/10 backdrop-blur-md border border-white/20 text-white text-base font-bold hover:bg-white/20 transition-all">
+                  Ver Destinos
+                </a>
               </div>
+            </div>
+          </div>
+        </div>
             </div>
           </div>
         </div>
@@ -198,9 +205,9 @@
               <h2 class="text-slate-900 dark:text-slate-100 text-3xl sm:text-4xl font-black mb-4">Destinos Imperdibles - Precios Locales</h2>
               <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg">Seleccionamos los rincones más coloridos y energéticos para tu próxima aventura nacional.</p>
             </div>
-            <a class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all text-sm md:text-base" href="#">
-              Ver todos los destinos <span class="material-symbols-outlined">arrow_forward</span>
-            </a>
+           <a class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all text-sm md:text-base" href="catalogo.html">
+          Ver todos los destinos <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <!-- Card 1 -->

@@ -1,0 +1,390 @@
+/* ==========================================================================
+   Dinastía AMV - Hoja de Estilos Estandarizada: Perfil de Usuario (style_perfil.css)
+   Alineada con dashboard.html, index.html y pagos.html
+   ========================================================================== */
+
+body {
+  font-family: 'Public Sans', sans-serif;
+  color: #1E293B;
+  background-color: #f8f6f6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Botones con Gradiente Oficial Dinastía AMV (#c800ff a #EF1D9C)
+   ========================================================================== */
+.gradient-btn {
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(200, 0, 255, 0.25);
+}
+
+.gradient-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+}
+
+.gradient-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.gradient-btn-accent {
+  background: linear-gradient(to right, #ff4d00, #ff7a00);
+  color: #ffffff;
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gradient-btn-accent:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(255, 77, 0, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #c800ff;
+  border: 2px solid #c800ff;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: rgba(200, 0, 255, 0.08);
+  border-color: #a800d7;
+  color: #a800d7;
+}
+
+.btn-ghost-custom {
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-ghost-custom:hover {
+  background: #d1d5db;
+  color: #111827;
+}
+
+/* ==========================================================================
+   Efecto Card Hover Estandarizado
+   ========================================================================== */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Campos de Formulario Estandarizados (campo-input)
+   ========================================================================== */
+.campo-input {
+  border: 2px solid #e3b0ff;
+  border-radius: 0.75rem;
+  padding: 0.7rem 1rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 0.95rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.campo-input:disabled,
+.campo-input[readonly] {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.campo-input:not(:disabled):not([readonly]):focus {
+  border-color: #c800ff;
+  box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.2);
+  outline: none;
+}
+
+.label-campo {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+/* ==========================================================================
+   Modales Estandarizados (modal-overlay & modal-content)
+   ========================================================================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 12, 28, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.95);
+  transition: transform 0.25s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-content h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: #020C1C;
+}
+
+.modal-botones {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+.modal-botones button {
+  padding: 0.6rem 1.4rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+  font-size: 0.9rem;
+}
+
+.btn-cerrar-modal {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.btn-cerrar-modal:hover {
+  background: #d1d5db;
+}
+
+.btn-guardar-modal {
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  color: white;
+}
+
+.btn-guardar-modal:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(200, 0, 255, 0.35);
+}
+
+.btn-eliminar {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-eliminar:hover {
+  background: #c82333;
+}
+
+.mensaje-modal {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Pestañas de Historial de Viajes
+   ========================================================================== */
+.tab-viaje-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tab-viaje-btn.active {
+  background: linear-gradient(to right, #c800ff, #EF1D9C);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(200, 0, 255, 0.3);
+}
+
+.tab-viaje-btn:not(.active):hover {
+  color: #c800ff;
+  background: rgba(200, 0, 255, 0.06);
+}
+
+.tab-viaje-badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tab-viaje-btn:not(.active) .tab-viaje-badge {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   Badges de Estado de Reserva
+   ========================================================================== */
+.badge-estado {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badge-pagada {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.badge-pendiente {
+  background: #facc15;
+  color: #020C1C;
+}
+
+.badge-finalizada {
+  background: #94a3b8;
+  color: #ffffff;
+}
+
+.badge-cancelada {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Medidor de Fortaleza de Contraseña
+   ========================================================================== */
+.strength-track {
+  width: 100%;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-fill.strength-debil {
+  width: 33.3%;
+  background: #dc3545;
+}
+
+.strength-fill.strength-media {
+  width: 66.6%;
+  background: #f59e0b;
+}
+
+.strength-fill.strength-fuerte {
+  width: 100%;
+  background: #16a34a;
+}
+
+/* ==========================================================================
+   Notificaciones Toast
+   ========================================================================== */
+#toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  min-width: 290px;
+  max-width: 400px;
+  padding: 0.85rem 1.25rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-left: 5px solid #c800ff;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: slideInToast 0.3s ease forwards;
+}
+
+.toast-item.toast-success { border-left-color: #16a34a; }
+.toast-item.toast-error { border-left-color: #dc3545; }
+.toast-item.toast-warning { border-left-color: #f59e0b; }
+
+@keyframes slideInToast {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

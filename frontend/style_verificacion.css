@@ -1,0 +1,261 @@
+/* style_verificacion.css - Estilos para la página de verificación */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), 
+                url("imagenes/Iglesia.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+/* Contenedor principal */
+.verificacion-container {
+    background: #ffffff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.verificacion-container h2 {
+    color: #000;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+/* Icono de correo */
+.icono-correo {
+    font-size: 48px;
+    color: #c800ff;
+    background: rgba(200, 0, 255, 0.1);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+/* Mensajes */
+.mensaje-principal {
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+.correo-destino {
+    color: #c800ff;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+    word-break: break-all;
+}
+
+/* Input */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    color: #2d2d2d;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.verificacion-container input[type="text"] {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 2px solid #e3b0ff;
+    background: #ffffff;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+    letter-spacing: 4px;
+}
+
+.verificacion-container input:focus {
+    border-color: #d100ff;
+    box-shadow: 0 0 0 3px rgba(209, 0, 255, 0.2);
+}
+
+/* Botón Verificar - degradado */
+.verificacion-container button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #c800ff, #EF1D9C);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.verificacion-container button[type="submit"]:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+}
+
+.verificacion-container button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Zona de reenvío */
+.reenviar {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.no-recibiste {
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.ayuda {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.reenviar-btn {
+    background: none;
+    border: 2px solid #c800ff;
+    color: #c800ff;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reenviar-btn:hover {
+    background: #c800ff;
+    color: white;
+}
+
+.reenviar-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#mensajeReenvio {
+    margin-top: 10px;
+    font-size: 13px;
+    min-height: 20px;
+}
+
+/* Enlace a login */
+.volver-login {
+    margin-top: 20px;
+    color: #333;
+}
+
+.volver-login a {
+    color: #c800ff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.volver-login a:hover {
+    color: #EF1D9C;
+}
+
+/* Botón de volver (flecha) */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
+}
+
+/* Mensajes de validación */
+#mensajeVerificacion {
+    margin: 5px 0 10px 0;
+    font-size: 14px;
+    text-align: center;
+    min-height: 24px;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .verificacion-container {
+        padding: 25px 20px;
+        width: 95%;
+    }
+    .verificacion-container h2 {
+        font-size: 1.4rem;
+    }
+    .verificacion-container input[type="text"] {
+        font-size: 14px;
+        padding: 11px;
+    }
+}
+
+/* Temporizador */
+.temporizador {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #555;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.temporizador i {
+    color: #c800ff;
+    margin-right: 6px;
+}
+
+.temporizador #contador {
+    font-weight: bold;
+    color: #c800ff;
+    font-size: 16px;
+}

@@ -1,0 +1,731 @@
+[
+  {
+    "id": "TC001",
+    "title": "Log in and reach the dashboard",
+    "description": "A registered user can sign in with valid credentials and land on the protected dashboard.",
+    "category": "User login and session",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated dashboard is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Browse the public travel catalogue",
+    "description": "A visitor can open the public site and see available travel plans listed.",
+    "category": "Public navigation and travel browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify available travel plans are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the public travel catalogue is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Administrator signs in and reaches travel management",
+    "description": "This verifies that an administrator can log in and access the protected travel management interface.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the administrator travel management interface is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Registered user opens the payment page and submits valid payment details",
+    "description": "This verifies that a logged-in user can access the payment page and complete a payment submission successfully.",
+    "category": "Payment flow",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the user login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/pagos.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the payment form with valid details"
+      },
+      {
+        "type": "action",
+        "description": "Submit the payment form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a payment status message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Log out and return to the public experience",
+    "description": "An authenticated user can end the session and return to the public site.",
+    "category": "User login and session",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the logout control"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the public home page is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Administrator sees the protected management interface after login",
+    "description": "This verifies that the administrator login flow lands on the protected admin interface instead of remaining on the login page.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the protected travel management interface is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Registered user reaches the dashboard after signing in",
+    "description": "This verifies that a valid user login takes the user to the protected dashboard landing page.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the user login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Open the registration page from the public site",
+    "description": "A visitor can move from the public home page to the registration page.",
+    "category": "Public navigation and travel browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the registration page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the registration form is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Administrator views existing travel plans",
+    "description": "This verifies that an authenticated administrator can see the current list of travel plans after signing in.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify existing travel plans are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Open the user login page from the public site",
+    "description": "A visitor can move from the public home page to the user login page.",
+    "category": "Public navigation and travel browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the user login page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user login form is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Register a new account successfully",
+    "description": "A new user can submit valid registration details and receive confirmation that the account was created.",
+    "category": "User registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/Registro.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the personal information fields with valid details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password fields with a valid matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful account creation confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Administrator creates a travel plan and sees it listed",
+    "description": "This verifies that an administrator can create a new travel plan and that it appears in the management list.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel destination field with a unique destination name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel dates field with valid travel dates"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel price field with a valid price"
+      },
+      {
+        "type": "action",
+        "description": "Submit the travel creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new travel plan is displayed in the list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Administrator updates an existing travel plan",
+    "description": "This verifies that an administrator can edit an existing travel plan and see the updated information reflected in the list.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "action",
+        "description": "Select an existing travel plan to edit"
+      },
+      {
+        "type": "action",
+        "description": "Update the travel price field with a new valid price"
+      },
+      {
+        "type": "action",
+        "description": "Submit the travel update form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated travel plan is displayed in the list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Visitor requests password recovery with an email address",
+    "description": "This verifies that a visitor can submit the password recovery form and receive success feedback.",
+    "category": "Password recovery and email verification",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/olvido_contraseña.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid email address"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password recovery form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Open the password recovery page from the public site",
+    "description": "A visitor can move from the public home page to the password recovery page.",
+    "category": "Public navigation and travel browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the password recovery page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the password recovery form is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "User completes the verification support form",
+    "description": "This verifies that a user can submit the verification page form and see a result message.",
+    "category": "Password recovery and email verification",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/verificacion.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the verification form with valid information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the verification form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a verification result message is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Continue browsing travel plans from the public site",
+    "description": "A visitor can continue exploring travel content from the public home page without leaving the catalogue experience.",
+    "category": "Public navigation and travel browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to view more travel plans"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify additional travel plans are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Public visitor browses the travel catalogue",
+    "description": "This verifies that a visitor can land on the public home page and see the travel catalogue loaded for browsing.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the travel catalogue is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Administrator creates a travel plan without an image",
+    "description": "This verifies that an administrator can save a travel plan successfully when no optional image is provided.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login_admin.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the administrator password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the administrator login form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel destination field with a unique destination name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel dates field with valid travel dates"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the travel price field with a valid price"
+      },
+      {
+        "type": "action",
+        "description": "Submit the travel creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new travel plan is displayed in the list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Visitor opens registration from the public site",
+    "description": "This verifies that a visitor can navigate from the public site to the registration page.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the registration page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the registration page is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Show access denied for invalid login credentials",
+    "description": "A visitor sees access denied or validation feedback when login credentials are incorrect.",
+    "category": "User login and session",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an invalid email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an invalid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an access denied or validation message is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Public visitor opens the login page from the public site",
+    "description": "This verifies that a visitor can navigate from the public site to the user login page.",
+    "category": "Administrator login and travel CRUD",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the login page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user login page is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Registered user sees payment validation feedback for incomplete details",
+    "description": "This verifies that the payment form shows validation feedback when required information is missing.",
+    "category": "Payment flow",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/login.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the user password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the user login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/pagos.html"
+      },
+      {
+        "type": "action",
+        "description": "Submit the payment form without completing required details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify payment validation feedback is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC024",
+    "title": "Show validation for mismatched registration passwords",
+    "description": "A new user sees validation feedback when the registration passwords do not match.",
+    "category": "User registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/Registro.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the personal information fields with valid details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password fields with different values"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC025",
+    "title": "Show validation for an invalid registration email",
+    "description": "A new user sees validation feedback when the registration email format is invalid.",
+    "category": "User registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /frontend/Registro.html"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the personal information fields with valid details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an invalid email format"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password fields with a valid matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an email validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]

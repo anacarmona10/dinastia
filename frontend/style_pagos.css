@@ -1,0 +1,238 @@
+/* style_pagos.css - Estilos para la pasarela de pagos */
+
+/* ============================================
+   ESTILOS DEL HEADER (idénticos al dashboard)
+   ============================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Public Sans', sans-serif;
+    background-color: #f8f6f6; /* background-light */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
+}
+
+/* En modo oscuro */
+.dark body {
+    background-color: #020C1C;
+}
+
+/* ============================================
+   ESTILOS PARA MODALES (idénticos a dashboard)
+   ============================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+}
+.modal-botones {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+.modal-botones button {
+    padding: 0.6rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-cerrar-modal {
+    background: #e5e7eb;
+    color: #333;
+}
+.btn-cerrar-modal:hover {
+    background: #d1d5db;
+}
+.btn-eliminar {
+    background: #dc3545;
+    color: white;
+}
+.btn-eliminar:hover {
+    background: #c82333;
+}
+
+/* El header ya tiene las clases de Tailwind en el HTML,
+   pero añadimos estilos de respaldo */
+header {
+    background-color: rgba(248, 246, 246, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(200, 0, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+}
+
+.dark header {
+    background-color: rgba(2, 12, 28, 0.8);
+    border-bottom-color: rgba(200, 0, 255, 0.15);
+}
+
+/* ============================================
+   RESTO DE ESTILOS (pagos)
+   ============================================ */
+.container-pago {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.card-pago {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 2rem 1.8rem;
+    border: 1px solid rgba(200, 0, 255, 0.10);
+}
+
+.gradient-btn {
+    background: linear-gradient(to right, #c800ff, #EF1D9C);
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.gradient-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(200, 0, 255, 0.30);
+}
+
+.metodo-pago {
+    border: 2px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #ffffff;
+}
+
+.metodo-pago:hover {
+    border-color: #c800ff;
+    background: rgba(200, 0, 255, 0.04);
+}
+
+.metodo-pago.activo {
+    border-color: #c800ff;
+    background: rgba(200, 0, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.15);
+}
+
+.metodo-pago input[type="radio"] {
+    accent-color: #c800ff;
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+}
+
+.campo-input {
+    border: 2px solid #e3b0ff;
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    width: 100%;
+    transition: 0.3s;
+    background: white;
+    font-family: 'Public Sans', sans-serif;
+}
+
+.campo-input:focus {
+    border-color: #c800ff;
+    box-shadow: 0 0 0 3px rgba(200, 0, 255, 0.20);
+    outline: none;
+}
+
+.label-pago {
+    font-weight: 600;
+    color: #2d2d2d;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.icono-metodo {
+    font-size: 1.5rem;
+    width: 2rem;
+    text-align: center;
+    color: #c800ff;
+}
+
+.badge-popular {
+    background: #ff4d00;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
+}
+
+.separador {
+    border-top: 2px dashed #e5e7eb;
+    margin: 1.5rem 0;
+}
+
+.total-pago {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #c800ff;
+}
+
+.detalle-articulo {
+    background: #f9f5ff;
+    border-radius: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-left: 4px solid #c800ff;
+}
+
+@media (max-width: 480px) {
+    .card-pago {
+        padding: 1.5rem 1rem;
+    }
+    .metodo-pago {
+        padding: 0.6rem 0.8rem;
+    }
+    .total-pago {
+        font-size: 1.4rem;
+    }
+}

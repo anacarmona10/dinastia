@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle del Plan - Dinastía AMV</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#c800ff",
+                        "accent": "#ff4d00",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#020C1C",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: #f8f6f6;
+        }
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo-link:hover {
+            opacity: 0.8;
+        }
+        .plan-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .plan-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .plan-details {
+            padding: 2rem;
+        }
+        .plan-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+        .plan-description {
+            color: #555;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+        .plan-includes {
+            margin-top: 1.5rem;
+        }
+        .plan-includes h4 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .plan-includes ul {
+            list-style: none;
+            padding: 0;
+        }
+        .plan-includes li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .plan-includes li i {
+            color: #c800ff;
+            width: 1.5rem;
+        }
+        .btn-reservar {
+            background: linear-gradient(to right, #c800ff, #EF1D9C);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 1.5rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-reservar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(200,0,255,0.3);
+        }
+        @media (max-width: 768px) {
+            .plan-details {
+                padding: 1.5rem;
+            }
+            .plan-title {
+                font-size: 1.5rem;
+            }
+        }
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+        .modal-botones {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        .modal-botones button {
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-cerrar-modal {
+            background: #e5e7eb;
+            color: #333;
+        }
+        .btn-cerrar-modal:hover {
+            background: #d1d5db;
+        }
+        .btn-eliminar {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-eliminar:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER NORMAL (sin sticky) -->
+    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+        <a href="dashboard.html" class="flex items-center gap-3 text-primary logo-link">
+            <span class="material-symbols-outlined text-3xl font-bold">explore</span>
+            <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">Dinastía <span class="text-primary">AMV</span></h2>
+        </a>
+        <div class="flex items-center gap-4 md:gap-6">
+            <span class="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-300">¡Hola, viajero!</span>
+            <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-primary hover:text-accent transition-colors">
+                <span class="material-symbols-outlined text-lg">logout</span>
+                <span class="hidden sm:inline">Cerrar sesión</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENIDO (sin padding extra) -->
+    <main class="plan-container max-w-6xl mx-auto px-4 md:px-6 py-8">
+        <div class="plan-card grid md:grid-cols-2 gap-0">
+            <div class="relative h-64 md:h-auto">
+                <img id="planImage" src="" alt="Imagen del plan" class="plan-image" />
+            </div>
+            <div class="plan-details flex flex-col justify-between">
+                <div>
+                    <h1 id="planTitle" class="plan-title">Título</h1>
+                    <p id="planDescription" class="plan-description">Descripción</p>
+                    <div class="flex flex-wrap gap-4 text-sm text-slate-600">
+                        <span><i class="fas fa-calendar-alt text-primary mr-1"></i> <span id="planFechas">Fechas</span></span>
+                        <span><i class="fas fa-user-friends text-primary mr-1"></i> <span id="planPersonas">Personas</span></span>
+                        <span><i class="fas fa-moon text-primary mr-1"></i> <span id="planNoches">Noches</span></span>
+                        <span class="font-bold text-primary text-lg"><span id="planPrecio">$0</span></span>
+                    </div>
+                    <div class="plan-includes">
+                        <h4>Este plan incluye:</h4>
+                        <ul>
+                            <li><i class="fas fa-hotel"></i> Hospedaje: <span id="planHotel">Hotel</span></li>
+                            <li><i class="fas fa-bus"></i> Transporte</li>
+                            <li><i class="fas fa-medkit"></i> Salud</li>
+                            <li><i class="fas fa-utensils"></i> Alimentación</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <a id="btnReservar" href="#" class="btn-reservar inline-block text-center">
+                        Reservalo ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== MODAL CONFIRMAR CIERRE ==================== -->
+    <div class="modal-overlay" id="modalConfirmarCierre">
+        <div class="modal-content text-center">
+            <h3>¿Seguro que quieres cerrar sesión?</h3>
+            <p class="text-slate-600 mt-2">Se cerrará tu sesión actual y volverás a la página de inicio.</p>
+            <div class="modal-botones">
+                <button class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+                <button class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar datos del plan
+            const params = new URLSearchParams(window.location.search);
+            const destino = params.get('destino') || 'Cartagena de Indias';
+            const imagen = params.get('imagen') || '';
+            const descripcion = params.get('descripcion') || 'Descripción no disponible.';
+            const descripcionLarga = params.get('descripcionLarga') || descripcion;
+            const precio = params.get('precio') || '0';
+            const fechas = params.get('fechas') || 'Fechas no especificadas';
+            const noches = params.get('noches') || '0';
+            const personas = params.get('personas') || '0';
+            const hotel = params.get('hotel') || 'Hotel no especificado';
+
+            document.getElementById('planImage').src = imagen || 'https://via.placeholder.com/600x400?text=Imagen+no+disponible';
+            document.getElementById('planTitle').textContent = destino;
+            document.getElementById('planDescription').textContent = descripcionLarga;
+            document.getElementById('planFechas').textContent = fechas;
+            document.getElementById('planPersonas').textContent = personas + ' personas';
+            document.getElementById('planNoches').textContent = noches + ' noches';
+            document.getElementById('planPrecio').textContent = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(precio);
+            document.getElementById('planHotel').textContent = hotel;
+
+            const btnReservar = document.getElementById('btnReservar');
+            const urlParams = new URLSearchParams({
+                destino: destino,
+                precio: precio,
+                descripcion: descripcion,
+                fechas: fechas,
+                noches: noches,
+                personas: personas,
+                hotel: hotel,
+                imagen: imagen
+            });
+            btnReservar.href = 'pagos.html?' + urlParams.toString();
+
+            // Modal cerrar sesión
+            const modalCierre = document.getElementById('modalConfirmarCierre');
+            const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+            const btnNoCerrar = document.getElementById('btnNoCerrar');
+            const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+            btnCerrarSesion.addEventListener('click', function(e) {
+                e.preventDefault();
+                modalCierre.classList.add('active');
+            });
+
+            btnNoCerrar.addEventListener('click', function() {
+                modalCierre.classList.remove('active');
+            });
+
+            btnSiCerrar.addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+
+            modalCierre.addEventListener('click', function(e) {
+                if (e.target === modalCierre) {
+                    modalCierre.classList.remove('active');
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalCierre.classList.contains('active')) {
+                    modalCierre.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
