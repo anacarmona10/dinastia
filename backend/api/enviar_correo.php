@@ -61,22 +61,3 @@ function enviarCorreoVerificacion($destinatario, $codigo)
 }
 
 
-// Provisional
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $destinatario = $_POST['correo'] ?? '';
-
-    if (empty($destinatario)) {
-        echo "Falta el correo.";
-        exit;
-    }
-
-    $codigoPrueba = '123456';
-
-    if (enviarCorreoVerificacion($destinatario, $codigoPrueba)) {
-        echo "Correo enviado correctamente.";
-    } else {
-        echo "No se pudo enviar el correo.";
-    }
-}
