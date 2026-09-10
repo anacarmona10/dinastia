@@ -1,63 +1,99 @@
 <?php
+declare(strict_types=1);
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-use Dotenv\Dotenv;
+use PHPMailer\PHPMailer\PHPMailer;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+function correoConfig(string $nombre, string $porDefecto = ''): string
+{
+    $valor = $_ENV[$nombre] ?? $_SERVER[$nombre] ?? getenv($nombre);
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->safeLoad();
+    return ($valor === false || $valor === null)
+        ? $porDefecto
+        : trim((string) $valor);
+}
 
-function enviarCorreoVerificacion($destinatario, $codigo)
+function enviarCorreoConfirmacionPago(array $pago): bool
 {
     $mail = new PHPMailer(true);
 
     try {
-        // Configuración del servidor SMTP de Gmail
         $mail->isSMTP();
-        $mail->Host = $_ENV['MAIL_HOST'];
+        $mail->Host = correoConfig('MAIL_HOST');
         $mail->SMTPAuth = true;
-        $mail->Username = $_ENV['MAIL_USERNAME'];
-        $mail->Password = $_ENV['MAIL_PASSWORD'];
+        $mail->Username = correoConfig('MAIL_USERNAME');
+        $mail->Password = correoConfig('MAIL_PASSWORD');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = $_ENV['MAIL_PORT'];
+        $mail->Port = (int) correoConfig('MAIL_PORT', '587');
 
-        // Remitente
         $mail->setFrom(
-            $_ENV['MAIL_FROM'],
-            $_ENV['MAIL_FROM_NAME']
+            correoConfig('MAIL_FROM'),
+            correoConfig('MAIL_FROM_NAME', 'Dinastía AMV')
         );
 
-        // Destinatario
-        $mail->addAddress($destinatario);
-
-        // Contenido del correo
+        $mail->addAddress($pago['correo'], $pago['nombre']);
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
-        $mail->Subject = 'Código de verificación - DINASTIA AMV';
+
+        $monto = number_format(
+            ((int) $pago['monto_centavos']) / 100,
+            0,
+            ',',
+            '.'
+        );
+
+        $nombre = htmlspecialchars($pago['nombre'], ENT_QUOTES, 'UTF-8');
+        $destino = htmlspecialchars($pago['destino'], ENT_QUOTES, 'UTF-8');
+        $referencia = htmlspecialchars($pago['referencia'], ENT_QUOTES, 'UTF-8');
+        $cantidad = (int) $pago['cantidad_personas'];
+
+        $mail->Subject = 'Pago confirmado - Dinastía AMV';
 
         $mail->Body = "
-            <h2>Verificación de correo</h2>
-            <p>Hola,</p>
-            <p>Gracias por registrarte en <strong>DINASTIA AMV</strong>.</p>
-            <p>Tu código de verificación es:</p>
-            <h1 style='letter-spacing: 8px;'>$codigo</h1>
-            <p>Este código es válido durante 10 minutos.</p>
-            <p>Si no realizaste este registro, puedes ignorar este correo.</p>
+          <div style='font-family:Arial,sans-serif;color:#1e293b;max-width:600px;margin:auto'>
+            <h1 style='color:#c800ff'>¡Pago confirmado!</h1>
+
+            <p>Hola <strong>{$nombre}</strong>,</p>
+
+            <p>Tu reserva fue confirmada correctamente.</p>
+
+            <table style='width:100%;border-collapse:collapse;margin:20px 0'>
+              <tr>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'>Destino</td>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'><strong>{$destino}</strong></td>
+              </tr>
+              <tr>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'>Viajeros</td>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'><strong>{$cantidad}</strong></td>
+              </tr>
+              <tr>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'>Total pagado</td>
+                <td style='padding:10px;border-bottom:1px solid #e2e8f0'><strong>\${$monto} COP</strong></td>
+              </tr>
+              <tr>
+                <td style='padding:10px'>Referencia</td>
+                <td style='padding:10px'><strong>{$referencia}</strong></td>
+              </tr>
+            </table>
+
+            <p>Gracias por viajar con <strong>Dinastía AMV</strong>.</p>
+          </div>
         ";
 
-        $mail->AltBody = "Tu código de verificación para DINASTIA AMV es: $codigo. Este código es válido durante 10 minutos.";
+        $mail->AltBody =
+            "Pago confirmado.\n" .
+            "Destino: {$pago['destino']}\n" .
+            "Viajeros: {$cantidad}\n" .
+            "Total: \${$monto} COP\n" .
+            "Referencia: {$pago['referencia']}";
 
         $mail->send();
 
         return true;
-
-    } catch (Exception $e) {
+    } catch (Exception $error) {
+        error_log('Error enviando correo de pago: ' . $error->getMessage());
         return false;
     }
 }
-
-

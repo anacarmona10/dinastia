@@ -419,37 +419,38 @@
     }
 
     // Consultar API de planes o listar_viajes_publicos para obtener detalles de la BD
-    fetch('../backend/api/planes.php')
+    fetch('../backend/api/listar_viajes_publicos.php', { cache: 'no-store' })
       .then(res => res.json())
       .then(datos => {
-        if (datos && datos.success && Array.isArray(datos.data)) {
-          const viaje = datos.data.find(v => Number(v.id) === viajeId);
-          if (viaje) {
-            mensajeViaje.textContent = viaje.destino ? `Reserva: ${viaje.destino}` : `Reserva del viaje #${viajeId}`;
-            precioUnitario = Number(viaje.precio) || precioUnitario || 0;
-
-            const contenedorDetalle = document.getElementById('infoViajeDetalle');
-            const destinoFechas = document.getElementById('destinoFechas');
-            const precioUnitarioElem = document.getElementById('precioUnitario');
-
-            if (viaje.fecha_salida && destinoFechas) {
-              destinoFechas.textContent = `${viaje.fecha_salida} al ${viaje.fecha_regreso || 'Por confirmar'}`;
-            }
-
-            if (precioUnitario > 0 && precioUnitarioElem) {
-              precioUnitarioElem.textContent = '$' + precioUnitario.toLocaleString('es-CO') + ' COP';
-              document.getElementById('contenedorTotal')?.classList.remove('hidden');
-            }
-
-            contenedorDetalle?.classList.remove('hidden');
-            actualizarTotal();
-          }
+        if (!datos.success || !Array.isArray(datos.viajes)) {
+          throw new Error(datos.error || 'No fue posible cargar el viaje.');
         }
+
+        const viaje = datos.viajes.find(v => Number(v.id) === viajeId);
+
+        if (!viaje) {
+          throw new Error('El viaje ya no está disponible.');
+        }
+
+        mensajeViaje.textContent = `Reserva: ${viaje.destino}`;
+        precioUnitario = Number(viaje.precio);
+
+        document.getElementById('destinoFechas').textContent =
+          `${viaje.fecha_salida} al ${viaje.fecha_regreso || 'Por confirmar'}`;
+
+        document.getElementById('precioUnitario').textContent =
+          '$' + precioUnitario.toLocaleString('es-CO') + ' COP';
+
+        document.getElementById('infoViajeDetalle').classList.remove('hidden');
+        document.getElementById('contenedorTotal').classList.remove('hidden');
+
+        actualizarTotal();
       })
-      .catch(() => {
-        // En caso de fallo de red se mantienen los datos recibidos por parámetro
+      .catch((error) => {
+        mensajeViaje.textContent = error.message;
+        botonPagar.disabled = true;
       });
-  }
+      }
 
   // Función para actualizar el total según cantidad de personas
   function actualizarTotal() {
