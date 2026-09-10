@@ -13,6 +13,13 @@ function responder(int $codigo, array $datos): never {
     exit;
 }
 
+function variableEntorno(string $nombre): string {
+    return $_ENV[$nombre] ?? $_SERVER[$nombre] ?? getenv($nombre) ?: '';
+}
+
+$stripeKey = variableEntorno('STRIPE_SECRET_KEY');
+$appUrl = rtrim(variableEntorno('APP_URL'), '/');
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     responder(405, ['ok' => false, 'error' => 'Método no permitido']);
 }
@@ -28,9 +35,6 @@ $cantidad = filter_var($entrada['cantidad_personas'] ?? 1, FILTER_VALIDATE_INT);
 if (!$viajeId || !$cantidad || $cantidad < 1 || $cantidad > 10) {
     responder(422, ['ok' => false, 'error' => 'Datos de reserva inválidos']);
 }
-
-$stripeKey = getenv('STRIPE_SECRET_KEY');
-$appUrl = rtrim((string) getenv('APP_URL'), '/');
 
 if (!$stripeKey || !$appUrl) {
     responder(500, ['ok' => false, 'error' => 'Stripe no está configurado']);

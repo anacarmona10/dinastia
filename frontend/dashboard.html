@@ -1,497 +1,227 @@
 <!DOCTYPE html>
 <html class="light" lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Dashboard - Dinastía AMV</title>
+
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <script id="tailwind-config">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
+    rel="stylesheet"
+  >
+
+  <script>
     tailwind.config = {
-      darkMode: "class",
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            "primary": "#c800ff",
-            "accent": "#ff4d00",
-            "background-light": "#f8f6f6",
-            "background-dark": "#020C1C",
+            primary: '#c800ff',
+            accent: '#ff4d00',
+            'background-light': '#f8f6f6',
+            'background-dark': '#020C1C'
           },
           fontFamily: {
-            "display": ["Public Sans", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-        },
-      },
-    }
+            display: ['Public Sans', 'sans-serif']
+          }
+        }
+      }
+    };
   </script>
+
   <style>
-    body { font-family: 'Public Sans', sans-serif; }
+    body {
+      font-family: 'Public Sans', sans-serif;
+    }
+
     .gradient-btn {
-      background: linear-gradient(to right, #c800ff, #EF1D9C);
-      transition: all 0.3s ease;
+      background: linear-gradient(to right, #c800ff, #ef1d9c);
+      transition: all .25s ease;
     }
+
     .gradient-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(200, 0, 255, .35);
     }
+
     .card-hover {
-      transition: all 0.3s ease;
+      transition: all .25s ease;
     }
+
     .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-    }
-    /* Estilos para modales */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 1.5rem;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      position: relative;
-    }
-    .modal-content h3 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      color: #000;
-    }
-    .modal-content .campo-input {
-      border: 2px solid #e3b0ff;
-      border-radius: 0.75rem;
-      padding: 0.7rem 1rem;
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-    .modal-content .campo-input:focus {
-      border-color: #c800ff;
-      box-shadow: 0 0 0 3px rgba(200,0,255,0.2);
-      outline: none;
-    }
-    .modal-botones {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1rem;
-    }
-    .modal-botones button {
-      padding: 0.6rem 1.5rem;
-      border-radius: 9999px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn-cerrar-modal {
-      background: #e5e7eb;
-      color: #333;
-    }
-    .btn-cerrar-modal:hover {
-      background: #d1d5db;
-    }
-    .btn-guardar-modal {
-      background: linear-gradient(to right, #c800ff, #EF1D9C);
-      color: white;
-    }
-    .btn-guardar-modal:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(200,0,255,0.3);
-    }
-    .btn-eliminar {
-      background: #dc3545;
-      color: white;
-    }
-    .btn-eliminar:hover {
-      background: #c82333;
-    }
-    .mensaje-modal {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
+      transform: translateY(-5px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, .12);
     }
   </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
-<div class="layout-container flex h-full grow flex-col">
 
-  <!-- Barra de navegación -->
-  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
-    
-    <!-- LOGO NORMAL (sin enlace) -->
-    <div class="flex items-center gap-3 text-primary">
-      <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full">
-      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">Dinastía <span class="text-primary">AMV</span></h2>
-    </div>
+<body class="bg-background-light text-slate-900">
+  <div class="min-h-screen flex flex-col">
 
-    <div class="flex items-center gap-4 md:gap-6">
-      <a href="catalogo.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 hover:text-primary transition-colors">
-        <span class="material-symbols-outlined text-lg text-primary">explore</span>
-        <span class="hidden sm:inline">Catálogo</span>
+    <header class="flex items-center justify-between border-b border-primary/20 px-6 md:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
+      <a href="dashboard.html" class="flex items-center gap-3 text-primary">
+        <span class="material-symbols-outlined text-3xl font-bold">explore</span>
+
+        <h2 class="text-slate-900 text-xl font-black leading-tight tracking-tight">
+          Dinastía <span class="text-primary">AMV</span>
+        </h2>
       </a>
-      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50" id="saludoUsuario">
-        <span class="material-symbols-outlined text-primary text-base">account_circle</span>
-        ¡Hola, viajero!
-      </a>
-      <a href="perfil.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 hover:text-primary transition-colors">
-        <span class="material-symbols-outlined text-lg text-primary">person</span>
-        <span class="hidden sm:inline">Mi Perfil</span>
-      </a>
-      <!-- Botón Cerrar sesión (abre modal de confirmación) -->
-      <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
-        <span class="material-symbols-outlined text-lg">logout</span>
-        <span class="hidden sm:inline">Cerrar sesión</span>
-      </button>
-    </div>
-  </header>
 
-  <main class="flex-1 px-6 md:px-20 py-10">
+      <div class="flex items-center gap-4 md:gap-6">
+        <a
+          href="perfil.html"
+          id="saludoUsuario"
+          class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-primary"
+        >
+          <span class="material-symbols-outlined text-primary text-base">account_circle</span>
+          ¡Hola, viajero!
+        </a>
 
-    <!-- Bienvenida -->
-    <section class="mb-10">
-      <h1 class="text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100" id="tituloBienvenida">¡Bienvenido de nuevo!</h1>
-      <p class="text-slate-600 dark:text-slate-400 text-lg">Aquí puedes ver tus reservas, explorar nuevos viajes y administrar tu perfil.</p>
-    </section>
+        <a
+          href="perfil.html"
+          class="flex items-center gap-1 text-sm font-bold text-slate-700 hover:text-primary"
+        >
+          <span class="material-symbols-outlined text-lg text-primary">person</span>
+          <span class="hidden sm:inline">Mi perfil</span>
+        </a>
 
-    <!-- Tarjetas de resumen -->
-    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-        <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">confirmation_number</span>
-        <div>
-          <p class="text-3xl font-black text-primary">0</p>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Reservas activas</p>
-        </div>
-      </div>
-      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-        <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full">travel_explore</span>
-        <div>
-          <p class="text-3xl font-black text-pink-500">0</p>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Viajes realizados</p>
-        </div>
-      </div>
-      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-        <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">favorite</span>
-        <div>
-          <p class="text-3xl font-black text-accent">0</p>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Destinos favoritos</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Mis reservas -->
-    <section class="mb-12">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-black">Mis reservas</h2>
-        <a href="catalogo.html" class="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1">
-          Explorar destinos <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        <a
+          href="../backend/api/logout.php"
+          class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700"
+        >
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span class="hidden sm:inline">Cerrar sesión</span>
         </a>
       </div>
-      <div class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-8 text-center text-slate-500 dark:text-slate-400 card-hover">
-        <span class="material-symbols-outlined text-5xl mb-4 block text-primary/40">inbox</span>
-        <p class="text-lg font-medium">Aún no tienes reservas.</p>
-        <p class="text-sm mt-1">Explora nuestros destinos y reserva tu próximo viaje.</p>
-        <a href="catalogo.html" class="inline-block mt-4 px-6 py-2 rounded-full gradient-btn text-white font-bold text-sm shadow-lg shadow-primary/30">
-          Ver destinos
-        </a>
-      </div>
-    </section>
+    </header>
 
-    <!-- Destinos destacados -->
-    <section class="mb-12">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-black">Destinos destacados</h2>
-        <a href="catalogo.html" class="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1">
-          Ver todos <span class="material-symbols-outlined text-sm">arrow_forward</span>
-        </a>
-      </div>
+    <main class="flex-1 px-6 md:px-20 py-10">
+      <section class="mb-10">
+        <h1 id="tituloBienvenida" class="text-3xl md:text-4xl font-black tracking-tight mb-2">
+          ¡Bienvenido de nuevo!
+        </h1>
+
+        <p class="text-slate-600 text-lg">
+          Explora nuestros planes turísticos y reserva tu próxima experiencia.
+        </p>
+      </section>
+
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">
+            confirmation_number
+          </span>
+
+          <div>
+            <p class="text-3xl font-black text-primary">0</p>
+            <p class="text-sm text-slate-500 font-medium">Reservas activas</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+          <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full">
+            travel_explore
+          </span>
+
+          <div>
+            <p class="text-3xl font-black text-pink-500">0</p>
+            <p class="text-sm text-slate-500 font-medium">Viajes realizados</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
+          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">
+            favorite
+          </span>
+
+          <div>
+            <p class="text-3xl font-black text-accent">0</p>
+            <p class="text-sm text-slate-500 font-medium">Destinos favoritos</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-black">Destinos disponibles</h2>
+            <p class="text-sm text-slate-500 mt-1">
+              Planes creados y administrados desde el panel de administración.
+            </p>
+          </div>
+
+          <a
+            href="catalogo.html"
+            class="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1"
+          >
+            Ver catálogo
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Aquí JavaScript inserta los viajes de la base de datos -->
         <div id="listaDestinos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <p class="text-slate-500">Cargando viajes...</p>
         </div>
+      </section>
 
-        <div class="hidden">
-        <!-- Card 1: Cartagena -->
-        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
-          <div class="relative w-full aspect-[4/3] overflow-hidden">
-            <img alt="Cartagena" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvExoATYYi5sDh08TyPPpKcGBFiwHlycMmkBk5FC0OdZHqlImdFAXBLAxvA5dJzz0UzTvI6sns2Y4gg9yNq5PC5vDCQsjUqUxP3MrXpKQ0vcjYULysOsHoF1LCxQIAYzrcAXOsFo0_NpASTBhkFMThKRPE9WDT3fv2k8u5TF4thJQgKsXAX-AG_XlUx_uqxTAjmwvEcFJoKXsSvJ49YJIye1LHjRQw13CrFFvBDC8WvO78oaKxO8_9D9YyzfgoboksblDE0tcvsEo" />
-            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-35% Dcto</div>
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-1">
-              <div>
-                <h4 class="text-lg font-bold">Cartagena de Indias</h4>
-                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Costa Caribe
-                </p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-slate-500 line-through">$850.000</p>
-                <p class="text-xl font-black text-primary">$549.900</p>
-              </div>
-            </div>
-          <!-- Cartagena -->
-          <a href="pagos.html?viaje_id=1" 
-            class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
-            Ver Plan
-          </a>
-          </div>
-        </div>
-        <!-- Card 2: Eje Cafetero -->
-        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
-          <div class="relative w-full aspect-[4/3] overflow-hidden">
-            <img alt="Eje Cafetero" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvPrz-UJLgGXIH0Xj9xFFkT2pAErtARb9_kUsDaWTeNYoK90WuIr-r4f2Z5NE5T77dRYqDNb4PGgKUraUCh0Hnvx1jS8_zSwPsWNzowYY8gwjFPiVUfmWhF4wZtVb9aAV_fLElFnKQb44pSi34O-KCUpy8K3_eMvLHUQ6owRySIsVcdQDtOQUKamSenZHRMrBXSDSmnMgpmFyvVtuwSrpIxgrgPo2W70ONswYkq_4l3RS0eX0wLZf0xdtAbT2t0jQUZRqM9teIQik" />
-            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-45% Dcto</div>
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-1">
-              <div>
-                <h4 class="text-lg font-bold">Eje Cafetero</h4>
-                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Quindío
-                </p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-slate-500 line-through">$620.000</p>
-                <p class="text-xl font-black text-primary">$341.000</p>
-              </div>
-            </div>
-            <a href="pagos.html?viaje_id=8" 
-              class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
-              Ver Plan
-            </a>
-          </div>
-        </div>
-        <!-- Card 3: Medellín -->
-        <div class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover">
-          <div class="relative w-full aspect-[4/3] overflow-hidden">
-            <img alt="Medellín" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmvzIkEu7h8e83Z31QwWqQ7n5su1eKBEyRUobk1YJybkCWUwvqHDMfmC0jbhWQPCxubuHzk8cjKAfVr5eRMpk2COpC666qd6uUTkr8VnoYPZi0fhVpwoL1qD-1OHHHgcuPZqGOmcfp5ou0eF1sRahYPKZlSjxkwOsbRAnxHu3e_HcHZQutsJ24A30ECbAROL3MDJXjdnIa1mSqVJlcw6d-czAR56c8jxneUMLQzgBO1q3KrXJXRW911pQmSPrVyWNToinxExApd3M" />
-            <div class="absolute top-3 left-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs">-30% Dcto</div>
-          </div>
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-1">
-              <div>
-                <h4 class="text-lg font-bold">Medellín</h4>
-                <p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <span class="material-symbols-outlined text-primary text-sm">location_on</span> Antioquia
-                </p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-slate-500 line-through">$710.000</p>
-                <p class="text-xl font-black text-primary">$497.000</p>
-              </div>
-            </div>
-            <a href="pagos.html?viaje_id=3" 
-              class="mt-3 w-full py-2.5 rounded-full gradient-btn text-white font-bold text-sm block text-center shadow-lg shadow-primary/30">
-              Ver Plan
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <a
+          href="catalogo.html"
+          class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover"
+        >
+          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">
+            explore
+          </span>
 
-    <!-- Accesos rápidos -->
-    <section>
-      <h2 class="text-2xl font-black mb-4">Accesos rápidos</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <a href="catalogo.html" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">explore</span>
           <div>
             <p class="font-bold text-lg">Explorar viajes</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Descubre nuevos destinos disponibles en el catálogo</p>
+            <p class="text-sm text-slate-500">Descubre nuevos destinos disponibles.</p>
           </div>
         </a>
-        <!-- Mi perfil (enlace directo a perfil.html) -->
-        <a href="perfil.html" class="rounded-2xl bg-white dark:bg-white/5 border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover w-full text-left">
-          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">person</span>
+
+        <a
+          href="perfil.html"
+          class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover"
+        >
+          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">
+            person
+          </span>
+
           <div>
             <p class="font-bold text-lg">Mi perfil</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Actualiza tus datos, contraseñas y reservas</p>
+            <p class="text-sm text-slate-500">Actualiza tus datos personales.</p>
           </div>
         </a>
-      </div>
-    </section>
+      </section>
+    </main>
 
-  </main>
-
-  <!-- Footer simple -->
-  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
-    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
-  </footer>
-
-</div>
-</div>
-
-<!-- ==================== MODAL PERFIL ==================== -->
-<div class="modal-overlay" id="modalPerfil">
-  <div class="modal-content">
-    <h3>Mi perfil</h3>
-    <form id="formPerfil">
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Nombre completo</label>
-        <input type="text" id="perfil_nombre" class="campo-input" value="Viajero Ejemplo" required>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Correo electrónico</label>
-        <input type="email" id="perfil_correo" class="campo-input" value="viajero@email.com" required>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Nueva contraseña (opcional)</label>
-        <input type="password" id="perfil_password" class="campo-input" placeholder="Dejar en blanco para no cambiar">
-      </div>
-      <div id="mensajePerfil" class="mensaje-modal"></div>
-      <div class="modal-botones">
-        <button type="button" class="btn-cerrar-modal" id="btnCerrarPerfil">Cancelar</button>
-        <button type="submit" class="btn-guardar-modal" id="btnGuardarPerfil">Guardar cambios</button>
-      </div>
-    </form>
+    <footer class="px-6 md:px-20 py-6 border-t border-primary/10 text-center text-sm text-slate-500">
+      © 2024 Dinastía AMV · Todos los derechos reservados
+    </footer>
   </div>
-</div>
 
-<!-- ==================== MODAL CONFIRMAR CIERRE ==================== -->
-<div class="modal-overlay" id="modalConfirmarCierre">
-  <div class="modal-content text-center">
-    <h3>¿Seguro que quieres cerrar sesión?</h3>
-    <p class="text-slate-600 mt-2">Se cerrará tu sesión actual y volverás a la página de inicio.</p>
-    <div class="modal-botones justify-center mt-6">
-      <button class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
-      <button class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
-    </div>
-  </div>
-</div>
+  <script>
+    const nombre = localStorage.getItem('usuario_nombre');
 
-<script>
-  // =============================================
-  // 1. CARGAR DATOS DEL PERFIL DESDE localStorage
-  // =============================================
-  function cargarPerfil() {
-    const nombreGuardado = localStorage.getItem('usuario_nombre');
-    const correoGuardado = localStorage.getItem('usuario_correo');
-    if (nombreGuardado) {
-      document.getElementById('perfil_nombre').value = nombreGuardado;
-      document.getElementById('saludoUsuario').textContent = '¡Hola, ' + nombreGuardado + '!';
-      document.getElementById('tituloBienvenida').textContent = '¡Bienvenido de nuevo, ' + nombreGuardado + '!';
+    if (nombre) {
+      document.getElementById('saludoUsuario').innerHTML =
+        '<span class="material-symbols-outlined text-primary text-base">account_circle</span> ¡Hola, ' +
+        nombre +
+        '!';
+
+      document.getElementById('tituloBienvenida').textContent =
+        '¡Bienvenido de nuevo, ' + nombre + '!';
     }
-    if (correoGuardado) {
-      document.getElementById('perfil_correo').value = correoGuardado;
-    }
-  }
-  cargarPerfil();
+  </script>
 
-  // =============================================
-  // 2. MODAL PERFIL - Guardar cambios en localStorage
-  // =============================================
-  const modalPerfil = document.getElementById('modalPerfil');
-  const btnMiPerfil = document.getElementById('btnMiPerfil');
-  const btnCerrarPerfil = document.getElementById('btnCerrarPerfil');
-  const formPerfil = document.getElementById('formPerfil');
-
-  btnMiPerfil.addEventListener('click', function() {
-    modalPerfil.classList.add('active');
-    document.getElementById('mensajePerfil').innerHTML = '';
-  });
-
-  btnCerrarPerfil.addEventListener('click', function() {
-    modalPerfil.classList.remove('active');
-  });
-
-  modalPerfil.addEventListener('click', function(e) {
-    if (e.target === modalPerfil) {
-      modalPerfil.classList.remove('active');
-    }
-  });
-
-  formPerfil.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('perfil_nombre').value.trim();
-    const correo = document.getElementById('perfil_correo').value.trim();
-    const password = document.getElementById('perfil_password').value;
-    const mensajeDiv = document.getElementById('mensajePerfil');
-
-    if (nombre === '' || correo === '') {
-      mensajeDiv.innerHTML = '<span style="color:#dc3545;">Nombre y correo son obligatorios.</span>';
-      return;
-    }
-
-    // Guardar en localStorage
-    localStorage.setItem('usuario_nombre', nombre);
-    localStorage.setItem('usuario_correo', correo);
-    // Si se ingresó nueva contraseña, guardarla (solo para simulación)
-    if (password !== '') {
-      localStorage.setItem('usuario_password', password);
-    }
-
-    // Actualizar saludo en la interfaz
-    document.getElementById('saludoUsuario').textContent = '¡Hola, ' + nombre + '!';
-    document.getElementById('tituloBienvenida').textContent = '¡Bienvenido de nuevo, ' + nombre + '!';
-
-    mensajeDiv.innerHTML = '<span style="color:#28a745;">✅ Perfil actualizado correctamente.</span>';
-    setTimeout(() => {
-      modalPerfil.classList.remove('active');
-    }, 1500);
-  });
-
-  // =============================================
-  // 3. MODAL CONFIRMAR CIERRE DE SESIÓN
-  // =============================================
-  const modalCierre = document.getElementById('modalConfirmarCierre');
-  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
-  const btnNoCerrar = document.getElementById('btnNoCerrar');
-  const btnSiCerrar = document.getElementById('btnSiCerrar');
-
-  btnCerrarSesion.addEventListener('click', function(e) {
-    e.preventDefault();
-    modalCierre.classList.add('active');
-  });
-
-  btnNoCerrar.addEventListener('click', function() {
-    modalCierre.classList.remove('active');
-  });
-
-  btnSiCerrar.addEventListener('click', function() {
-    // Limpiar datos simulados (opcional)
-    // localStorage.removeItem('usuario_nombre');
-    // localStorage.removeItem('usuario_correo');
-    window.location.href = 'index.html';
-  });
-
-  modalCierre.addEventListener('click', function(e) {
-    if (e.target === modalCierre) {
-      modalCierre.classList.remove('active');
-    }
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      if (modalPerfil.classList.contains('active')) modalPerfil.classList.remove('active');
-      if (modalCierre.classList.contains('active')) modalCierre.classList.remove('active');
-    }
-  });
-</script>
-
-<script src="js/dashboard_viajes.js"></script>
+  <script src="js/dashboard_viajes.js"></script>
 </body>
 </html>
