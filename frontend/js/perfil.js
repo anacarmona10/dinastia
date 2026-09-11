@@ -161,85 +161,86 @@
     }
   ];
 
-  // Servicio Mock API para simular comunicación con backend
+  // Servicio API conectado a la sesión PHP y la base de datos.
   const ApiService = {
     getAuthToken() {
-      let token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-      if (!token) {
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dinastia_amv_session_token_' + Date.now();
-        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-      }
-      return token;
+      return null;
     },
 
     async getPerfil() {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      const localData = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
-      let user = localData ? JSON.parse(localData) : { ...DEFAULT_USER };
+      const response = await fetch('../backend/api/obtener_perfil.php', {
+        credentials: 'same-origin',
+        cache: 'no-store'
+      });
+      const result = await response.json();
 
-      const legacyNombre = localStorage.getItem('usuario_nombre');
-      const legacyCorreo = localStorage.getItem('usuario_correo');
-      if (legacyNombre) user.nombreCompleto = legacyNombre;
-      if (legacyCorreo) user.correo = legacyCorreo;
+      if (!response.ok || !result.ok) {
+        return { ok: false, message: result.mensaje || 'No fue posible cargar el perfil.' };
+      }
 
-      const currentRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE) || user.rol || 'usuario';
-      user.rol = currentRole;
-
-      return { ok: true, data: user };
+      return {
+        ok: true,
+        data: {
+          id: result.usuario.id,
+          nombreCompleto: result.usuario.nombre_completo,
+          tipoDocumento: result.usuario.tipo_documento,
+          numeroDocumento: result.usuario.numero_documento,
+          correo: result.usuario.correo,
+          rol: 'usuario'
+        }
+      };
     },
 
     async actualizarPerfil(datosActualizados) {
-      await new Promise(resolve => setTimeout(resolve, 250));
-      const res = await this.getPerfil();
-      const currentUser = res.data;
+      const response = await fetch('../backend/api/actualizar_perfil.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosActualizados)
+      });
+      const result = await response.json();
 
-      if (
-        datosActualizados.correo &&
-        datosActualizados.correo.toLowerCase() !== currentUser.correo.toLowerCase() &&
-        datosActualizados.correo.toLowerCase() === 'admin@dinastia.com' &&
-        currentUser.id !== 1
-      ) {
-        return { ok: false, message: 'El correo electrónico ya se encuentra registrado.' };
-      }
-
-      const mergedUser = { ...currentUser, ...datosActualizados };
-      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(mergedUser));
-      localStorage.setItem('usuario_nombre', mergedUser.nombreCompleto);
-      localStorage.setItem('usuario_correo', mergedUser.correo);
-
-      return { ok: true, message: 'Perfil actualizado correctamente', data: mergedUser };
+      return {
+        ok: response.ok && result.ok,
+        message: result.mensaje || 'No fue posible actualizar el perfil.'
+      };
     },
 
     async cambiarPassword(actual, nueva) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const res = await this.getPerfil();
-      const currentUser = res.data;
+      const response = await fetch('../backend/api/cambiar_contrasena.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ actual, nueva })
+      });
+      const result = await response.json();
 
-      if (currentUser.passwordHash && actual !== currentUser.passwordHash && actual !== '123456' && actual !== 'Admin123*') {
-        return { ok: false, message: 'La contraseña actual es incorrecta.' };
-      }
-
-      currentUser.passwordHash = nueva;
-      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(currentUser));
-      return { ok: true, message: '¡Tu contraseña ha sido actualizada con éxito!' };
+      return {
+        ok: response.ok && result.ok,
+        message: result.mensaje || 'No fue posible actualizar la contraseña.'
+      };
     },
 
     async getReservas(filtroEstado = 'proximos') {
-      await new Promise(resolve => setTimeout(resolve, 150));
-      const localData = localStorage.getItem(STORAGE_KEYS.RESERVAS);
-      let reservas = localData ? JSON.parse(localData) : DEFAULT_RESERVAS;
-      
-      if (!localData) {
-        localStorage.setItem(STORAGE_KEYS.RESERVAS, JSON.stringify(DEFAULT_RESERVAS));
+      const response = await fetch('../backend/api/obtener_reservas.php', {
+        credentials: 'same-origin',
+        cache: 'no-store'
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        return { ok: false, message: result.mensaje || 'No fue posible cargar las reservas.' };
       }
 
-      if (filtroEstado === 'todos') return { ok: true, data: reservas };
-      const filtradas = reservas.filter(r => r.tipoTab === filtroEstado);
-      return { 
-        ok: true, 
-        data: filtradas, 
-        totalProximos: reservas.filter(r => r.tipoTab === 'proximos').length, 
-        totalPasados: reservas.filter(r => r.tipoTab === 'pasados').length 
+      const reservas = filtroEstado === 'todos'
+        ? result.reservas
+        : result.reservas.filter(reserva => reserva.tipoTab === filtroEstado);
+
+      return {
+        ok: true,
+        data: reservas,
+        totalProximos: result.totalProximos,
+        totalPasados: result.totalPasados
       };
     }
   };
