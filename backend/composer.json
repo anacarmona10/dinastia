@@ -3,6 +3,8 @@
     "zircote/swagger-php": "^4.8",
     "phpmailer/phpmailer": "^7.1",
     "stripe/stripe-php": "^21.2"
+    "zircote/swagger-php": "^6.3",
+    "vlucas/phpdotenv": "^5.7"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6"
