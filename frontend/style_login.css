@@ -51,7 +51,7 @@ body {
     color: white;
 }
 
-/* HOVER – tono claro (opcional, puedes dejarlo igual) */
+/* HOVER – tono claro */
 .selector-login button:hover {
     background: #f3d9ff;
 }
@@ -161,4 +161,65 @@ body {
 .back-button:hover {
     background: rgba(255, 255, 255, 0.35);
     transform: scale(1.08);
+}
+
+/* ==========================================================
+   ESTILOS PARA EL BOTÓN DE GOOGLE Y SEPARADOR
+   ========================================================== */
+.separador-o {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #aaa;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+.separador-o::before,
+.separador-o::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+}
+.separador-o::before {
+    margin-right: 1rem;
+}
+.separador-o::after {
+    margin-left: 1rem;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.75rem 1.2rem;
+    background: #ffffff;
+    border: 2px solid #d0d0d0;
+    border-radius: 12px;
+    color: #3c4043;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    margin-top: 5px;
+}
+.btn-google:hover {
+    background: #f8f9fa;
+    border-color: #b0b0b0;
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* El SVG del logo de Google a color dentro del botón */
+.btn-google .google-logo-btn {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.btn-google span {
+    font-weight: 700;
 }
