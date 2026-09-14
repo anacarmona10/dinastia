@@ -319,6 +319,7 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
                         <p class="viaje-fechas">${formatearFecha(viaje.fecha_salida)} → ${formatearFecha(viaje.fecha_regreso)}</p>
                         <p class="viaje-descripcion">${viaje.descripcion ?? ""}</p>
                         <button class="btn-editar" onclick="abrirModalEditar(${viaje.id})">Editar</button>
+                        <button class="btn-eliminar-card" onclick="confirmarEliminarViaje(${viaje.id})">Eliminar</button>
                     </div>
                 `;
 
@@ -479,6 +480,35 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admi
                     cargarViajes(); // refresca las tarjetas
                 } else {
                     alert(resultado.error);
+                }
+            } catch (error) {
+                alert("Error al conectar con el servidor: " + error.message);
+            }
+        }
+
+        async function confirmarEliminarViaje(id) {
+            const viaje = viajesData.find(v => v.id == id);
+            const nombreDestino = viaje ? viaje.destino : "este viaje";
+
+            const confirmar = confirm(`¿Estás seguro de que deseas eliminar el viaje a "${nombreDestino}"?\n\nEsta acción borrará el viaje y sus imágenes de la base de datos de manera definitiva.`);
+            if (!confirmar) return;
+
+            try {
+                const formData = new FormData();
+                formData.append("id", id);
+
+                const response = await fetch("../backend/api/eliminar_viaje.php", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    alert(resultado.mensaje || "Viaje eliminado correctamente.");
+                    cargarViajes(); // refresca las tarjetas
+                } else {
+                    alert(resultado.error || "No se pudo eliminar el viaje.");
                 }
             } catch (error) {
                 alert("Error al conectar con el servidor: " + error.message);

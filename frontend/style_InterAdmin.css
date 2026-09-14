@@ -255,6 +255,28 @@ textarea {
     background: linear-gradient(90deg, #c026d3, #f97316);
 }
 
+.btn-eliminar-card {
+    margin-top: 8px;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-eliminar-card:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.btn-eliminar-card:active {
+    transform: translateY(0);
+}
+
 /* ===== IMÁGENES ACTUALES EN MODAL DE EDICIÓN ===== */
 #preview_actuales {
     display: flex;
