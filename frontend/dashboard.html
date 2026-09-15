@@ -5,17 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Dashboard - Dinastía AMV</title>
 
+  <!-- Tailwind CSS CDN con plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
-    rel="stylesheet"
-  >
+  <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <script>
     tailwind.config = {
@@ -36,28 +31,27 @@
     };
   </script>
 
+  <link rel="stylesheet" href="style_catalogo.css">
+
   <style>
     body {
       font-family: 'Public Sans', sans-serif;
     }
 
-    .gradient-btn {
-      background: linear-gradient(to right, #c800ff, #ef1d9c);
-      transition: all .25s ease;
-    }
-
-    .gradient-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 25px rgba(200, 0, 255, .35);
-    }
-
-    .card-hover {
-      transition: all .25s ease;
-    }
-
-    .card-hover:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 16px 35px rgba(0, 0, 0, .12);
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
     }
   </style>
 </head>
@@ -65,36 +59,39 @@
 <body class="bg-background-light text-slate-900">
   <div class="min-h-screen flex flex-col">
 
-    <header class="flex items-center justify-between border-b border-primary/20 px-6 md:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
-      <a href="dashboard.html" class="flex items-center gap-3 text-primary">
-        <span class="material-symbols-outlined text-3xl font-bold">explore</span>
-
+    <!-- Header estandarizado con el Catálogo -->
+    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
+      <a href="dashboard.html" class="flex items-center gap-3 text-primary group" title="Mi Dashboard">
+        <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
         <h2 class="text-slate-900 text-xl font-black leading-tight tracking-tight">
           Dinastía <span class="text-primary">AMV</span>
         </h2>
       </a>
 
-      <div class="flex items-center gap-4 md:gap-6">
+      <div class="flex items-center gap-3 sm:gap-6">
+        <nav class="hidden md:flex items-center gap-4 text-sm font-semibold text-slate-700">
+          <a href="catalogo.html" class="hover:text-primary transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base text-primary">travel_explore</span> Destinos
+          </a>
+          <a href="perfil.html" class="hover:text-primary transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base text-primary">person</span> Mi Perfil
+          </a>
+        </nav>
+
+        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+
         <a
           href="perfil.html"
           id="saludoUsuario"
-          class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-primary"
+          class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50"
         >
           <span class="material-symbols-outlined text-primary text-base">account_circle</span>
           ¡Hola, viajero!
         </a>
 
         <a
-          href="perfil.html"
-          class="flex items-center gap-1 text-sm font-bold text-slate-700 hover:text-primary"
-        >
-          <span class="material-symbols-outlined text-lg text-primary">person</span>
-          <span class="hidden sm:inline">Mi perfil</span>
-        </a>
-
-        <a
           href="../backend/api/logout.php"
-          class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700"
+          class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors"
         >
           <span class="material-symbols-outlined text-lg">logout</span>
           <span class="hidden sm:inline">Cerrar sesión</span>
@@ -102,48 +99,49 @@
       </div>
     </header>
 
-    <main class="flex-1 px-6 md:px-20 py-10">
-      <section class="mb-10">
-        <h1 id="tituloBienvenida" class="text-3xl md:text-4xl font-black tracking-tight mb-2">
+    <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8">
+      <section class="mb-8">
+        <h1 id="tituloBienvenida" class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2 text-slate-900">
           ¡Bienvenido de nuevo!
         </h1>
 
-        <p class="text-slate-600 text-lg">
-          Explora nuestros planes turísticos y reserva tu próxima experiencia.
+        <p class="text-slate-600 text-sm sm:text-base">
+          Explora nuestros planes turísticos y reserva tu próxima experiencia nacional.
         </p>
       </section>
 
-      <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">
-            confirmation_number
-          </span>
+      <!-- Tarjetas de Métricas Rediseñadas -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+          <div class="w-13 h-13 p-3 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0">
+            <span class="material-symbols-outlined text-2xl">confirmation_number</span>
+          </div>
 
           <div>
-            <p class="text-3xl font-black text-primary">0</p>
-            <p class="text-sm text-slate-500 font-medium">Reservas activas</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statReservas">0</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Reservas activas</p>
           </div>
         </div>
 
-        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-          <span class="material-symbols-outlined text-3xl text-white bg-pink-500 p-3 rounded-full">
-            travel_explore
-          </span>
+        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+          <div class="w-13 h-13 p-3 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-600 shrink-0">
+            <span class="material-symbols-outlined text-2xl">travel_explore</span>
+          </div>
 
           <div>
-            <p class="text-3xl font-black text-pink-500">0</p>
-            <p class="text-sm text-slate-500 font-medium">Viajes realizados</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statViajes">0</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Viajes realizados</p>
           </div>
         </div>
 
-        <div class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover">
-          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">
-            favorite
-          </span>
+        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+          <div class="w-13 h-13 p-3 rounded-2xl bg-orange-100 flex items-center justify-center text-accent shrink-0">
+            <span class="material-symbols-outlined text-2xl">favorite</span>
+          </div>
 
           <div>
-            <p class="text-3xl font-black text-accent">0</p>
-            <p class="text-sm text-slate-500 font-medium">Destinos favoritos</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statFavoritos">0</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Destinos favoritos</p>
           </div>
         </div>
       </section>
@@ -172,32 +170,32 @@
         </div>
       </section>
 
-      <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <a
           href="catalogo.html"
-          class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-6 flex items-center gap-4 card-hover group"
         >
-          <span class="material-symbols-outlined text-3xl text-white bg-primary p-3 rounded-full">
-            explore
-          </span>
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">travel_explore</span>
+          </div>
 
           <div>
-            <p class="font-bold text-lg">Explorar viajes</p>
-            <p class="text-sm text-slate-500">Descubre nuevos destinos disponibles.</p>
+            <p class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-primary transition-colors">Explorar catálogo completo</p>
+            <p class="text-xs sm:text-sm text-slate-500">Descubre paquetes con tiquetes y hospedaje incluido.</p>
           </div>
         </a>
 
         <a
           href="perfil.html"
-          class="rounded-2xl bg-white border border-primary/10 shadow-sm p-6 flex items-center gap-4 card-hover"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-6 flex items-center gap-4 card-hover group"
         >
-          <span class="material-symbols-outlined text-3xl text-white bg-accent p-3 rounded-full">
-            person
-          </span>
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-orange-100 flex items-center justify-center text-accent shrink-0 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-2xl">manage_accounts</span>
+          </div>
 
           <div>
-            <p class="font-bold text-lg">Mi perfil</p>
-            <p class="text-sm text-slate-500">Actualiza tus datos personales.</p>
+            <p class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-primary transition-colors">Mi perfil de viajero</p>
+            <p class="text-xs sm:text-sm text-slate-500">Consulta y actualiza tus datos y reservas.</p>
           </div>
         </a>
       </section>
