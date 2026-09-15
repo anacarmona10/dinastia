@@ -12,6 +12,83 @@ function validarContrasena(pass) {
     return errores;
 }
 
+let recaptchaWidgetId = null;
+let recaptchaListo = false;
+let recaptchaSiteKey = '';
+
+function mostrarErrorRegistro(mensaje) {
+    const mensajeDiv = document.getElementById('mensaje');
+    if (mensajeDiv) {
+        mensajeDiv.innerHTML = `<p style="color:red; text-align:left;">${mensaje}</p>`;
+    }
+}
+
+async function cargarRecaptchaRegistro() {
+    const contenedor = document.getElementById('recaptchaRegistro');
+    if (!contenedor) return;
+
+    try {
+        const response = await fetch('../backend/api/configuracion_publica.php', {
+            cache: 'no-store'
+        });
+        const configuracion = await response.json();
+
+        if (!response.ok || !configuracion.recaptchaSiteKey) {
+            throw new Error('reCAPTCHA no está configurado.');
+        }
+
+        recaptchaSiteKey = configuracion.recaptchaSiteKey;
+
+        window.onRecaptchaRegistroCargado = () => {
+            if (
+                recaptchaWidgetId !== null ||
+                !window.grecaptcha ||
+                typeof window.grecaptcha.render !== 'function'
+            ) {
+                return;
+            }
+            try {
+                recaptchaWidgetId = window.grecaptcha.render(contenedor, {
+                    sitekey: recaptchaSiteKey
+                });
+                recaptchaListo = true;
+            } catch (error) {
+                console.error('Error al renderizar reCAPTCHA:', error);
+                mostrarErrorRegistro('reCAPTCHA rechazó la configuración. Verifica que la clave sea v2 y que incluya el dominio localhost.');
+            }
+        };
+
+        const script = document.createElement('script');
+        script.src = 'https://www.recaptcha.net/recaptcha/api.js?onload=onRecaptchaRegistroCargado&render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            // Respaldo: algunos navegadores descargan el script, pero no ejecutan
+            // el callback incluido en la URL.
+            window.onRecaptchaRegistroCargado();
+        };
+        script.onerror = () => {
+            mostrarErrorRegistro('No fue posible cargar la verificación reCAPTCHA. Revisa tu conexión a internet.');
+        };
+        document.head.appendChild(script);
+
+        let intentosCarga = 0;
+        const esperaRecaptcha = setInterval(() => {
+            intentosCarga++;
+            window.onRecaptchaRegistroCargado();
+
+            if (recaptchaListo) {
+                clearInterval(esperaRecaptcha);
+            } else if (intentosCarga >= 20) {
+                clearInterval(esperaRecaptcha);
+                mostrarErrorRegistro('reCAPTCHA no terminó de iniciar. Revisa que la clave sea reCAPTCHA v2 con la casilla y que localhost esté autorizado.');
+            }
+        }, 500);
+    } catch (error) {
+        mostrarErrorRegistro('El registro no está disponible porque reCAPTCHA no fue configurado.');
+    }
+}
+
 // ==============================================
 // VALIDACIÓN REGISTRO (redirige a verificación)
 // ==============================================
@@ -56,9 +133,17 @@ function validarRegistro(event) {
         return;
     }
 
-    // Si todo es válido, guardar correo en localStorage y redirigir
-    localStorage.setItem('correoRegistro', correo);
-    window.location.href = 'verificacion.html';
+    if (!recaptchaListo || recaptchaWidgetId === null || !window.grecaptcha) {
+        mostrarErrorRegistro('Espera a que cargue la verificación reCAPTCHA.');
+        return;
+    }
+
+    if (!window.grecaptcha.getResponse(recaptchaWidgetId)) {
+        mostrarErrorRegistro('Completa la verificación reCAPTCHA antes de registrarte.');
+        return;
+    }
+
+    event.currentTarget.submit();
 }
 
 // ==============================================
@@ -96,7 +181,10 @@ function validarLogin(event) {
 // ==============================================
 document.addEventListener('DOMContentLoaded', function() {
     const formReg = document.getElementById('formRegistro');
-    if (formReg) formReg.addEventListener('submit', validarRegistro);
+    if (formReg) {
+        formReg.addEventListener('submit', validarRegistro);
+        cargarRecaptchaRegistro();
+    }
 
     const formLog = document.getElementById('formLogin');
     if (formLog) formLog.addEventListener('submit', validarLogin);
