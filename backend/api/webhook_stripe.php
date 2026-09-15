@@ -5,11 +5,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/enviar_correo.php';
 
-function variableEntorno(string $nombre): string
-{
-    return $_ENV[$nombre] ?? $_SERVER[$nombre] ?? getenv($nombre) ?: '';
-}
-
 $payload = file_get_contents('php://input');
 $firma = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
 $secretoWebhook = variableEntorno('STRIPE_WEBHOOK_SECRET');

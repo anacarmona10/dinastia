@@ -13,10 +13,6 @@ function responder(int $codigo, array $datos): never {
     exit;
 }
 
-function variableEntorno(string $nombre): string {
-    return $_ENV[$nombre] ?? $_SERVER[$nombre] ?? getenv($nombre) ?: '';
-}
-
 $stripeKey = variableEntorno('STRIPE_SECRET_KEY');
 $appUrl = rtrim(variableEntorno('APP_URL'), '/');
 
