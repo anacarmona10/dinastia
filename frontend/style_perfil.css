@@ -1,6 +1,5 @@
 /* ==========================================================================
-   Dinastía AMV - Hoja de Estilos Estandarizada: Perfil de Usuario (style_perfil.css)
-   Alineada con dashboard.html, index.html y pagos.html
+   Dinastía AMV - Hoja de Estilos Estandarizada: Perfil de Usuario
    ========================================================================== */
 
 body {
@@ -13,7 +12,7 @@ body {
 }
 
 /* ==========================================================================
-   Botones con Gradiente Oficial Dinastía AMV (#c800ff a #EF1D9C)
+   Botones con Gradiente Oficial
    ========================================================================== */
 .gradient-btn {
   background: linear-gradient(to right, #c800ff, #EF1D9C);
@@ -86,7 +85,7 @@ body {
 }
 
 /* ==========================================================================
-   Efecto Card Hover Estandarizado
+   Efecto Card Hover
    ========================================================================== */
 .card-hover {
   transition: all 0.3s ease;
@@ -98,7 +97,7 @@ body {
 }
 
 /* ==========================================================================
-   Campos de Formulario Estandarizados (campo-input)
+   Campos de Formulario
    ========================================================================== */
 .campo-input {
   border: 2px solid #e3b0ff;
@@ -137,7 +136,7 @@ body {
 }
 
 /* ==========================================================================
-   Modales Estandarizados (modal-overlay & modal-content)
+   Modales
    ========================================================================== */
 .modal-overlay {
   display: none;
@@ -387,4 +386,77 @@ body {
 @keyframes slideInToast {
   from { transform: translateX(120%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   CAMPO DE CONTRASEÑA CON OJITO
+   ========================================================================== */
+.campo-password-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.campo-password-wrapper .campo-input {
+  margin-bottom: 0;
+  padding-right: 3rem;
+}
+
+/* Ocultar el ojo nativo del navegador (Edge / IE) */
+.campo-password-wrapper input[type="password"]::-ms-reveal,
+.campo-password-wrapper input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0;
+  height: 0;
+}
+
+/* Ocultar el ojo nativo en WebKit */
+.campo-password-wrapper input[type="password"]::-webkit-credentials-auto-fill-button,
+.campo-password-wrapper input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+/* Botón del ojito personalizado */
+.btn-toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.btn-toggle-password:hover {
+  color: #c800ff;
+  background-color: rgba(200, 0, 255, 0.08);
+}
+
+.btn-toggle-password.activo {
+  color: #c800ff;
+}
+
+.btn-toggle-password .material-symbols-outlined {
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+/* Forzar que el ojo nativo no interfiera */
+.campo-password-wrapper input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
