@@ -1174,7 +1174,7 @@
     // Admin & Simulador
     if (DOM.btnIrAdmin) {
       DOM.btnIrAdmin.addEventListener('click', () => {
-        window.location.href = 'interfazAdmin.php';
+        window.location.href = 'interfazAdmin.html';
       });
     }
     if (DOM.selectSimuladorRol) {

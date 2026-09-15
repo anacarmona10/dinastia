@@ -53,7 +53,7 @@ $_SESSION['tipo_usuario'] = 'admin';
 $_SESSION['logged_in'] = true;
 
 // Los administradores siempre van a la interfaz de administración
-header('Location: ../../frontend/interfazAdmin.php');
+header('Location: ../../frontend/interfazAdmin.html');
 exit;
 
 // Función auxiliar para mostrar errores en una página amigable
