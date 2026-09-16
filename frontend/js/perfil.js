@@ -18,16 +18,9 @@
     getAuthToken() { return null; },
 
     async getPerfil() {
-      const response = await fetch('../backend/api/obtener_perfil.php', {
-        credentials: 'same-origin',
-        cache: 'no-store'
-      });
+      const response = await fetch('../backend/api/obtener_perfil.php', { credentials: 'same-origin', cache: 'no-store' });
       const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        return { ok: false, message: result.mensaje || 'No fue posible cargar el perfil.' };
-      }
-
+      if (!response.ok || !result.ok) return { ok: false, message: result.mensaje || 'No fue posible cargar el perfil.' };
       return {
         ok: true,
         data: {
@@ -43,53 +36,40 @@
 
     async actualizarPerfil(datosActualizados) {
       const response = await fetch('../backend/api/actualizar_perfil.php', {
-        method: 'POST',
-        credentials: 'same-origin',
+        method: 'POST', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datosActualizados)
       });
       const result = await response.json();
-      return {
-        ok: response.ok && result.ok,
-        message: result.mensaje || 'No fue posible actualizar el perfil.'
-      };
+      return { ok: response.ok && result.ok, message: result.mensaje || 'No fue posible actualizar el perfil.' };
     },
 
     async cambiarPassword(actual, nueva) {
       const response = await fetch('../backend/api/cambiar_contrasena.php', {
-        method: 'POST',
-        credentials: 'same-origin',
+        method: 'POST', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ actual, nueva })
       });
       const result = await response.json();
-      return {
-        ok: response.ok && result.ok,
-        message: result.mensaje || 'No fue posible actualizar la contraseña.'
-      };
+      return { ok: response.ok && result.ok, message: result.mensaje || 'No fue posible actualizar la contraseña.' };
     },
 
     async getReservas(filtroEstado = 'proximos') {
-      const response = await fetch('../backend/api/obtener_reservas.php', {
-        credentials: 'same-origin',
-        cache: 'no-store'
+      const response = await fetch('../backend/api/obtener_reservas.php', { credentials: 'same-origin', cache: 'no-store' });
+      const result = await response.json();
+      if (!response.ok || !result.ok) return { ok: false, message: result.mensaje || 'No fue posible cargar las reservas.' };
+      const reservas = filtroEstado === 'todos' ? result.reservas : result.reservas.filter(r => r.tipoTab === filtroEstado);
+      return { ok: true, data: reservas, totalProximos: result.totalProximos, totalPasados: result.totalPasados };
+    },
+
+    async eliminarReserva(reservaId) {
+      const formData = new FormData();
+      formData.append('reserva_id', reservaId);
+      const response = await fetch('../backend/api/eliminar_reserva.php', {
+        method: 'POST', credentials: 'same-origin', body: formData
       });
       const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        return { ok: false, message: result.mensaje || 'No fue posible cargar las reservas.' };
-      }
-
-      const reservas = filtroEstado === 'todos'
-        ? result.reservas
-        : result.reservas.filter(reserva => reserva.tipoTab === filtroEstado);
-
-      return {
-        ok: true,
-        data: reservas,
-        totalProximos: result.totalProximos,
-        totalPasados: result.totalPasados
-      };
+      return { ok: response.ok && result.ok, message: result.mensaje || result.error || 'No fue posible cancelar la reserva.' };
     }
   };
 
@@ -141,10 +121,14 @@
     btnCerrarModalDetalle: document.getElementById('btnCerrarModalDetalle'),
     detalleReservaContenido: document.getElementById('detalleReservaContenido'),
     btnDescargarDesdeDetalle: document.getElementById('btnDescargarDesdeDetalle'),
+    btnCancelarReserva: document.getElementById('btnCancelarReserva'),
+
+    modalConfirmarCancelacion: document.getElementById('modalConfirmarCancelacion'),
+    btnNoCancelar: document.getElementById('btnNoCancelar'),
+    btnSiCancelar: document.getElementById('btnSiCancelar'),
 
     bloqueAdmin: document.getElementById('bloqueAdmin'),
     btnIrAdmin: document.getElementById('btnIrAdmin'),
-    selectSimuladorRol: document.getElementById('selectSimuladorRol'),
 
     btnCerrarSesion: document.getElementById('btnCerrarSesion'),
     modalConfirmarCierre: document.getElementById('modalConfirmarCierre'),
@@ -159,75 +143,36 @@
   let reservaSeleccionadaParaDetalle = null;
 
   // ==========================================================================
-  // ESTADOS DE RESERVA (incluye "Pagado con éxito")
+  // ESTADOS DE RESERVA
   // ==========================================================================
 
   function normalizarEstado(estado) {
     if (!estado) return 'no pagado';
-    const e = String(estado).toLowerCase().trim()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-    // 🟢 Pagado con éxito (Stripe)
-    if (['pagado con exito', 'pagado_con_exito', 'pago exitoso', 'pago_exitoso'].includes(e)) {
-      return 'pagado con éxito';
-    }
-
-    // 🟢 Pagado / Válido
-    if (['pagado', 'pagada', 'valido', 'aprobado', 'aprobada', 'confirmado', 'confirmada'].includes(e)) {
-      return 'pagado';
-    }
-
-    // 🟡 Pendiente de pago
-    if (['pendiente de pago', 'pendiente_pago', 'pendiente', 'pendiente pago', 'pendiente de confirmacion'].includes(e)) {
-      return 'pendiente de pago';
-    }
-
-    // 🟠 No pagado
-    if (['no pagado', 'no_pagado', 'sin pagar', 'rechazado', 'rechazada'].includes(e)) {
-      return 'no pagado';
-    }
-
-    // 🔵 En proceso de pago
-    if (['en proceso', 'en proceso de pago', 'en_proceso', 'en_proceso_de_pago', 'procesando'].includes(e)) {
-      return 'en proceso de pago';
-    }
-
-    // 🔴 Cancelado
-    if (['cancelado', 'cancelada', 'anulado', 'anulada'].includes(e)) {
-      return 'cancelado';
-    }
-
+    const e = String(estado).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (['pagado con exito', 'pagado_con_exito', 'pago exitoso', 'pago_exitoso'].includes(e)) return 'pagado con éxito';
+    if (['pagado', 'pagada', 'valido', 'aprobado', 'aprobada', 'confirmado', 'confirmada'].includes(e)) return 'pagado';
+    if (['pendiente de pago', 'pendiente_pago', 'pendiente', 'pendiente pago', 'pendiente de confirmacion'].includes(e)) return 'pendiente de pago';
+    if (['no pagado', 'no_pagado', 'sin pagar', 'rechazado', 'rechazada'].includes(e)) return 'no pagado';
+    if (['en proceso', 'en proceso de pago', 'en_proceso', 'en_proceso_de_pago', 'procesando'].includes(e)) return 'en proceso de pago';
+    if (['cancelado', 'cancelada', 'anulado', 'anulada'].includes(e)) return 'cancelado';
     return 'no pagado';
   }
 
   function obtenerBadgeEstado(estado, metodoPago) {
     const normalizado = normalizarEstado(estado);
-    // Si el método de pago dice "Pagado con éxito", usar ese badge
-    if (metodoPago && metodoPago.toLowerCase().includes('éxito')) {
-      return '<span class="badge-estado badge-pagado-exito">PAGADO CON ÉXITO</span>';
-    }
+    if (metodoPago && metodoPago.toLowerCase().includes('éxito')) return '<span class="badge-estado badge-pagado-exito">PAGADO CON ÉXITO</span>';
     switch (normalizado) {
-      case 'pagado con éxito':
-        return '<span class="badge-estado badge-pagado-exito">PAGADO CON ÉXITO</span>';
-      case 'pagado':
-        return '<span class="badge-estado badge-pagado">PAGADO / VÁLIDO</span>';
-      case 'pendiente de pago':
-        return '<span class="badge-estado badge-pendiente-pago">PENDIENTE DE PAGO</span>';
-      case 'en proceso de pago':
-        return '<span class="badge-estado badge-en-proceso">EN PROCESO DE PAGO</span>';
-      case 'cancelado':
-        return '<span class="badge-estado badge-cancelado">CANCELADO</span>';
-      case 'no pagado':
-      default:
-        return '<span class="badge-estado badge-no-pagado">NO PAGADO</span>';
+      case 'pagado con éxito': return '<span class="badge-estado badge-pagado-exito">PAGADO CON ÉXITO</span>';
+      case 'pagado': return '<span class="badge-estado badge-pagado">PAGADO / VÁLIDO</span>';
+      case 'pendiente de pago': return '<span class="badge-estado badge-pendiente-pago">PENDIENTE DE PAGO</span>';
+      case 'en proceso de pago': return '<span class="badge-estado badge-en-proceso">EN PROCESO DE PAGO</span>';
+      case 'cancelado': return '<span class="badge-estado badge-cancelado">CANCELADO</span>';
+      default: return '<span class="badge-estado badge-no-pagado">NO PAGADO</span>';
     }
   }
 
   function obtenerTextoEstado(estado, metodoPago) {
-    // Si el método de pago dice "Pagado con éxito", priorizar ese texto
-    if (metodoPago && metodoPago.toLowerCase().includes('éxito')) {
-      return 'Pagado con éxito';
-    }
+    if (metodoPago && metodoPago.toLowerCase().includes('éxito')) return 'Pagado con éxito';
     const normalizado = normalizarEstado(estado);
     switch (normalizado) {
       case 'pagado con éxito': return 'Pagado con éxito';
@@ -235,7 +180,6 @@
       case 'pendiente de pago': return 'Pendiente de pago';
       case 'en proceso de pago': return 'En proceso de pago';
       case 'cancelado': return 'Cancelado';
-      case 'no pagado':
       default: return 'No pagado';
     }
   }
@@ -246,45 +190,31 @@
 
   function mostrarToast(mensaje, tipo = 'info', duracion = 3500) {
     if (!DOM.toastContainer) return;
-
     const toast = document.createElement('div');
     toast.className = `toast-item toast-${tipo}`;
-
-    let icono = 'info';
-    let iconClass = 'text-primary';
+    let icono = 'info', iconClass = 'text-primary';
     if (tipo === 'success') { icono = 'check_circle'; iconClass = 'text-green-600'; }
     if (tipo === 'error') { icono = 'error'; iconClass = 'text-red-600'; }
     if (tipo === 'warning') { icono = 'warning'; iconClass = 'text-amber-500'; }
-
     toast.innerHTML = `
       <span class="material-symbols-outlined text-2xl ${iconClass}">${icono}</span>
       <div class="flex-1">${mensaje}</div>
       <button type="button" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
     `;
-
-    toast.querySelector('button').onclick = () => {
-      if (toast.parentElement) toast.parentElement.removeChild(toast);
-    };
-
+    toast.querySelector('button').onclick = () => { if (toast.parentElement) toast.parentElement.removeChild(toast); };
     DOM.toastContainer.appendChild(toast);
-
     setTimeout(() => {
       if (toast.parentElement) {
         toast.style.transition = 'all 0.3s ease';
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(10px)';
-        setTimeout(() => {
-          if (toast.parentElement) toast.parentElement.removeChild(toast);
-        }, 300);
+        setTimeout(() => { if (toast.parentElement) toast.parentElement.removeChild(toast); }, 300);
       }
     }, duracion);
   }
 
   function formatearMonedaCOP(valor) {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency', currency: 'COP',
-      minimumFractionDigits: 0, maximumFractionDigits: 0
-    }).format(valor);
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(valor);
   }
 
   function obtenerIniciales(nombre) {
@@ -302,18 +232,15 @@
     try {
       const res = await ApiService.getPerfil();
       if (!res.ok) throw new Error('Error al obtener perfil');
-
       const user = res.data;
       DOM.inputNombre.value = user.nombreCompleto || '';
       DOM.selectTipoDoc.value = user.tipoDocumento || 'CC';
       DOM.inputNumDoc.value = user.numeroDocumento || '';
       DOM.inputCorreo.value = user.correo || '';
-
       if (DOM.perfilNombreDisplay) DOM.perfilNombreDisplay.textContent = user.nombreCompleto;
       if (DOM.perfilCorreoDisplay) DOM.perfilCorreoDisplay.textContent = user.correo;
       if (DOM.saludoUsuario) DOM.saludoUsuario.textContent = '¡Hola, ' + user.nombreCompleto.split(' ')[0] + '!';
       if (DOM.avatarIniciales) DOM.avatarIniciales.textContent = obtenerIniciales(user.nombreCompleto);
-
       actualizarVisualizacionRol(user.rol);
     } catch (err) {
       console.error(err);
@@ -324,15 +251,9 @@
   function toggleModoEdicion(habilitar) {
     const campos = [DOM.inputNombre, DOM.selectTipoDoc, DOM.inputNumDoc, DOM.inputCorreo];
     campos.forEach(campo => {
-      if (habilitar) {
-        campo.removeAttribute('readonly');
-        campo.removeAttribute('disabled');
-      } else {
-        campo.setAttribute('readonly', 'true');
-        if (campo.tagName === 'SELECT') campo.setAttribute('disabled', 'true');
-      }
+      if (habilitar) { campo.removeAttribute('readonly'); campo.removeAttribute('disabled'); }
+      else { campo.setAttribute('readonly', 'true'); if (campo.tagName === 'SELECT') campo.setAttribute('disabled', 'true'); }
     });
-
     if (habilitar) {
       DOM.btnEditarPerfil.classList.add('hidden');
       DOM.contenedorBotonesEdicion.classList.remove('hidden');
@@ -357,38 +278,29 @@
   }
 
   function mostrarErrorCampo(elementoError, mensaje) {
-    if (elementoError) {
-      elementoError.textContent = mensaje;
-      elementoError.classList.remove('hidden');
-    }
+    if (elementoError) { elementoError.textContent = mensaje; elementoError.classList.remove('hidden'); }
   }
 
   function validarFormularioPerfil() {
     limpiarErroresPerfil();
     let esValido = true;
-
     const nombre = DOM.inputNombre.value.trim();
     const tipoDoc = DOM.selectTipoDoc.value;
     const numDoc = DOM.inputNumDoc.value.trim();
     const correo = DOM.inputCorreo.value.trim();
-
     if (!nombre || nombre.length < 3) { mostrarErrorCampo(DOM.errorNombre, 'El nombre debe tener al menos 3 caracteres.'); esValido = false; }
     if (!tipoDoc) { mostrarErrorCampo(DOM.errorTipoDoc, 'Selecciona un tipo de documento.'); esValido = false; }
     if (!numDoc || !/^[0-9a-zA-Z\-]{5,20}$/.test(numDoc)) { mostrarErrorCampo(DOM.errorNumDoc, 'Número de documento no válido.'); esValido = false; }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!correo || !emailRegex.test(correo)) { mostrarErrorCampo(DOM.errorCorreo, 'Ingresa un correo electrónico válido.'); esValido = false; }
-
     return esValido;
   }
 
   async function guardarCambiosPerfil(e) {
     if (e) e.preventDefault();
     if (!validarFormularioPerfil()) return;
-
     DOM.btnGuardarPerfil.disabled = true;
     DOM.btnGuardarPerfil.innerHTML = `Guardando...`;
-
     try {
       const datos = {
         nombreCompleto: DOM.inputNombre.value.trim(),
@@ -396,14 +308,8 @@
         numeroDocumento: DOM.inputNumDoc.value.trim(),
         correo: DOM.inputCorreo.value.trim()
       };
-
       const res = await ApiService.actualizarPerfil(datos);
-      if (!res.ok) {
-        mostrarToast(res.message || 'Error al guardar cambios.', 'error');
-        mostrarErrorCampo(DOM.errorCorreo, res.message);
-        return;
-      }
-
+      if (!res.ok) { mostrarToast(res.message || 'Error al guardar cambios.', 'error'); mostrarErrorCampo(DOM.errorCorreo, res.message); return; }
       mostrarToast('✅ Perfil actualizado correctamente.', 'success');
       toggleModoEdicion(false);
       await cargarDatosPerfil();
@@ -439,9 +345,7 @@
     DOM.inputPassActual.focus();
   }
 
-  function cerrarModalPassword() {
-    DOM.modalPassword.classList.remove('active');
-  }
+  function cerrarModalPassword() { DOM.modalPassword.classList.remove('active'); }
 
   function evaluarFortalezaContraseña(pass) {
     let score = 0;
@@ -463,10 +367,8 @@
       actualizarChecklistReq(false, false, false);
       return;
     }
-
     const { score, hasMinLength, hasUpper, hasNumber } = evaluarFortalezaContraseña(pass);
     actualizarChecklistReq(hasMinLength, hasUpper, hasNumber);
-
     if (score <= 1) {
       DOM.strengthFill.className = 'strength-fill strength-debil';
       DOM.strengthLabel.textContent = 'Seguridad: Débil';
@@ -500,44 +402,21 @@
   async function procesarCambioPassword(e) {
     e.preventDefault();
     DOM.mensajeModalPassword.innerHTML = '';
-
     const actual = DOM.inputPassActual.value;
     const nueva = DOM.inputPassNueva.value;
     const confirm = DOM.inputPassConfirmar.value;
-
-    if (!actual) {
-      DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">Ingresa tu contraseña actual.</span>`;
-      DOM.inputPassActual.focus();
-      return;
-    }
-
+    if (!actual) { DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">Ingresa tu contraseña actual.</span>`; DOM.inputPassActual.focus(); return; }
     const { hasMinLength, hasUpper, hasNumber } = evaluarFortalezaContraseña(nueva);
-    if (!hasMinLength || !hasUpper || !hasNumber) {
-      DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">La nueva contraseña debe cumplir con todos los requisitos (6+ caracteres, 1 mayúscula y 1 número).</span>`;
-      DOM.inputPassNueva.focus();
-      return;
-    }
-
-    if (nueva !== confirm) {
-      DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">Las nuevas contraseñas no coinciden.</span>`;
-      DOM.inputPassConfirmar.focus();
-      return;
-    }
-
+    if (!hasMinLength || !hasUpper || !hasNumber) { DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">La nueva contraseña debe cumplir con todos los requisitos.</span>`; DOM.inputPassNueva.focus(); return; }
+    if (nueva !== confirm) { DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">Las nuevas contraseñas no coinciden.</span>`; DOM.inputPassConfirmar.focus(); return; }
     const btnSubmit = DOM.formPassword.querySelector('button[type="submit"]');
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Guardando...';
-
     try {
       const res = await ApiService.cambiarPassword(actual, nueva);
-      if (!res.ok) {
-        DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">${res.message}</span>`;
-        return;
-      }
-
+      if (!res.ok) { DOM.mensajeModalPassword.innerHTML = `<span style="color:#dc3545;">${res.message}</span>`; return; }
       DOM.mensajeModalPassword.innerHTML = `<span style="color:#28a745;">✅ ${res.message}</span>`;
       mostrarToast('🔐 Contraseña actualizada con éxito.', 'success');
-
       setTimeout(() => { cerrarModalPassword(); }, 1400);
     } catch (err) {
       console.error(err);
@@ -554,7 +433,6 @@
 
   async function cargarReservas(filtro = tabActual) {
     tabActual = filtro;
-
     if (filtro === 'proximos') {
       DOM.tabProximos.classList.add('active');
       DOM.tabProximos.setAttribute('aria-selected', 'true');
@@ -566,31 +444,23 @@
       DOM.tabProximos.classList.remove('active');
       DOM.tabProximos.setAttribute('aria-selected', 'false');
     }
-
     DOM.contenedorReservas.innerHTML = `
       <div class="col-span-full py-12 text-center text-slate-400">
         <span class="material-symbols-outlined text-4xl animate-spin text-primary block mb-2">progress_activity</span>
         <p class="font-medium text-sm">Cargando tus reservas...</p>
       </div>
     `;
-
     try {
       const res = await ApiService.getReservas(filtro);
       if (!res.ok) throw new Error('Error al cargar reservas');
-
       if (DOM.badgeCountProximos) DOM.badgeCountProximos.textContent = res.totalProximos;
       if (DOM.badgeCountPasados) DOM.badgeCountPasados.textContent = res.totalPasados;
       if (DOM.statReservasActivas) DOM.statReservasActivas.textContent = res.totalProximos;
       if (DOM.statViajesRealizados) DOM.statViajesRealizados.textContent = res.totalPasados;
-
       renderizarTarjetasReservas(res.data);
     } catch (err) {
       console.error(err);
-      DOM.contenedorReservas.innerHTML = `
-        <div class="col-span-full p-6 text-center text-red-500 font-semibold bg-red-50 rounded-2xl">
-          Error al consultar reservas.
-        </div>
-      `;
+      DOM.contenedorReservas.innerHTML = `<div class="col-span-full p-6 text-center text-red-500 font-semibold bg-red-50 rounded-2xl">Error al consultar reservas.</div>`;
     }
   }
 
@@ -600,37 +470,24 @@
       DOM.emptyStateReservas.classList.remove('hidden');
       return;
     }
-
     DOM.contenedorReservas.classList.remove('hidden');
     DOM.emptyStateReservas.classList.add('hidden');
     DOM.contenedorReservas.innerHTML = '';
-
     reservas.forEach(res => {
       const card = document.createElement('div');
       card.className = 'group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover flex flex-col justify-between';
-
       const badgeEstadoHTML = obtenerBadgeEstado(res.estado, res.metodoPago);
-      const estadoNorm = normalizarEstado(res.estado);
-      const esPendiente = (estadoNorm === 'pendiente de pago');
-      const descuentoHTML = res.descuento
-        ? `<div class="absolute top-3 right-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs shadow-md">${res.descuento}</div>`
-        : '';
-
+      const descuentoHTML = res.descuento ? `<div class="absolute top-3 right-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs shadow-md">${res.descuento}</div>` : '';
       card.innerHTML = `
         <div>
           <div class="relative w-full aspect-[4/3] overflow-hidden">
-            <img 
-              alt="${res.destino}" 
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-              src="${res.imagen}" 
-            />
+            <img alt="${res.destino}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${res.imagen}" />
             ${descuentoHTML}
             <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <span class="material-symbols-outlined text-sm text-primary">location_on</span>
               ${res.departamento}
             </div>
           </div>
-
           <div class="p-5">
             <div class="flex justify-between items-start mb-2 gap-2">
               <div class="flex-1 min-w-0">
@@ -644,41 +501,26 @@
                 <p class="text-xl font-black text-primary">${formatearMonedaCOP(res.desglose.totalCOP)}</p>
               </div>
             </div>
-
             <div class="mt-3 flex items-center justify-between gap-2 flex-wrap">
               ${badgeEstadoHTML}
               <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">${res.codigo}</span>
             </div>
-
             <div class="mt-3 text-xs text-slate-600 dark:text-slate-300 bg-primary/5 p-2.5 rounded-xl border border-primary/10">
               <strong>Hospedaje:</strong> ${res.alojamiento}
             </div>
           </div>
         </div>
-
-        <div class="p-5 pt-0 flex flex-col gap-2">
-          ${esPendiente ? `
-            <button type="button" class="w-full py-2.5 rounded-full gradient-btn text-white font-black text-xs shadow-md shadow-primary/25 flex items-center justify-center gap-1.5 cursor-pointer" data-accion="pagar">
-              <span class="material-symbols-outlined text-sm">credit_card</span> Pagar ahora con Stripe
-            </button>
-          ` : ''}
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center cursor-pointer" data-accion="detalles">
-              <span class="material-symbols-outlined text-sm">visibility</span> Ver detalles
-            </button>
-            <button type="button" class="py-2.5 rounded-full bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-primary font-bold text-xs text-center border border-slate-200 transition-colors cursor-pointer" data-accion="comprobante">
-              <span class="material-symbols-outlined text-sm">download</span> ${esPendiente ? 'Orden PDF' : 'Comprobante'}
-            </button>
-          </div>
+        <div class="p-5 pt-0 grid grid-cols-2 gap-3">
+          <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center" data-accion="detalles">
+            <span class="material-symbols-outlined text-sm">visibility</span> Ver detalles
+          </button>
+          <button type="button" class="py-2.5 rounded-full gradient-btn text-white font-bold text-xs shadow-lg shadow-primary/30 text-center" data-accion="comprobante">
+            <span class="material-symbols-outlined text-sm">download</span> Comprobante
+          </button>
         </div>
       `;
-
-      if (esPendiente && card.querySelector('[data-accion="pagar"]')) {
-        card.querySelector('[data-accion="pagar"]').addEventListener('click', () => iniciarPagoReservaPendiente(res));
-      }
       card.querySelector('[data-accion="detalles"]').addEventListener('click', () => abrirModalDetalleReserva(res));
       card.querySelector('[data-accion="comprobante"]').addEventListener('click', () => generarYDescargarPDF(res));
-
       DOM.contenedorReservas.appendChild(card);
     });
   }
@@ -686,11 +528,9 @@
   function abrirModalDetalleReserva(reserva) {
     reservaSeleccionadaParaDetalle = reserva;
     if (!DOM.detalleReservaContenido) return;
-
     const badgeEstadoHTML = obtenerBadgeEstado(reserva.estado, reserva.metodoPago);
     const textoEstado = obtenerTextoEstado(reserva.estado, reserva.metodoPago);
     const esPagadoExito = (reserva.metodoPago && reserva.metodoPago.toLowerCase().includes('éxito'));
-
     DOM.detalleReservaContenido.innerHTML = `
       <div class="relative h-44 rounded-2xl overflow-hidden mb-3">
         <img src="${reserva.imagen}" alt="${reserva.destino}" class="w-full h-full object-cover"/>
@@ -701,7 +541,6 @@
           </div>
         </div>
       </div>
-
       <div class="grid grid-cols-2 gap-3 bg-primary/5 p-4 rounded-xl text-xs text-slate-700">
         <div>
           <span class="text-slate-400 block mb-0.5 font-semibold">Código de Reserva</span>
@@ -720,14 +559,12 @@
           <strong>${reserva.personasTexto}</strong>
         </div>
       </div>
-
       <div>
         <h5 class="text-sm font-bold text-slate-800 mb-1.5 flex items-center gap-1 text-primary">
           <span class="material-symbols-outlined text-base">hotel</span> Alojamiento Confirmado
         </h5>
         <p class="text-xs text-slate-600 bg-white p-3 rounded-xl border border-primary/10">${reserva.alojamiento}</p>
       </div>
-
       <div>
         <h5 class="text-sm font-bold text-slate-800 mb-1.5 flex items-center gap-1 text-primary">
           <span class="material-symbols-outlined text-base">checklist</span> El Plan Turístico Incluye
@@ -741,46 +578,21 @@
           `).join('')}
         </ul>
       </div>
-
       <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
         <div class="flex justify-between text-xs text-slate-500 mb-1">
           <span>Método de Transacción:</span>
-          <span class="font-semibold ${esPagadoExito ? 'text-emerald-600' : 'text-slate-700'}">
-            ${esPagadoExito ? 'Pagado con éxito' : (reserva.metodoPago || 'Pendiente')}
-          </span>
+          <span class="font-semibold ${esPagadoExito ? 'text-emerald-600' : 'text-slate-700'}">${esPagadoExito ? 'Pagado con éxito' : (reserva.metodoPago || 'Pendiente')}</span>
         </div>
         <div class="flex justify-between text-xs text-slate-500 mb-2">
           <span>Fecha de Aprobación:</span>
           <span class="font-semibold text-slate-700">${reserva.fechaPago}</span>
         </div>
-        <div class="flex justify-between text-xs text-slate-500 mb-2">
-          <span>Estado actual:</span>
-          <span class="font-semibold ${esPagadoExito ? 'text-emerald-600' : 'text-slate-700'}">${textoEstado}</span>
-        </div>
         <div class="flex justify-between items-center pt-2 border-t border-slate-200 text-sm">
-          <strong class="text-slate-800">${normalizarEstado(reserva.estado) === 'pendiente de pago' ? 'Total Pendiente:' : 'Total Liquidado:'}</strong>
+          <strong class="text-slate-800">Total Liquidado:</strong>
           <strong class="text-xl font-black text-primary">${formatearMonedaCOP(reserva.desglose.totalCOP)}</strong>
         </div>
       </div>
-
-      ${normalizarEstado(reserva.estado) === 'pendiente de pago' ? `
-        <div class="pt-2">
-          <button type="button" id="btnPagarDesdeModal" class="w-full gradient-btn py-3 px-6 rounded-full text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/25 cursor-pointer">
-            <span class="material-symbols-outlined text-base">credit_card</span>
-            <span>Pagar esta reserva ahora con Stripe</span>
-          </button>
-        </div>
-      ` : ''}
     `;
-
-    const btnPagarModal = DOM.detalleReservaContenido.querySelector('#btnPagarDesdeModal');
-    if (btnPagarModal) {
-      btnPagarModal.addEventListener('click', () => {
-        cerrarModalDetalleReserva();
-        iniciarPagoReservaPendiente(reserva);
-      });
-    }
-
     DOM.modalDetalleReserva.classList.add('active');
   }
 
@@ -789,27 +601,51 @@
     reservaSeleccionadaParaDetalle = null;
   }
 
-  async function iniciarPagoReservaPendiente(reserva) {
-    mostrarToast('💳 Conectando con Stripe para pagar tu reserva...', 'info', 2500);
+  // ==========================================================================
+  // CANCELAR RESERVA
+  // ==========================================================================
+
+  function abrirModalConfirmarCancelacion() {
+    if (!reservaSeleccionadaParaDetalle) return;
+    DOM.modalDetalleReserva.classList.remove('active');
+    DOM.modalConfirmarCancelacion.classList.add('active');
+  }
+
+  function cerrarModalConfirmarCancelacion() {
+    DOM.modalConfirmarCancelacion.classList.remove('active');
+    if (reservaSeleccionadaParaDetalle) {
+      DOM.modalDetalleReserva.classList.add('active');
+    }
+  }
+
+  async function confirmarCancelacionReserva() {
+    if (!reservaSeleccionadaParaDetalle) return;
+
+    const reservaId = reservaSeleccionadaParaDetalle.id;
+    // ✅ AHORA usamos el DESTINO (nombre del viaje) en vez del código
+    const destino = reservaSeleccionadaParaDetalle.destino || 'el viaje';
+
+    DOM.btnSiCancelar.disabled = true;
+    DOM.btnSiCancelar.textContent = 'Cancelando...';
+
     try {
-      const resp = await fetch('../backend/api/crear_checkout_stripe.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          reserva_id: reserva.id || reserva.reserva_id,
-          viaje_id: reserva.viaje_id,
-          cantidad_personas: reserva.personas
-        })
-      });
-      const datos = await resp.json();
-      if (!resp.ok || !datos.ok || !datos.url) {
-        throw new Error(datos.error || 'No fue posible iniciar el pago con Stripe');
-      }
-      window.location.assign(datos.url);
+      const res = await ApiService.eliminarReserva(reservaId);
+      if (!res.ok) throw new Error(res.message);
+
+      // ✅ Toast con el nombre del viaje, NO el código
+      mostrarToast(`✅ Reserva del viaje a ${destino} cancelada correctamente.`, 'success');
+
+      DOM.modalConfirmarCancelacion.classList.remove('active');
+      reservaSeleccionadaParaDetalle = null;
+
+      await cargarReservas(tabActual);
+
     } catch (err) {
       console.error(err);
-      mostrarToast(err.message || 'Error al conectar con la pasarela de pago', 'error');
+      mostrarToast('Error al cancelar: ' + err.message, 'error');
+    } finally {
+      DOM.btnSiCancelar.disabled = false;
+      DOM.btnSiCancelar.textContent = 'Sí, cancelar reserva';
     }
   }
 
@@ -818,83 +654,52 @@
   // ==========================================================================
 
   async function generarYDescargarPDF(reserva) {
-    const estadoNormalizado = normalizarEstado(reserva.estado);
-    const esPagadoExito = (reserva.metodoPago && reserva.metodoPago.toLowerCase().includes('éxito'));
-    const esPagado = (esPagadoExito || estadoNormalizado === 'pagado con éxito' || estadoNormalizado === 'pagado');
-    const esPendiente = (estadoNormalizado === 'pendiente de pago');
-    const esCancelado = (estadoNormalizado === 'cancelado');
-
-    mostrarToast(esPendiente ? '📄 Generando orden de reserva...' : '📄 Generando comprobante de pago oficial...', 'info', 2000);
-
+    mostrarToast('📄 Generando comprobante de pago oficial...', 'info', 2000);
     try {
       const resUser = await ApiService.getPerfil();
       const user = resUser.data;
-
       if (typeof window.jspdf === 'undefined') throw new Error('Librería jsPDF no disponible.');
-
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 16;
       let y = 18;
+      const esPagadoExito = (reserva.metodoPago && reserva.metodoPago.toLowerCase().includes('éxito'));
 
-      // ENCABEZADO
       doc.setFillColor(200, 0, 255);
       doc.rect(0, 0, pageWidth, 6, 'F');
-
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
       doc.setTextColor(200, 0, 255);
       doc.text('DINASTÍA AMV', margin, y);
-
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 116, 139);
       doc.text('Agencia de Viajes & Experiencias Turísticas en Colombia', margin, y + 5);
       doc.text('NIT: 901.458.789-2 | RNT: 45291 | Bogotá, Colombia', margin, y + 9);
-
-      // Cuadro de estado del documento
-      let tituloDoc = 'COMPROBANTE';
-      let colorTitulo = [239, 29, 156];
-      if (esPagado) {
-        tituloDoc = 'PAGO CONFIRMADO';
-        colorTitulo = [16, 185, 129];
-      } else if (esPendiente) {
-        tituloDoc = 'ORDEN DE RESERVA';
-        colorTitulo = [202, 138, 4];
-      } else if (esCancelado) {
-        tituloDoc = 'RESERVA CANCELADA';
-        colorTitulo = [220, 38, 38];
-      }
-
       doc.setFillColor(248, 246, 246);
-      doc.roundedRect(pageWidth - margin - 62, y - 4, 62, 20, 2, 2, 'F');
+      doc.roundedRect(pageWidth - margin - 60, y - 4, 60, 20, 2, 2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(colorTitulo[0], colorTitulo[1], colorTitulo[2]);
-      doc.text(tituloDoc, pageWidth - margin - 58, y + 2);
+      doc.setFontSize(10);
+      doc.setTextColor(239, 29, 156);
+      doc.text('COMPROBANTE OFICIAL', pageWidth - margin - 56, y + 2);
       doc.setFontSize(8);
       doc.setTextColor(30, 41, 59);
-      doc.text(`N°: ${reserva.codigo}`, pageWidth - margin - 58, y + 8);
-      doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin - 58, y + 13);
-
+      doc.text(`N°: ${reserva.codigo}`, pageWidth - margin - 56, y + 8);
+      doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin - 56, y + 13);
       y += 24;
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y, pageWidth - margin, y);
       y += 8;
 
-      // DATOS DEL TITULAR
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
       doc.text('DATOS DEL VIAJERO / TITULAR', margin, y);
       y += 6;
-
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(71, 85, 105);
-
       const col2 = margin + 85;
       doc.text(`Nombre Completo:`, margin, y);
       doc.setFont('helvetica', 'bold');
@@ -905,7 +710,6 @@
       doc.text(`${user.tipoDocumento} ${user.numeroDocumento}`, col2 + 22, y);
       doc.setFont('helvetica', 'normal');
       y += 5;
-
       doc.text(`Correo Electrónico:`, margin, y);
       doc.setFont('helvetica', 'bold');
       doc.text(`${user.correo}`, margin + 32, y);
@@ -916,42 +720,32 @@
       doc.setFont('helvetica', 'normal');
       y += 10;
 
-      // DETALLE DEL PLAN
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
-      const seccionPlanTitulo = esPagado
-        ? 'DETALLE DEL PLAN TURÍSTICO ADQUIRIDO'
-        : (esPendiente ? 'DETALLE DEL PLAN TURÍSTICO RESERVADO' : 'DETALLE DEL PLAN TURÍSTICO (CANCELADO)');
-      doc.text(seccionPlanTitulo, margin, y);
+      doc.text('DETALLE DEL PLAN TURÍSTICO ADQUIRIDO', margin, y);
       y += 6;
-
       doc.setFillColor(248, 250, 252);
       doc.setDrawColor(203, 213, 225);
       doc.roundedRect(margin, y, pageWidth - (margin * 2), 26, 2, 2, 'FD');
-
       doc.setFontSize(9);
       doc.setTextColor(200, 0, 255);
       doc.setFont('helvetica', 'bold');
       doc.text(`Destino: ${reserva.destino}`, margin + 4, y + 6);
-
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(51, 65, 85);
       doc.text(`Departamento / Región: ${reserva.departamento}`, margin + 4, y + 12);
       doc.text(`Itinerario: ${reserva.fechasFormato}`, margin + 4, y + 18);
       doc.text(`Alojamiento: ${reserva.alojamiento}`, margin + 4, y + 23);
-
       doc.text(`Pasajeros: ${reserva.personasTexto}`, col2, y + 12);
       doc.text(`Estado: ${obtenerTextoEstado(reserva.estado, reserva.metodoPago).toUpperCase()}`, col2, y + 18);
       y += 32;
 
-      // DESGLOSE
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
-      doc.text('DESGLOSE DE TARIFA Y CONCEPTOS', margin, y);
+      doc.text('DESGLOSE DE PAGO Y FACTURACIÓN', margin, y);
       y += 5;
-
       doc.setFillColor(200, 0, 255);
       doc.rect(margin, y, pageWidth - (margin * 2), 7, 'F');
       doc.setTextColor(255, 255, 255);
@@ -960,7 +754,6 @@
       doc.text('CANT.', margin + 110, y + 5);
       doc.text('VALOR COP', pageWidth - margin - 30, y + 5);
       y += 7;
-
       doc.setTextColor(51, 65, 85);
       doc.setFont('helvetica', 'normal');
       doc.setFillColor(255, 255, 255);
@@ -969,99 +762,67 @@
       doc.text('1', margin + 114, y + 5);
       doc.text(`${formatearMonedaCOP(reserva.desglose.tarifaBase)}`, pageWidth - margin - 30, y + 5);
       y += 7;
-
       doc.setFillColor(248, 250, 252);
       doc.rect(margin, y, pageWidth - (margin * 2), 7, 'F');
       doc.text('IVA y Tasas de Turismo aplicables (19%)', margin + 4, y + 5);
       doc.text('1', margin + 114, y + 5);
       doc.text(`${formatearMonedaCOP(reserva.desglose.impuestosIva)}`, pageWidth - margin - 30, y + 5);
       y += 7;
-
       doc.setFillColor(241, 245, 249);
       doc.rect(margin, y, pageWidth - (margin * 2), 9, 'F');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
       doc.setTextColor(200, 0, 255);
-
-      const labelTotal = esPagado ? 'TOTAL PAGADO (COP)' : (esPendiente ? 'TOTAL A PAGAR (COP)' : 'VALOR DEL PLAN (COP)');
-      doc.text(labelTotal, margin + 4, y + 6);
+      doc.text('TOTAL PAGADO (COP)', margin + 4, y + 6);
       doc.text(`${formatearMonedaCOP(reserva.desglose.totalCOP)}`, pageWidth - margin - 35, y + 6);
       y += 15;
 
-      // MÉTODO DE PAGO
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
       doc.setTextColor(100, 116, 139);
-      const metodoTexto = esPagado ? (reserva.metodoPago || 'Pagado con éxito') : (reserva.metodoPago || 'Pagar después / En destino');
-      const fechaTransaccionTexto = esPagado ? (reserva.fechaPago || 'Confirmado') : 'Pendiente de pago';
-      doc.text(`Modalidad / Método: ${metodoTexto}`, margin, y);
-      doc.text(`Estado del Pago: ${obtenerTextoEstado(reserva.estado, reserva.metodoPago)} | Fecha: ${fechaTransaccionTexto}`, margin, y + 5);
+      const metodoTexto = esPagadoExito ? 'Pagado con éxito' : (reserva.metodoPago || 'Pendiente');
+      doc.text(`Método de Transacción: ${metodoTexto}`, margin, y);
+      doc.text(`Fecha y Hora de Pago: ${reserva.fechaPago}`, margin, y + 5);
 
-      // SELLO DINÁMICO
-      let selloTexto = 'PAGADO CON ÉXITO';
+      const estadoNormalizado = normalizarEstado(reserva.estado);
+      let selloTexto = 'PAGADO / VÁLIDO';
       let selloColor = [16, 185, 129];
-
-      if (esPagado) {
-        selloTexto = 'PAGADO CON ÉXITO';
-        selloColor = [16, 185, 129];
-      } else if (esPendiente) {
-        selloTexto = 'PENDIENTE DE PAGO';
-        selloColor = [202, 138, 4];
-      } else if (estadoNormalizado === 'no pagado') {
-        selloTexto = 'NO PAGADO';
-        selloColor = [217, 119, 6];
-      } else if (estadoNormalizado === 'en proceso de pago') {
-        selloTexto = 'EN PROCESO';
-        selloColor = [37, 99, 235];
-      } else if (esCancelado) {
-        selloTexto = 'CANCELADO';
-        selloColor = [220, 38, 38];
-      }
+      if (esPagadoExito || estadoNormalizado === 'pagado con éxito') { selloTexto = 'PAGADO CON ÉXITO'; selloColor = [16, 185, 129]; }
+      else if (estadoNormalizado === 'pendiente de pago') { selloTexto = 'PENDIENTE DE PAGO'; selloColor = [202, 138, 4]; }
+      else if (estadoNormalizado === 'no pagado') { selloTexto = 'NO PAGADO'; selloColor = [217, 119, 6]; }
+      else if (estadoNormalizado === 'en proceso de pago') { selloTexto = 'EN PROCESO'; selloColor = [37, 99, 235]; }
+      else if (estadoNormalizado === 'cancelado') { selloTexto = 'CANCELADO'; selloColor = [220, 38, 38]; }
 
       doc.setDrawColor(selloColor[0], selloColor[1], selloColor[2]);
       doc.setTextColor(selloColor[0], selloColor[1], selloColor[2]);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-
-      const selloAncho = 64;
-      const selloAlto = 16;
+      doc.setFontSize(13);
+      const selloAncho = 60, selloAlto = 16;
       const selloX = pageWidth - margin - selloAncho;
       const selloY = y - 2;
-
       doc.roundedRect(selloX, selloY, selloAncho, selloAlto, 2, 2);
-
-      doc.setFontSize(10.5);
+      doc.setFontSize(11);
       const textoAncho = doc.getTextWidth(selloTexto);
       doc.text(selloTexto, selloX + (selloAncho - textoAncho) / 2, selloY + 11);
-
       y += 24;
 
-      // TÉRMINOS
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y, pageWidth - margin, y);
       y += 6;
-
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8);
       doc.setTextColor(71, 85, 105);
       doc.text('TÉRMINOS Y CONDICIONES:', margin, y);
       y += 4;
-
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(148, 163, 184);
-      const clausula = esPagado
-        ? 'Este documento constituye el comprobante oficial de pago de su plan turístico en Dinastía AMV. Presente este documento al momento del viaje.'
-        : (esPendiente
-          ? 'Esta orden certifica la reserva y separación de su cupo en el viaje seleccionado. Su estado actual es PENDIENTE DE PAGO. Puede liquidar el pago en cualquier momento desde su perfil de usuario o en el punto de encuentro previo al viaje.'
-          : 'Esta reserva se encuentra actualmente CANCELADA. Para más información o soporte comuníquese con soporte@dinastia.com.');
+      const clausula = 'Este documento constituye el comprobante oficial de su compra en Dinastía AMV. Para soporte o modificaciones comuníquese con soporte@dinastia.com.';
       doc.text(doc.splitTextToSize(clausula, pageWidth - (margin * 2)), margin, y);
 
-      const nombreArchivo = esPagado
-        ? `Comprobante_Pago_AMV_${reserva.codigo}.pdf`
-        : (esPendiente ? `Orden_Reserva_AMV_${reserva.codigo}.pdf` : `Reserva_Cancelada_AMV_${reserva.codigo}.pdf`);
+      const nombreArchivo = `Comprobante_AMV_${reserva.codigo}.pdf`;
       doc.save(nombreArchivo);
-      mostrarToast(`✅ Documento descargado: ${nombreArchivo}`, 'success');
+      mostrarToast(`✅ Comprobante descargado: ${nombreArchivo}`, 'success');
     } catch (err) {
       console.error(err);
       mostrarToast('Error al generar comprobante PDF.', 'error');
@@ -1087,22 +848,10 @@
         DOM.badgeRolUsuario.className = 'inline-block mt-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary';
       }
     }
-    if (DOM.selectSimuladorRol) {
-      DOM.selectSimuladorRol.value = rol;
-      if (esAdmin) {
-        DOM.selectSimuladorRol.disabled = false;
-        DOM.selectSimuladorRol.classList.remove('cursor-not-allowed', 'opacity-70');
-        DOM.selectSimuladorRol.classList.add('cursor-pointer');
-      } else {
-        DOM.selectSimuladorRol.disabled = true;
-        DOM.selectSimuladorRol.classList.add('cursor-not-allowed', 'opacity-70');
-        DOM.selectSimuladorRol.classList.remove('cursor-pointer');
-      }
-    }
   }
 
   // ==========================================================================
-  // CIERRE
+  // CIERRE DE SESIÓN
   // ==========================================================================
 
   function abrirModalCierreSesion() { DOM.modalConfirmarCierre.classList.add('active'); }
@@ -1139,20 +888,17 @@
       });
     }
 
+    if (DOM.btnCancelarReserva) DOM.btnCancelarReserva.addEventListener('click', abrirModalConfirmarCancelacion);
+    if (DOM.btnNoCancelar) DOM.btnNoCancelar.addEventListener('click', cerrarModalConfirmarCancelacion);
+    if (DOM.btnSiCancelar) DOM.btnSiCancelar.addEventListener('click', confirmarCancelacionReserva);
+
     if (DOM.btnIrAdmin) DOM.btnIrAdmin.addEventListener('click', () => { window.location.href = 'interfazAdmin.html'; });
-    if (DOM.selectSimuladorRol) DOM.selectSimuladorRol.addEventListener('change', (e) => {
-      if (DOM.selectSimuladorRol.disabled) return;
-      const nuevoRol = e.target.value;
-      localStorage.setItem(STORAGE_KEYS.USER_ROLE, nuevoRol);
-      actualizarVisualizacionRol(nuevoRol);
-      mostrarToast(`Rol cambiado a: ${nuevoRol.toUpperCase()}`, 'info', 2000);
-    });
 
     if (DOM.btnCerrarSesion) DOM.btnCerrarSesion.addEventListener('click', abrirModalCierreSesion);
     if (DOM.btnNoCerrar) DOM.btnNoCerrar.addEventListener('click', cerrarModalCierreSesion);
     if (DOM.btnSiCerrar) DOM.btnSiCerrar.addEventListener('click', ejecutarCierreSesion);
 
-    [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre].forEach(modal => {
+    [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre, DOM.modalConfirmarCancelacion].forEach(modal => {
       if (modal) {
         modal.addEventListener('click', (e) => {
           if (e.target === modal) modal.classList.remove('active');
@@ -1162,7 +908,7 @@
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre].forEach(m => {
+        [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre, DOM.modalConfirmarCancelacion].forEach(m => {
           if (m && m.classList.contains('active')) m.classList.remove('active');
         });
       }
@@ -1173,11 +919,9 @@
     ApiService.getAuthToken();
     registrarEventos();
     await cargarDatosPerfil();
-
     const params = new URLSearchParams(window.location.search);
     const tabInicial = params.get('tab') === 'pasados' ? 'pasados' : 'proximos';
     await cargarReservas(tabInicial);
-
     if (params.get('tab') === 'pasados') {
       setTimeout(() => {
         const seccionReservas = document.getElementById('tituloHistorialViajes');
