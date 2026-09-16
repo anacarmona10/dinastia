@@ -38,10 +38,7 @@ if ($ultimoEnvio > 0 && time() - $ultimoEnvio < 60) {
 
 try {
     $consulta = $pdo->prepare(
-        'SELECT id, correo, "nombreCompleto"\n'
-        . 'FROM usuarios\n'
-        . 'WHERE LOWER(correo) = LOWER(:correo)\n'
-        . 'LIMIT 1'
+        'SELECT id, correo, "nombreCompleto" FROM usuarios WHERE LOWER(correo) = LOWER(:correo) LIMIT 1'
     );
     $consulta->execute(['correo' => $correo]);
     $usuario = $consulta->fetch();
