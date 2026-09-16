@@ -68,7 +68,8 @@ function enviarCorreoConResend(
     }
 
     if ($respuesta === false || $estado < 200 || $estado >= 300) {
-        error_log("Error enviando correo con Resend. HTTP: {$estado}");
+        $detalle = is_string($respuesta) ? trim($respuesta) : '';
+        error_log("Error enviando correo con Resend. HTTP: {$estado}. {$detalle}");
         return false;
     }
 

@@ -38,7 +38,10 @@ if ($ultimoEnvio > 0 && time() - $ultimoEnvio < 60) {
 
 try {
     $consulta = $pdo->prepare(
-        'SELECT id, correo, "nombreCompleto" FROM usuarios WHERE correo = :correo LIMIT 1'
+        'SELECT id, correo, "nombreCompleto"\n'
+        . 'FROM usuarios\n'
+        . 'WHERE LOWER(correo) = LOWER(:correo)\n'
+        . 'LIMIT 1'
     );
     $consulta->execute(['correo' => $correo]);
     $usuario = $consulta->fetch();
@@ -47,6 +50,7 @@ try {
     $mensajeSeguro = 'Si el correo está registrado, recibirás un código de recuperación.';
 
     if (!$usuario) {
+        error_log('Recuperación de contraseña solicitada para un correo sin cuenta.');
         responderRecuperacion(200, ['ok' => true, 'mensaje' => $mensajeSeguro]);
     }
 
@@ -76,6 +80,7 @@ try {
         ]);
     }
 
+    error_log('Código de recuperación solicitado y aceptado por el proveedor de correo.');
     responderRecuperacion(200, ['ok' => true, 'mensaje' => $mensajeSeguro]);
 } catch (Throwable $error) {
     error_log('Error solicitando recuperación de contraseña: ' . $error->getMessage());
