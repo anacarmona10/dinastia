@@ -24,21 +24,47 @@ if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'usua
     responder(401, ['ok' => false, 'error' => 'Debes iniciar sesión para pagar']);
 }
 
-$entrada = json_decode(file_get_contents('php://input'), true);
+$entrada = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+$reservaId = filter_var($entrada['reserva_id'] ?? null, FILTER_VALIDATE_INT);
 $viajeId = filter_var($entrada['viaje_id'] ?? null, FILTER_VALIDATE_INT);
 $cantidad = filter_var($entrada['cantidad_personas'] ?? 1, FILTER_VALIDATE_INT);
-
-if (!$viajeId || !$cantidad || $cantidad < 1 || $cantidad > 10) {
-    responder(422, ['ok' => false, 'error' => 'Datos de reserva inválidos']);
-}
 
 if (!$stripeKey || !$appUrl) {
     responder(500, ['ok' => false, 'error' => 'Stripe no está configurado']);
 }
 
 try {
+    $referencia = '';
+    $codigoReserva = '';
+
     // =========================================================
-    // 1. Obtener datos del viaje
+    // 1. Si se envía reserva_id, cargar datos de la reserva existente
+    // =========================================================
+    if ($reservaId) {
+        $stmtRes = $pdo->prepare('SELECT id, usuario_id, viaje_id, cantidad_personas, monto_centavos, estado, referencia FROM reservas WHERE id = :id AND usuario_id = :uid LIMIT 1');
+        $stmtRes->execute(['id' => $reservaId, 'uid' => $_SESSION['user_id']]);
+        $reservaExistente = $stmtRes->fetch();
+
+        if (!$reservaExistente) {
+            responder(404, ['ok' => false, 'error' => 'Reserva no encontrada']);
+        }
+
+        if (in_array(strtoupper($reservaExistente['estado']), ['APPROVED', 'PAGADO', 'PAGADA', 'PAGADO CON ÉXITO'])) {
+            responder(400, ['ok' => false, 'error' => 'Esta reserva ya se encuentra pagada']);
+        }
+
+        $viajeId = (int) $reservaExistente['viaje_id'];
+        $cantidad = (int) $reservaExistente['cantidad_personas'];
+        $referencia = $reservaExistente['referencia'] ?? '';
+        $codigoReserva = $referencia;
+    }
+
+    if (!$viajeId || !$cantidad || $cantidad < 1 || $cantidad > 10) {
+        responder(422, ['ok' => false, 'error' => 'Datos de reserva inválidos']);
+    }
+
+    // =========================================================
+    // 2. Obtener datos del viaje
     // =========================================================
     $consulta = $pdo->prepare(
         'SELECT id, destino, precio, fecha_salida, fecha_regreso 
@@ -56,75 +82,59 @@ try {
     $totalCentavos = $precioUnitarioCentavos * $cantidad;
     $precioTotal = $precioUnitario * $cantidad;
 
-    // =========================================================
-    // 2. Generar código único de reserva
-    // =========================================================
-    $anio = date('Y');
-    $prefijo = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $viaje['destino']), 0, 3));
-    if (strlen($prefijo) < 3) $prefijo = str_pad($prefijo, 3, 'X');
+    // Si no había referencia previa, generarla
+    if ($referencia === '') {
+        $anio = date('Y');
+        $prefijo = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $viaje['destino']), 0, 3));
+        if (strlen($prefijo) < 3) $prefijo = str_pad($prefijo, 3, 'X');
 
-    $codigoReserva = '';
-    $intentos = 0;
-    do {
-        $random = str_pad((string)random_int(0, 999), 3, '0', STR_PAD_LEFT);
-        $codigoReserva = "AMV-{$anio}-{$prefijo}-{$random}";
-        try {
-            $check = $pdo->prepare('SELECT id FROM reservas WHERE codigo = ?');
-            $check->execute([$codigoReserva]);
+        $intentos = 0;
+        do {
+            $random = str_pad((string)random_int(0, 999), 3, '0', STR_PAD_LEFT);
+            $referencia = "AMV-{$anio}-{$prefijo}-{$random}";
+            $check = $pdo->prepare('SELECT id FROM reservas WHERE referencia = ? LIMIT 1');
+            $check->execute([$referencia]);
             $existe = $check->fetch();
-        } catch (Throwable $e) {
-            $existe = false;
-        }
-        $intentos++;
-    } while ($existe && $intentos < 10);
+            $intentos++;
+        } while ($existe && $intentos < 10);
+        $codigoReserva = $referencia;
+    }
 
-    $referencia = 'DIN-' . date('YmdHis') . '-' . bin2hex(random_bytes(5));
-
-    // =========================================================
-    // 3. Crear reserva en la BD (antes de Stripe)
-    // =========================================================
     $pdo->beginTransaction();
 
-    $reservaId = null;
-    try {
+    // =========================================================
+    // 3. Crear o actualizar la reserva en la tabla reservas
+    // =========================================================
+    if (!$reservaId) {
         $insertarReserva = $pdo->prepare(
             'INSERT INTO reservas
-                (codigo, usuario_id, viaje_id, cantidad_personas, precio_unitario, precio_total,
-                 estado_pago, metodo_pago, fecha_salida, fecha_regreso)
+                (usuario_id, viaje_id, estado, fecha_reserva, referencia, cantidad_personas, monto_centavos, metodo_pago, created_at, updated_at)
              VALUES
-                (:codigo, :usuario_id, :viaje_id, :cantidad, :precio_unitario, :precio_total,
-                 :estado, :metodo, :fecha_salida, :fecha_regreso)
+                (:usuario_id, :viaje_id, :estado, NOW(), :referencia, :cantidad, :monto_centavos, :metodo_pago, NOW(), NOW())
              RETURNING id'
         );
 
         $insertarReserva->execute([
-            'codigo' => $codigoReserva,
             'usuario_id' => $_SESSION['user_id'],
             'viaje_id' => $viajeId,
+            'estado' => 'PENDING',
+            'referencia' => $referencia,
             'cantidad' => $cantidad,
-            'precio_unitario' => $precioUnitario,
-            'precio_total' => $precioTotal,
-            'estado' => 'pendiente de pago',
-            'metodo' => 'Stripe',
-            'fecha_salida' => $viaje['fecha_salida'] ?? null,
-            'fecha_regreso' => $viaje['fecha_regreso'] ?? null,
+            'monto_centavos' => $totalCentavos,
+            'metodo_pago' => 'Stripe'
         ]);
 
         $reservaId = (int) $insertarReserva->fetchColumn();
-    } catch (Throwable $e) {
-        // Si la tabla reservas no existe o hay un error, continuamos sin reserva
-        error_log('Error al insertar reserva: ' . $e->getMessage());
-        $reservaId = null;
     }
 
     // =========================================================
-    // 4. Crear pago en la BD
+    // 4. Crear pago en la BD vinculado a la reserva (reserva_id)
     // =========================================================
     $insertarPago = $pdo->prepare(
         'INSERT INTO pagos
-            (referencia, usuario_id, viaje_id, cantidad_personas, monto_centavos, estado)
+            (referencia, usuario_id, viaje_id, cantidad_personas, monto_centavos, estado, reserva_id, created_at, updated_at)
          VALUES 
-            (:referencia, :usuario_id, :viaje_id, :cantidad, :monto, :estado)
+            (:referencia, :usuario_id, :viaje_id, :cantidad, :monto, :estado, :reserva_id, NOW(), NOW())
          RETURNING id'
     );
 
@@ -135,38 +145,26 @@ try {
         'cantidad' => $cantidad,
         'monto' => $totalCentavos,
         'estado' => 'PENDING',
+        'reserva_id' => $reservaId
     ]);
 
     $pagoId = (int) $insertarPago->fetchColumn();
-
-    // Enlazar reserva con pago (opcional, no falla si la columna no existe)
-    if ($reservaId) {
-        try {
-            $link = $pdo->prepare('UPDATE reservas SET pago_id = :pago_id WHERE id = :id');
-            $link->execute(['pago_id' => $pagoId, 'id' => $reservaId]);
-        } catch (Throwable $e) {
-            // Ignorar si no existe la columna pago_id
-        }
-    }
 
     // =========================================================
     // 5. Crear sesión de Stripe
     // =========================================================
     $stripe = new \Stripe\StripeClient($stripeKey);
 
-    $successUrl = $appUrl . '/frontend/pago_exitoso.html?session_id={CHECKOUT_SESSION_ID}';
-    if ($reservaId) {
-        $successUrl .= '&reserva=' . $reservaId;
-    }
+    $successUrl = $appUrl . '/frontend/pago_exitoso.html?session_id={CHECKOUT_SESSION_ID}&reserva=' . $reservaId;
 
     $checkout = $stripe->checkout->sessions->create([
         'mode' => 'payment',
         'customer_email' => $_SESSION['user_email'],
         'success_url' => $successUrl,
-        'cancel_url' => $appUrl . '/frontend/pago_cancelado.html?pago=' . $pagoId,
+        'cancel_url' => $appUrl . '/frontend/pago_cancelado.html?pago=' . $pagoId . '&reserva=' . $reservaId,
         'metadata' => [
             'pago_id' => (string) $pagoId,
-            'reserva_id' => $reservaId ? (string) $reservaId : '',
+            'reserva_id' => (string) $reservaId,
             'referencia' => $referencia,
             'viaje_id' => (string) $viajeId,
         ],
@@ -182,16 +180,25 @@ try {
         ]],
     ]);
 
-    // Guardar el session_id en el pago
+    // Guardar el session_id tanto en pagos como en reservas
     $actualizarPago = $pdo->prepare(
         'UPDATE pagos
          SET stripe_checkout_session_id = :session_id, updated_at = NOW()
          WHERE id = :id'
     );
-
     $actualizarPago->execute([
         'session_id' => $checkout->id,
         'id' => $pagoId,
+    ]);
+
+    $actualizarReserva = $pdo->prepare(
+        'UPDATE reservas
+         SET stripe_checkout_session_id = :session_id, updated_at = NOW()
+         WHERE id = :id'
+    );
+    $actualizarReserva->execute([
+        'session_id' => $checkout->id,
+        'id' => $reservaId,
     ]);
 
     $pdo->commit();
@@ -199,10 +206,12 @@ try {
     responder(200, [
         'ok' => true,
         'url' => $checkout->url,
-        'reserva' => $reservaId ? [
+        'reserva' => [
             'id' => $reservaId,
             'codigo' => $codigoReserva,
-        ] : null,
+            'referencia' => $referencia
+        ],
+        'pago_id' => $pagoId
     ]);
 
 } catch (Throwable $error) {

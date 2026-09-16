@@ -24,7 +24,7 @@ try {
         u."numeroDocumento" AS numero_documento,
         u.correo,
         u.created_at,
-        (SELECT COUNT(*) FROM pagos WHERE usuario_id = u.id) AS total_reservas
+        (SELECT COUNT(*) FROM reservas WHERE usuario_id = u.id) AS total_reservas
     FROM usuarios AS u
     ORDER BY u.id DESC';
 

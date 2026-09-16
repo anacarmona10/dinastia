@@ -18,12 +18,15 @@ if (!puedeGestionarViajes($_SESSION)) {
 
 try {
     $sql = 'SELECT 
-        p.id,
-        p.referencia,
-        p.cantidad_personas,
-        p.monto_centavos,
-        p.estado,
-        p.created_at,
+        r.id,
+        r.referencia,
+        r.cantidad_personas,
+        r.monto_centavos,
+        r.estado,
+        r.metodo_pago,
+        r.fecha_reserva,
+        r.fecha_pago,
+        r.created_at,
         u.id AS usuario_id,
         u."nombreCompleto" AS usuario_nombre,
         u.correo AS usuario_correo,
@@ -32,14 +35,31 @@ try {
         v.id AS viaje_id,
         v.destino,
         v.fecha_salida,
-        v.fecha_regreso
-    FROM pagos AS p
-    INNER JOIN usuarios AS u ON u.id = p.usuario_id
-    INNER JOIN viajes AS v ON v.id = p.viaje_id
-    ORDER BY p.id DESC';
+        v.fecha_regreso,
+        p.id AS pago_id,
+        p.estado AS pago_estado
+    FROM reservas AS r
+    INNER JOIN usuarios AS u ON u.id = r.usuario_id
+    INNER JOIN viajes AS v ON v.id = r.viaje_id
+    LEFT JOIN pagos AS p ON p.reserva_id = r.id
+    ORDER BY r.id DESC';
 
     $stmt = $pdo->query($sql);
     $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($reservas as &$res) {
+        $estadoRaw = strtoupper(trim((string)($res['estado'] ?? '')));
+        $pagoEstadoRaw = strtoupper(trim((string)($res['pago_estado'] ?? '')));
+
+        if (in_array($estadoRaw, ['APPROVED', 'PAGADO', 'PAGADA', 'PAGADO CON ÉXITO']) || $pagoEstadoRaw === 'APPROVED') {
+            $res['estado'] = 'APPROVED';
+        } elseif (in_array($estadoRaw, ['CANCELLED', 'CANCELADO', 'CANCELADA', 'FAILED', 'EXPIRED']) || in_array($pagoEstadoRaw, ['CANCELLED', 'FAILED', 'EXPIRED'])) {
+            $res['estado'] = 'CANCELLED';
+        } else {
+            $res['estado'] = 'PENDING';
+        }
+    }
+    unset($res);
 
     echo json_encode([
         'success' => true,

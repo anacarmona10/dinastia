@@ -37,12 +37,26 @@ try {
 
     $id = (int)$id;
 
-    // Consultar existencia del pago / reserva
-    $stmt = $pdo->prepare('SELECT id, usuario_id, viaje_id, estado, referencia FROM pagos WHERE id = ?');
+    // Consultar existencia de la reserva
+    $stmt = $pdo->prepare('SELECT id, usuario_id, viaje_id, estado, referencia FROM reservas WHERE id = ?');
     $stmt->execute([$id]);
-    $pago = $stmt->fetch(PDO::FETCH_ASSOC);
+    $reserva = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$pago) {
+    // Fallback: si no se encontró por ID de reserva, buscar en pagos
+    if (!$reserva) {
+        $stmtP = $pdo->prepare('SELECT id, usuario_id, viaje_id, estado, referencia, reserva_id FROM pagos WHERE id = ?');
+        $stmtP->execute([$id]);
+        $pagoRow = $stmtP->fetch(PDO::FETCH_ASSOC);
+        if ($pagoRow && !empty($pagoRow['reserva_id'])) {
+            $stmt->execute([$pagoRow['reserva_id']]);
+            $reserva = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        if (!$reserva && $pagoRow) {
+            $reserva = $pagoRow;
+        }
+    }
+
+    if (!$reserva) {
         http_response_code(404);
         echo json_encode([
             'success' => false,
@@ -51,7 +65,7 @@ try {
         exit;
     }
 
-    if ($pago['estado'] === 'CANCELLED') {
+    if (strtoupper((string)$reserva['estado']) === 'CANCELLED' || strtoupper((string)$reserva['estado']) === 'CANCELADO') {
         http_response_code(400);
         echo json_encode([
             'success' => false,
@@ -62,21 +76,21 @@ try {
 
     $pdo->beginTransaction();
 
-    // Actualizar estado en pagos
-    $stmtUpPago = $pdo->prepare("UPDATE pagos SET estado = 'CANCELLED', updated_at = NOW() WHERE id = ?");
-    $stmtUpPago->execute([$id]);
+    $reservaId = (int)$reserva['id'];
 
-    // Actualizar también en reservas si existe coincidencia de usuario y viaje
-    if (!empty($pago['usuario_id']) && !empty($pago['viaje_id'])) {
-        $stmtUpRes = $pdo->prepare("UPDATE reservas SET estado = 'cancelado' WHERE user_id = ? AND viaje_id = ?");
-        $stmtUpRes->execute([$pago['usuario_id'], $pago['viaje_id']]);
-    }
+    // Actualizar estado en reservas
+    $stmtUpRes = $pdo->prepare("UPDATE reservas SET estado = 'CANCELLED', updated_at = NOW() WHERE id = ?");
+    $stmtUpRes->execute([$reservaId]);
+
+    // Actualizar también en pagos vinculados
+    $stmtUpPago = $pdo->prepare("UPDATE pagos SET estado = 'CANCELLED', updated_at = NOW() WHERE reserva_id = ? OR id = ?");
+    $stmtUpPago->execute([$reservaId, $reservaId]);
 
     $pdo->commit();
 
     echo json_encode([
         'success' => true,
-        'mensaje' => 'Reserva ' . $pago['referencia'] . ' cancelada correctamente'
+        'mensaje' => 'Reserva ' . ($reserva['referencia'] ?? ('#' . $reservaId)) . ' cancelada correctamente'
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {

@@ -197,6 +197,72 @@
         </div>
     </div>
 
+    <!-- MODAL DETALLES VIAJE (ADMIN) -->
+    <div class="modal" id="modalDetallesViaje">
+        <div class="modal-content !max-w-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 class="!mb-0 flex items-center gap-2 text-xl font-black text-slate-900">
+                    <span class="material-symbols-outlined text-primary text-2xl">travel_explore</span>
+                    <span id="detalles_admin_destino">Detalles del Viaje</span>
+                </h2>
+                <button type="button" onclick="cerrarModalDetalles()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1 leading-none transition-colors" aria-label="Cerrar modal">&times;</button>
+            </div>
+
+            <!-- Carrusel de imágenes con navegación condicional -->
+            <div class="relative w-full aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mt-4 shadow-sm group">
+                <img id="adminCarouselImg" src="" alt="Imagen del viaje" class="w-full h-full object-cover transition-all duration-300">
+
+                <!-- Flecha izquierda (solo si hay >1 imagen) -->
+                <button type="button" id="adminBtnPrevImg" onclick="cambiarImagenAdmin(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none" title="Imagen anterior">
+                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                </button>
+
+                <!-- Flecha derecha (solo si hay >1 imagen) -->
+                <button type="button" id="adminBtnNextImg" onclick="cambiarImagenAdmin(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none" title="Imagen siguiente">
+                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                </button>
+
+                <!-- Indicador de cantidad de fotos -->
+                <div id="adminCarouselBadge" class="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
+                    <span class="material-symbols-outlined text-xs text-primary">photo_camera</span>
+                    <span id="adminCarouselIndex">1 / 1</span>
+                </div>
+            </div>
+
+            <!-- Información del viaje -->
+            <div class="grid grid-cols-2 gap-3 mt-4">
+                <div class="bg-purple-50/70 p-3 rounded-xl border border-primary/10">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tarifa por persona</span>
+                    <span id="detalles_admin_precio" class="text-lg font-black text-primary">$0</span>
+                </div>
+                <div class="bg-purple-50/70 p-3 rounded-xl border border-primary/10">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ID del Viaje</span>
+                    <span id="detalles_admin_id" class="text-lg font-black text-slate-800">#0</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-3">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Fecha Salida</span>
+                    <span id="detalles_admin_salida" class="text-xs font-bold text-slate-700">--/--/----</span>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Fecha Regreso</span>
+                    <span id="detalles_admin_regreso" class="text-xs font-bold text-slate-700">--/--/----</span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="!mt-0 !text-xs !font-bold text-slate-500 uppercase tracking-wider block mb-1">Descripción del Plan</label>
+                <p id="detalles_admin_descripcion" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200/70 whitespace-pre-line max-h-36 overflow-y-auto"></p>
+            </div>
+
+            <div class="mt-5 flex items-center justify-end gap-2">
+                <button type="button" class="btn-cerrar !mt-0 px-6 py-2.5 text-xs font-bold" onclick="cerrarModalDetalles()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Verificación de sesión de Administrador
         async function verificarSesionAdmin() {
@@ -449,14 +515,19 @@
                         </div>
                     </div>
 
-                    <!-- Botones de Acción (Editar y Eliminar) -->
-                    <div class="p-5 pt-0 grid grid-cols-2 gap-2 mt-2">
-                        <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center flex items-center justify-center gap-1" onclick="abrirModalEditar(${viaje.id})">
-                            <span class="material-symbols-outlined text-sm">edit</span> Editar
+                    <!-- Botones de Acción (Detalles, Editar y Eliminar) -->
+                    <div class="p-5 pt-0 flex flex-col gap-2 mt-2">
+                        <button type="button" class="w-full py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-primary text-xs font-black text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm" onclick="abrirModalDetalles(${viaje.id})">
+                            <span class="material-symbols-outlined text-base">visibility</span> Ver detalles
                         </button>
-                        <button type="button" class="btn-eliminar-card" onclick="confirmarEliminarViaje(${viaje.id})">
-                            <span class="material-symbols-outlined text-sm">delete</span> Eliminar
-                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center flex items-center justify-center gap-1" onclick="abrirModalEditar(${viaje.id})">
+                                <span class="material-symbols-outlined text-sm">edit</span> Editar
+                            </button>
+                            <button type="button" class="btn-eliminar-card" onclick="confirmarEliminarViaje(${viaje.id})">
+                                <span class="material-symbols-outlined text-sm">delete</span> Eliminar
+                            </button>
+                        </div>
                     </div>
                 `;
 
@@ -486,15 +557,33 @@
 
             const previewActuales = document.getElementById("preview_actuales");
             previewActuales.innerHTML = "";
-            viaje.imagenes.forEach((img) => {
-                const imagen = document.createElement("img");
-                imagen.src = rutaImagenes + encodeURIComponent(img.url);
-                imagen.classList.add("preview-img");
-                imagen.onerror = function () {
-                    this.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
-                };
-                previewActuales.appendChild(imagen);
-            });
+            if (!viaje.imagenes || viaje.imagenes.length === 0) {
+                previewActuales.innerHTML = '<p class="text-xs text-slate-400 italic">No hay imágenes guardadas para este viaje.</p>';
+            } else {
+                viaje.imagenes.forEach((img) => {
+                    const contenedor = document.createElement("div");
+                    contenedor.classList.add("img-container");
+                    contenedor.id = `img-actual-${img.id}`;
+
+                    const imagen = document.createElement("img");
+                    imagen.src = rutaImagenes + encodeURIComponent(img.url);
+                    imagen.classList.add("preview-img");
+                    imagen.onerror = function () {
+                        this.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
+                    };
+
+                    const btnEliminar = document.createElement("button");
+                    btnEliminar.type = "button";
+                    btnEliminar.innerText = "✖";
+                    btnEliminar.title = "Eliminar esta imagen del viaje";
+                    btnEliminar.classList.add("btn-eliminar");
+                    btnEliminar.onclick = () => eliminarImagenExistente(img.id, viaje.id);
+
+                    contenedor.appendChild(imagen);
+                    contenedor.appendChild(btnEliminar);
+                    previewActuales.appendChild(contenedor);
+                });
+            }
 
             imagenesNuevasEditar = [];
             document.getElementById("preview_editar").innerHTML = "";
@@ -644,6 +733,119 @@
                 }
             } catch (error) {
                 alert("Error al conectar con el servidor: " + error.message);
+            }
+        }
+
+        // ======= ELIMINAR IMAGEN EXISTENTE (ADMIN) =======
+        async function eliminarImagenExistente(imagenId, viajeId) {
+            const confirmar = confirm("¿Estás seguro de que deseas eliminar esta imagen de forma definitiva?");
+            if (!confirmar) return;
+
+            try {
+                const formData = new FormData();
+                formData.append("imagen_id", imagenId);
+
+                const response = await fetch("../backend/api/eliminar_imagen_viaje.php", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    // Remover del DOM en preview_actuales
+                    const elem = document.getElementById(`img-actual-${imagenId}`);
+                    if (elem) elem.remove();
+
+                    // Actualizar memoria local de viajesData
+                    const viaje = viajesData.find(v => v.id == viajeId);
+                    if (viaje && viaje.imagenes) {
+                        viaje.imagenes = viaje.imagenes.filter(img => img.id != imagenId);
+                        if (viaje.imagenes.length === 0) {
+                            const previewActuales = document.getElementById("preview_actuales");
+                            if (previewActuales) {
+                                previewActuales.innerHTML = '<p class="text-xs text-slate-400 italic">No hay imágenes guardadas para este viaje.</p>';
+                            }
+                        }
+                    }
+
+                    // Actualizar tarjetas del panel
+                    renderizarViajes();
+                    alert(resultado.mensaje || "Imagen eliminada correctamente.");
+                } else {
+                    alert(resultado.error || "No se pudo eliminar la imagen.");
+                }
+            } catch (error) {
+                alert("Error al conectar con el servidor: " + error.message);
+            }
+        }
+
+        // ======= CARRUSEL Y MODAL DETALLES VIAJE (ADMIN) =======
+        let adminImagenesActuales = [];
+        let adminIndexImagenActual = 0;
+
+        function abrirModalDetalles(id) {
+            const viaje = viajesData.find(v => v.id == id);
+            if (!viaje) return;
+
+            document.getElementById("detalles_admin_destino").textContent = viaje.destino;
+            document.getElementById("detalles_admin_id").textContent = `#${viaje.id}`;
+            document.getElementById("detalles_admin_precio").textContent = `$${Number(viaje.precio).toLocaleString("es-CO")}`;
+            document.getElementById("detalles_admin_salida").textContent = formatearFecha(viaje.fecha_salida);
+            document.getElementById("detalles_admin_regreso").textContent = formatearFecha(viaje.fecha_regreso);
+            document.getElementById("detalles_admin_descripcion").textContent = viaje.descripcion || "Sin descripción adicional para este viaje.";
+
+            // Extraer URLs de las imágenes
+            adminImagenesActuales = (viaje.imagenes && viaje.imagenes.length > 0)
+                ? viaje.imagenes.map(img => rutaImagenes + encodeURIComponent(img.url))
+                : ["https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80"];
+
+            adminIndexImagenActual = 0;
+            actualizarVistaCarouselAdmin();
+
+            document.getElementById("modalDetallesViaje").style.display = "flex";
+        }
+
+        function cerrarModalDetalles() {
+            document.getElementById("modalDetallesViaje").style.display = "none";
+        }
+
+        function cambiarImagenAdmin(direccion) {
+            if (adminImagenesActuales.length <= 1) return;
+            adminIndexImagenActual = (adminIndexImagenActual + direccion + adminImagenesActuales.length) % adminImagenesActuales.length;
+            actualizarVistaCarouselAdmin();
+        }
+
+        function actualizarVistaCarouselAdmin() {
+            const imgElem = document.getElementById("adminCarouselImg");
+            const btnPrev = document.getElementById("adminBtnPrevImg");
+            const btnNext = document.getElementById("adminBtnNextImg");
+            const badge = document.getElementById("adminCarouselBadge");
+            const indexElem = document.getElementById("adminCarouselIndex");
+
+            if (adminImagenesActuales.length === 0) {
+                imgElem.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
+                btnPrev.style.display = "none";
+                btnNext.style.display = "none";
+                badge.style.display = "none";
+                return;
+            }
+
+            imgElem.src = adminImagenesActuales[adminIndexImagenActual];
+            imgElem.onerror = function() {
+                this.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
+            };
+
+            // REGLA ESTRICTA: Las flechitas SOLO se muestran si hay más de 1 imagen
+            if (adminImagenesActuales.length > 1) {
+                btnPrev.style.display = "flex";
+                btnNext.style.display = "flex";
+                badge.style.display = "flex";
+                indexElem.textContent = `${adminIndexImagenActual + 1} / ${adminImagenesActuales.length}`;
+            } else {
+                btnPrev.style.display = "none";
+                btnNext.style.display = "none";
+                badge.style.display = "none";
             }
         }
     </script>

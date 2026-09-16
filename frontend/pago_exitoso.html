@@ -297,15 +297,46 @@
     });
   }
 
-  // 4. Mostrar sesión de pago si viene en la URL
+  // 4. Confirmar pago automáticamente y mostrar sesión de pago si viene en la URL
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
+  const reservaId = params.get('reserva');
+
   if (sessionId) {
     const infoElem = document.getElementById('infoSessionId');
     if (infoElem) {
-      infoElem.textContent = 'ID de sesión: ' + sessionId;
+      infoElem.textContent = 'Confirmando tu transacción en el sistema… (ID: ' + sessionId + ')';
       infoElem.classList.remove('hidden');
     }
+
+    fetch('../backend/api/confirmar_pago_stripe.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        session_id: sessionId,
+        reserva_id: reservaId ? Number(reservaId) : null
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        if (infoElem) {
+          infoElem.innerHTML = `✅ <strong>Pago y reserva confirmados con éxito.</strong> Código: <span class="text-primary font-mono font-bold">${data.referencia || 'AMV'}</span>`;
+        }
+      } else {
+        console.warn('Confirmación Stripe:', data.error);
+        if (infoElem) {
+          infoElem.textContent = 'Transacción procesada. ID de sesión: ' + sessionId;
+        }
+      }
+    })
+    .catch(err => {
+      console.error('Error confirmando pago:', err);
+      if (infoElem) {
+        infoElem.textContent = 'ID de sesión: ' + sessionId;
+      }
+    });
   }
 </script>
 </body>

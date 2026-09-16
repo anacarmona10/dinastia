@@ -240,15 +240,46 @@
       ? plan.servicios_incluidos.split(',').map(s => s.trim())
       : ['Tiquetes o traslados', 'Alojamiento seleccionado', 'Desayunos diarios', 'Guianza turística', 'Asistencia médica'];
 
+    // Lista de imágenes para el carrusel interactivo
+    const listaImagenes = Array.isArray(plan.imagenes) && plan.imagenes.length > 0
+      ? plan.imagenes
+      : (plan.imagen_url ? [plan.imagen_url] : []);
+
+    let indexImgModal = 0;
+
     DOM.modalContenido.innerHTML = `
-      <div class="relative h-56 w-full rounded-2xl overflow-hidden mb-4 shadow-sm">
-        <img src="${sanitizarHTML(plan.imagen_url)}" alt="${sanitizarHTML(plan.destino)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';"/>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-5">
+      <div class="relative h-56 sm:h-64 w-full rounded-2xl overflow-hidden mb-4 shadow-sm bg-slate-900 group">
+        <img 
+          id="userModalCarouselImg" 
+          src="${sanitizarHTML(listaImagenes[0] || 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80')}" 
+          alt="${sanitizarHTML(plan.destino)}" 
+          class="w-full h-full object-cover transition-all duration-300" 
+          onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-5 pointer-events-none">
           <div>
             <span class="text-xs font-bold text-yellow-400 uppercase tracking-widest">${plan.departamento || 'Colombia'}</span>
             <h3 class="text-2xl font-black text-white leading-tight">${sanitizarHTML(plan.destino)}</h3>
           </div>
         </div>
+
+        ${listaImagenes.length > 1 ? `
+        <!-- Flecha izquierda (solo si hay más de 1 imagen) -->
+        <button type="button" id="btnPrevUserModal" class="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none z-10" title="Imagen anterior">
+          <span class="material-symbols-outlined text-xl">chevron_left</span>
+        </button>
+
+        <!-- Flecha derecha (solo si hay más de 1 imagen) -->
+        <button type="button" id="btnNextUserModal" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none z-10" title="Imagen siguiente">
+          <span class="material-symbols-outlined text-xl">chevron_right</span>
+        </button>
+
+        <!-- Contador de fotos -->
+        <div id="userModalImgBadge" class="absolute top-3 right-3 bg-black/75 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow z-10">
+          <span class="material-symbols-outlined text-xs text-primary">photo_camera</span>
+          <span id="userModalImgIndex">1 / ${listaImagenes.length}</span>
+        </div>
+        ` : ''}
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-purple-50/60 p-3.5 rounded-xl text-xs mb-4 border border-primary/10">
@@ -322,6 +353,35 @@
     `;
 
     document.getElementById('btnReservarDesdeModal').onclick = () => ejecutarFlujoReserva(plan);
+
+    // Eventos de flechas para el carrusel de fotos (solo si hay más de 1 imagen)
+    if (listaImagenes.length > 1) {
+      const imgElem = document.getElementById('userModalCarouselImg');
+      const indexElem = document.getElementById('userModalImgIndex');
+      const btnPrev = document.getElementById('btnPrevUserModal');
+      const btnNext = document.getElementById('btnNextUserModal');
+
+      const actualizarImgModal = () => {
+        if (imgElem) imgElem.src = listaImagenes[indexImgModal];
+        if (indexElem) indexElem.textContent = `${indexImgModal + 1} / ${listaImagenes.length}`;
+      };
+
+      if (btnPrev) {
+        btnPrev.onclick = (e) => {
+          e.stopPropagation();
+          indexImgModal = (indexImgModal - 1 + listaImagenes.length) % listaImagenes.length;
+          actualizarImgModal();
+        };
+      }
+      if (btnNext) {
+        btnNext.onclick = (e) => {
+          e.stopPropagation();
+          indexImgModal = (indexImgModal + 1) % listaImagenes.length;
+          actualizarImgModal();
+        };
+      }
+    }
+
     DOM.modalDetalle.classList.add('active');
   }
 

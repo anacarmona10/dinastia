@@ -20,15 +20,20 @@ require_once __DIR__ . '/conexion.php';
 try {
     $consulta = $pdo->prepare(
         'SELECT
-            p.id,
-            p.referencia,
-            p.cantidad_personas,
-            p.monto_centavos,
-            p.estado,
-            p.updated_at AS fecha_pago,
+            r.id,
+            r.referencia,
+            r.cantidad_personas,
+            r.monto_centavos,
+            r.estado AS reserva_estado,
+            r.metodo_pago,
+            r.fecha_reserva,
+            r.fecha_pago,
+            v.id AS viaje_id,
             v.destino,
             v.fecha_salida,
             v.fecha_regreso,
+            p.id AS pago_id,
+            p.estado AS pago_estado,
             (
                 SELECT url
                 FROM imagenes_viajes
@@ -36,53 +41,66 @@ try {
                 ORDER BY id ASC
                 LIMIT 1
             ) AS imagen
-         FROM pagos AS p
-         INNER JOIN viajes AS v ON v.id = p.viaje_id
-         WHERE p.usuario_id = :usuario_id
-         ORDER BY v.fecha_salida ASC, p.id DESC'
+         FROM reservas AS r
+         INNER JOIN viajes AS v ON v.id = r.viaje_id
+         LEFT JOIN pagos AS p ON p.reserva_id = r.id
+         WHERE r.usuario_id = :usuario_id
+         ORDER BY v.fecha_salida ASC, r.id DESC'
     );
 
     $consulta->execute(['usuario_id' => $_SESSION['user_id']]);
     $reservas = [];
 
-    foreach ($consulta->fetchAll() as $pago) {
-        $estado = match ($pago['estado']) {
-            'APPROVED' => 'pagada',
-            'FAILED', 'EXPIRED' => 'cancelada',
-            default => 'pendiente',
-        };
+    foreach ($consulta->fetchAll() as $row) {
+        $estadoRaw = strtoupper(trim((string)($row['reserva_estado'] ?? '')));
+        $pagoEstadoRaw = strtoupper(trim((string)($row['pago_estado'] ?? '')));
 
-        $tipoTab = $pago['fecha_regreso'] < date('Y-m-d')
+        if (in_array($estadoRaw, ['APPROVED', 'PAGADO', 'PAGADA', 'PAGADO CON ÉXITO']) || $pagoEstadoRaw === 'APPROVED') {
+            $estado = 'pagada';
+        } elseif (in_array($estadoRaw, ['CANCELLED', 'CANCELADO', 'CANCELADA', 'FAILED', 'EXPIRED']) || in_array($pagoEstadoRaw, ['CANCELLED', 'FAILED', 'EXPIRED'])) {
+            $estado = 'cancelada';
+        } else {
+            $estado = 'pendiente';
+        }
+
+        $tipoTab = $row['fecha_regreso'] < date('Y-m-d')
             ? 'pasados'
             : 'proximos';
 
-        $imagen = $pago['imagen'] ?: 'https://via.placeholder.com/600x400?text=Sin+imagen';
-        if ($pago['imagen'] && !preg_match('#^https?://#i', $pago['imagen'])) {
-            $imagen = 'imagenes/' . rawurlencode($pago['imagen']);
+        $imagen = $row['imagen'] ?: 'https://via.placeholder.com/600x400?text=Sin+imagen';
+        if ($row['imagen'] && !preg_match('#^https?://#i', $row['imagen'])) {
+            $imagen = 'imagenes/' . rawurlencode($row['imagen']);
         }
 
+        $metodo = $row['metodo_pago'] ?: ($estado === 'pagada' ? 'Pago confirmado por Stripe' : 'Pagar después / En destino');
+        $fechaPagoTexto = $row['fecha_pago'] ? date('Y-m-d H:i', strtotime($row['fecha_pago'])) : ($estado === 'pagada' ? 'Confirmado' : 'Pendiente');
+
         $reservas[] = [
-            'id' => (int) $pago['id'],
-            'codigo' => $pago['referencia'],
-            'destino' => $pago['destino'],
+            'id' => (int) $row['id'],
+            'reserva_id' => (int) $row['id'],
+            'viaje_id' => (int) $row['viaje_id'],
+            'pago_id' => $row['pago_id'] ? (int) $row['pago_id'] : null,
+            'codigo' => $row['referencia'] ?: ('AMV-RES-' . $row['id']),
+            'destino' => $row['destino'],
             'departamento' => 'Colombia',
             'imagen' => $imagen,
-            'fechaSalida' => $pago['fecha_salida'],
-            'fechaRegreso' => $pago['fecha_regreso'],
-            'fechasFormato' => $pago['fecha_salida'] . ' al ' . $pago['fecha_regreso'],
-            'personas' => (int) $pago['cantidad_personas'],
-            'personasTexto' => $pago['cantidad_personas'] . ' viajero(s)',
+            'fechaSalida' => $row['fecha_salida'],
+            'fechaRegreso' => $row['fecha_regreso'],
+            'fechasFormato' => $row['fecha_salida'] . ' al ' . $row['fecha_regreso'],
+            'personas' => (int) $row['cantidad_personas'],
+            'personasTexto' => $row['cantidad_personas'] . ' viajero(s)',
             'estado' => $estado,
             'tipoTab' => $tipoTab,
             'alojamiento' => 'Información de alojamiento por confirmar',
             'incluye' => ['Plan turístico según la descripción del viaje'],
             'desglose' => [
-                'tarifaBase' => (int) $pago['monto_centavos'],
+                'tarifaBase' => (int) $row['monto_centavos'],
                 'impuestosIva' => 0,
-                'totalCOP' => (int) $pago['monto_centavos'] / 100,
+                'totalCOP' => (int) $row['monto_centavos'] / 100,
             ],
-            'metodoPago' => $estado === 'pagada' ? 'Pago confirmado por Stripe' : 'Pendiente de confirmación',
-            'fechaPago' => $pago['fecha_pago'] ?? 'Pendiente',
+            'metodoPago' => $metodo,
+            'fechaPago' => $fechaPagoTexto,
+            'fechaReserva' => $row['fecha_reserva'],
         ];
     }
 
