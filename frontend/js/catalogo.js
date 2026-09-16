@@ -1,20 +1,15 @@
 /**
  * ============================================================================
  * Dinastía AMV - Motor Interactivo del Catálogo Público con Filtros (catalogo.js)
- * UI-006 / HU-04 / RF-002
- * Conectado exclusivamente al Backend y Base de Datos (sin planes precargados)
  * ============================================================================
  */
 
 (function () {
   'use strict';
 
-  // Configuración de Endpoint Backend
   const API_URL = '../backend/api/planes.php';
 
-  // Elementos DOM
   const DOM = {
-    // Formulario de Filtros (Desktop & Drawer)
     formFiltros: document.getElementById('formFiltros'),
     inputDestino: document.getElementById('filtroDestino'),
     autocompleteDropdown: document.getElementById('autocompleteDropdown'),
@@ -28,7 +23,6 @@
     btnAplicarFiltros: document.getElementById('btnAplicarFiltros'),
     btnLimpiarFiltros: document.getElementById('btnLimpiarFiltros'),
 
-    // Contenedores de Resultados
     gridPlanes: document.getElementById('gridPlanes'),
     skeletonLoader: document.getElementById('skeletonLoader'),
     emptyState: document.getElementById('emptyState'),
@@ -36,27 +30,20 @@
     contadorResultados: document.getElementById('contadorResultados'),
     badgeFiltrosActivos: document.getElementById('badgeFiltrosActivos'),
 
-    // Drawer Móvil
     btnAbrirDrawer: document.getElementById('btnAbrirDrawer'),
     btnCerrarDrawer: document.getElementById('btnCerrarDrawer'),
     drawerFiltros: document.getElementById('drawerFiltros'),
 
-    // Modal Detalle
     modalDetalle: document.getElementById('modalDetallePlan'),
     btnCerrarModal: document.getElementById('btnCerrarModalPlan'),
     modalContenido: document.getElementById('modalPlanContenido'),
     btnReservarModal: document.getElementById('btnReservarModal')
   };
 
-  // Variables de Estado
   let planesCargados = [];
   let planSeleccionado = null;
   let debounceTimeout = null;
   let listaDestinosUnicos = [];
-
-  // ==========================================================================
-  // 1. UTILIDADES Y FORMATEO
-  // ==========================================================================
 
   function formatearCOP(valor) {
     return new Intl.NumberFormat('es-CO', {
@@ -74,10 +61,6 @@
     return temp.innerHTML;
   }
 
-  // ==========================================================================
-  // 2. PETICIÓN Y CONSUMO EXCLUSIVO DE LA BASE DE DATOS VIA REST API
-  // ==========================================================================
-
   async function consultarPlanes(filtros = {}) {
     mostrarSkeleton(true);
     DOM.emptyState.classList.add('hidden');
@@ -92,7 +75,6 @@
     if (filtros.lugar_salida && filtros.lugar_salida !== 'todos') params.append('lugar_salida', filtros.lugar_salida);
     if (filtros.orden) params.append('orden', filtros.orden);
 
-    // Sincronizar URL para compartir enlaces de búsqueda
     const nuevoQuery = params.toString();
     const nuevaURL = window.location.pathname + (nuevoQuery ? '?' + nuevoQuery : '');
     window.history.replaceState({}, '', nuevaURL);
@@ -102,13 +84,9 @@
     try {
       const urlPeticion = `${API_URL}?${params.toString()}`;
       const response = await fetch(urlPeticion, { cache: 'no-store' });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const resJson = await response.json();
-      
       if (resJson && resJson.success) {
         planesCargados = resJson.data || [];
         renderizarPlanes(planesCargados);
@@ -116,18 +94,13 @@
       } else {
         throw new Error(resJson.message || 'Error al obtener planes.');
       }
-
     } catch (err) {
-      console.error('Error al consultar el catálogo desde la base de datos:', err);
+      console.error('Error al consultar el catálogo:', err);
       mostrarError();
     } finally {
       mostrarSkeleton(false);
     }
   }
-
-  // ==========================================================================
-  // 3. RENDERIZADO DE RESULTADOS DESDE LA BASE DE DATOS
-  // ==========================================================================
 
   function renderizarPlanes(planes) {
     DOM.gridPlanes.innerHTML = '';
@@ -146,14 +119,12 @@
       card.className = 'group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover flex flex-col justify-between';
       card.setAttribute('aria-label', plan.destino);
 
-      // Servicios listados como badges
-      const serviciosArray = plan.servicios_incluidos 
-        ? plan.servicios_incluidos.split(',').slice(0, 3).map(s => s.trim()) 
+      const serviciosArray = plan.servicios_incluidos
+        ? plan.servicios_incluidos.split(',').slice(0, 3).map(s => s.trim())
         : ['Hospedaje', 'Desayunos', 'Guía'];
 
       card.innerHTML = `
         <div>
-          <!-- Imagen y Badges -->
           <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100">
             <img 
               src="${sanitizarHTML(plan.imagen_url)}" 
@@ -175,7 +146,6 @@
             </div>
           </div>
 
-          <!-- Contenido -->
           <div class="p-5">
             <div class="flex items-center justify-between text-xs text-slate-500 mb-1.5 font-medium">
               <span class="flex items-center gap-1">
@@ -196,7 +166,6 @@
               ${sanitizarHTML(plan.descripcion)}
             </p>
 
-            <!-- Tags de Servicios -->
             <div class="flex flex-wrap gap-1.5 mb-4">
               ${serviciosArray.map(srv => `
                 <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-2 py-0.5 rounded-md flex items-center gap-0.5">
@@ -206,7 +175,6 @@
               `).join('')}
             </div>
 
-            <!-- Precios -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
               <div>
                 <span class="text-[11px] text-slate-400 block line-through leading-none">
@@ -221,7 +189,6 @@
           </div>
         </div>
 
-        <!-- Botones de Acción -->
         <div class="p-5 pt-0 grid grid-cols-2 gap-2 mt-2">
           <button 
             type="button" 
@@ -243,7 +210,6 @@
         </div>
       `;
 
-      // Eventos
       card.querySelector('[data-accion="detalles"]').onclick = () => abrirModalDetalle(plan);
       card.querySelector('[data-accion="reservar"]').onclick = () => ejecutarFlujoReserva(plan);
 
@@ -267,15 +233,11 @@
     DOM.contadorResultados.textContent = 'Error al cargar planes';
   }
 
-  // ==========================================================================
-  // 4. GESTIÓN DEL MODAL DE DETALLES
-  // ==========================================================================
-
   function abrirModalDetalle(plan) {
     planSeleccionado = plan;
 
-    const servicios = plan.servicios_incluidos 
-      ? plan.servicios_incluidos.split(',').map(s => s.trim()) 
+    const servicios = plan.servicios_incluidos
+      ? plan.servicios_incluidos.split(',').map(s => s.trim())
       : ['Tiquetes o traslados', 'Alojamiento seleccionado', 'Desayunos diarios', 'Guianza turística', 'Asistencia médica'];
 
     DOM.modalContenido.innerHTML = `
@@ -368,20 +330,12 @@
     planSeleccionado = null;
   }
 
+  // ==========================================================
+  // FLUJO DE RESERVA → Confirmacion_reserva.html
+  // ==========================================================
   function ejecutarFlujoReserva(plan) {
-    const sesionToken = localStorage.getItem('dinastia_auth_jwt_token') || sessionStorage.getItem('dinastia_auth_jwt_token');
-    const urlDestino = `pagos.html?viaje_id=${plan.id}&plan_id=${plan.id}&destino=${encodeURIComponent(plan.destino)}&precio=${plan.precio}`;
-    
-    if (!sesionToken) {
-      sessionStorage.setItem('reserva_pendiente', JSON.stringify(plan));
-    }
-    
-    window.location.href = urlDestino;
+    window.location.href = 'Confirmacion_reserva.html?viaje_id=' + plan.id;
   }
-
-  // ==========================================================================
-  // 5. CAPTURA Y GESTIÓN DE FILTROS
-  // ==========================================================================
 
   function obtenerFiltrosFormulario() {
     const duracionSeleccionada = document.querySelector('input[name="duracion"]:checked')?.value || 'todas';
@@ -441,10 +395,6 @@
     }
   }
 
-  // ==========================================================================
-  // 6. AUTOCOMPLETADO DINÁMICO DESDE LA BASE DE DATOS
-  // ==========================================================================
-
   function actualizarDestinosAutocompletado(planes) {
     if (!planes || planes.length === 0) return;
     const destinos = planes.map(p => p.destino.trim()).filter(Boolean);
@@ -490,10 +440,6 @@
     });
   }
 
-  // ==========================================================================
-  // 7. DRAWER RESPONSIVO MÓVIL
-  // ==========================================================================
-
   function abrirDrawer() {
     DOM.drawerFiltros.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -503,10 +449,6 @@
     DOM.drawerFiltros.classList.remove('active');
     document.body.style.overflow = '';
   }
-
-  // ==========================================================================
-  // 8. INICIALIZACIÓN DE EVENTOS Y URL PARAMS
-  // ==========================================================================
 
   function registrarEventos() {
     DOM.formFiltros.addEventListener('submit', (e) => {

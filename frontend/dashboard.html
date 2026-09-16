@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Dashboard - Dinastía AMV</title>
 
-  <!-- Tailwind CSS CDN con plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-  <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
@@ -55,7 +53,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Asegura que las tarjetas clicables tengan cursor pointer */
     a.card-hover {
       cursor: pointer;
       text-decoration: none;
@@ -67,7 +64,6 @@
 <body class="bg-background-light text-slate-900">
   <div class="min-h-screen flex flex-col">
 
-    <!-- Header estandarizado con el Catálogo -->
     <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
       <a href="dashboard.html" class="flex items-center gap-3 text-primary group" title="Mi Dashboard">
         <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
@@ -118,12 +114,8 @@
         </p>
       </section>
 
-      <!-- =====================================================================
-           Tarjetas de Métricas (solo 2 tarjetas: Reservas activas y Viajes realizados)
-           ===================================================================== -->
       <section class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
 
-        <!-- 🔹 Reservas activas → perfil.html -->
         <a
           href="perfil.html"
           class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
@@ -139,7 +131,6 @@
           </div>
         </a>
 
-        <!-- 🔹 Viajes realizados → perfil.html?tab=pasados -->
         <a
           href="perfil.html?tab=pasados"
           class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
@@ -174,7 +165,6 @@
           </a>
         </div>
 
-        <!-- Aquí JavaScript inserta los viajes de la base de datos -->
         <div id="listaDestinos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <p class="text-slate-500">Cargando viajes...</p>
         </div>
@@ -231,5 +221,31 @@
   </script>
 
   <script src="js/dashboard_viajes.js"></script>
+
+  <!-- Script de intercepción de botones "Reservar" -->
+  <script>
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('button, a');
+      if (!btn) return;
+
+      const texto = (btn.textContent || '').trim().toLowerCase();
+      if (!texto.includes('reservar')) return;
+
+      let viajeId = btn.dataset.id || btn.dataset.viajeId;
+      if (!viajeId) {
+        const m = (btn.getAttribute('href') || '').match(/(?:viaje_id|plan_id|id)=(\d+)/);
+        if (m) viajeId = m[1];
+      }
+      if (!viajeId) {
+        const card = btn.closest('article, [data-id], [data-viaje-id]');
+        if (card) viajeId = card.dataset.id || card.dataset.viajeId;
+      }
+      if (viajeId) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'Confirmacion_reserva.html?viaje_id=' + viajeId;
+      }
+    }, true);
+  </script>
 </body>
 </html>

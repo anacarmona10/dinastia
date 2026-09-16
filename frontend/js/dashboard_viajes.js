@@ -26,9 +26,8 @@ function crearTarjetaViaje(viaje) {
   });
 
   return `
-    <article class="group bg-white rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover">
+    <article class="group bg-white rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover" data-viaje-id="${viaje.id}">
       <div>
-        <!-- Imagen y Badges estilo Catálogo -->
         <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100">
           <img
             src="${imagen}"
@@ -46,7 +45,6 @@ function crearTarjetaViaje(viaje) {
           </div>
         </div>
 
-        <!-- Contenido -->
         <div class="p-5">
           <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
             <span class="flex items-center gap-1">
@@ -67,7 +65,6 @@ function crearTarjetaViaje(viaje) {
             ${escaparHtml(viaje.descripcion || 'Plan turístico Dinastía AMV con tiquetes, hospedaje y actividades incluidas.')}
           </p>
 
-          <!-- Precios -->
           <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
             <div>
               <span class="text-xs text-slate-400 font-semibold block">Tarifa por persona</span>
@@ -77,7 +74,6 @@ function crearTarjetaViaje(viaje) {
         </div>
       </div>
 
-      <!-- Botones de Acción idénticos al Catálogo -->
       <div class="p-5 pt-0 grid grid-cols-2 gap-2 mt-2">
         <a
           href="catalogo.html"
@@ -87,7 +83,7 @@ function crearTarjetaViaje(viaje) {
         </a>
 
         <a
-          href="pagos.html?viaje_id=${encodeURIComponent(viaje.id)}"
+          href="Confirmacion_reserva.html?viaje_id=${viaje.id}"
           class="py-2.5 rounded-full gradient-btn text-white font-bold text-xs shadow-md shadow-primary/20 text-center flex items-center justify-center gap-1"
         >
           <span class="material-symbols-outlined text-sm">shopping_bag</span> Reservar
@@ -101,7 +97,6 @@ async function cargarViajesDashboard() {
   const contenedor = document.getElementById('listaDestinos');
 
   try {
-    // Intentar consultar reservas reales del usuario para la métrica
     try {
       const respReservas = await fetch('../backend/api/obtener_reservas.php');
       if (respReservas.ok) {

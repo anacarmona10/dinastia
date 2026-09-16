@@ -5,15 +5,12 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Catálogo de Planes Turísticos - Dinastía AMV</title>
 
-  <!-- Tailwind CSS CDN con plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   
-  <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-  <!-- Configuración oficial de Tailwind estandarizada con el sistema de diseño -->
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -39,7 +36,6 @@
     }
   </script>
 
-  <!-- Estilos del catálogo -->
   <link rel="stylesheet" href="style_catalogo.css">
 </head>
 
@@ -47,12 +43,7 @@
 <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
 <div class="layout-container flex h-full grow flex-col">
 
-  <!-- ====================================================================
-       CABECERA Y BARRA DE NAVEGACIÓN PÚBLICA (Estandarizada)
-       ==================================================================== -->
   <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
-    
-    <!-- Logo Dinastía AMV -->
     <a href="index.html" class="flex items-center gap-3 text-primary group" title="Volver al inicio">
       <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
       <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
@@ -60,7 +51,6 @@
       </h2>
     </a>
 
-    <!-- Menú de Navegación -->
     <div class="flex items-center gap-3 sm:gap-6">
       <nav class="hidden md:flex items-center gap-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
         <a href="index.html#destinos" class="hover:text-primary transition-colors">Destinos</a>
@@ -73,22 +63,17 @@
 
       <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
 
-      <!-- Accesos Rápidos de Usuario -->
       <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50">
         <span class="material-symbols-outlined text-primary text-lg">account_circle</span>
         Mi Perfil
       </a>
 
-      <!-- Botón Registrarse / Iniciar Sesión -->
       <a href="login.html" class="px-5 py-2.5 rounded-full gradient-btn text-white text-xs sm:text-sm font-bold shadow-md shadow-primary/25">
         Iniciar Sesión
       </a>
     </div>
   </header>
 
-  <!-- ====================================================================
-       HERO BANNER DE EXPLORACIÓN
-       ==================================================================== -->
   <section class="bg-gradient-to-r from-purple-900 via-primary to-pink-600 text-white py-5 sm:py-6 px-4 sm:px-8 lg:px-20 relative overflow-hidden">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
       <div class="max-w-2xl text-center md:text-left">
@@ -100,7 +85,6 @@
         </p>
       </div>
 
-      <!-- Botón Móvil para abrir filtros -->
       <div class="lg:hidden w-full sm:w-auto">
         <button 
           id="btnAbrirDrawer" 
@@ -115,16 +99,10 @@
     </div>
   </section>
 
-  <!-- ====================================================================
-       CONTENEDOR PRINCIPAL: SIDEBAR DE FILTROS + GRID DE PLANES
-       ==================================================================== -->
   <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8 md:py-10 max-w-7xl w-full mx-auto">
     
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      <!-- ================================================================
-           COLUMNA IZQUIERDA (3 de 12 en Desktop): BARRA DE FILTROS
-           ================================================================ -->
       <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24 space-y-6">
         
         <div class="bg-white dark:bg-white/5 rounded-2xl border border-primary/15 shadow-sm p-6">
@@ -144,7 +122,6 @@
 
           <form id="formFiltros" class="space-y-5" novalidate>
             
-            <!-- 1. FILTRO: DESTINO CON AUTOCOMPLETADO -->
             <div class="relative">
               <label for="filtroDestino" class="label-filtro">Destino</label>
               <div class="relative">
@@ -161,7 +138,6 @@
               <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
             </div>
 
-            <!-- 2. FILTRO: LUGAR DE SALIDA (ORIGEN) -->
             <div>
               <label for="filtroLugarSalida" class="label-filtro">Lugar de salida</label>
               <select id="filtroLugarSalida" name="lugar_salida" class="campo-filtro cursor-pointer">
@@ -175,7 +151,6 @@
               </select>
             </div>
 
-            <!-- 3. FILTRO: RANGO DE PRECIO MÁXIMO -->
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label for="rangePrecioMax" class="label-filtro mb-0">Precio máximo</label>
@@ -194,12 +169,10 @@
                 <span>$200.000</span>
                 <span>$2.000.000+</span>
               </div>
-              <!-- Inputs numéricos auxiliares -->
               <input type="hidden" id="filtroPrecioMin" value="0">
               <input type="hidden" id="filtroPrecioMax" value="2000000">
             </div>
 
-            <!-- 4. FILTRO: DURACIÓN DEL VIAJE (RADIO PILLS) -->
             <div>
               <label class="label-filtro">Duración</label>
               <div class="pill-radio-container">
@@ -226,7 +199,6 @@
               </div>
             </div>
 
-            <!-- 5. FILTRO: FECHA DE SALIDA -->
             <div>
               <label for="filtroFechaSalida" class="label-filtro">Fecha de salida (a partir de)</label>
               <input 
@@ -237,7 +209,6 @@
               />
             </div>
 
-            <!-- BOTÓN APLICAR -->
             <button 
               id="btnAplicarFiltros" 
               type="submit" 
@@ -252,12 +223,8 @@
 
       </aside>
 
-      <!-- ================================================================
-           COLUMNA DERECHA (8/9 de 12 en Desktop): RESULTADOS Y TARJETAS
-           ================================================================ -->
       <section class="lg:col-span-8 xl:col-span-9 space-y-6" aria-label="Planes turísticos disponibles">
         
-        <!-- BARRA SUPERIOR DE RESULTADOS Y ORDEN -->
         <div class="bg-white dark:bg-white/5 rounded-2xl border border-primary/10 shadow-sm p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-2xl font-bold">explore</span>
@@ -266,7 +233,6 @@
             </p>
           </div>
 
-          <!-- Selector de Ordenamiento -->
           <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
             <label for="selectOrden" class="text-xs font-bold text-slate-500 whitespace-nowrap">Ordenar por:</label>
             <select id="selectOrden" class="campo-filtro text-xs font-bold py-1.5 px-3 rounded-xl max-w-[200px] cursor-pointer">
@@ -279,7 +245,6 @@
           </div>
         </div>
 
-        <!-- SKELETON LOADER (ESTADO DE CARGA) -->
         <div id="skeletonLoader" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           <div class="bg-white rounded-2xl p-4 space-y-3 shadow-sm border border-slate-100">
             <div class="skeleton h-48 w-full rounded-xl"></div>
@@ -301,12 +266,9 @@
           </div>
         </div>
 
-        <!-- GRID DE TARJETAS DE PLANES (INYECCIÓN DINÁMICA) -->
         <div id="gridPlanes" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <!-- Las tarjetas se generan mediante JS -->
         </div>
 
-        <!-- ESTADO VACÍO (EMPTY STATE) -->
         <div id="emptyState" class="hidden bg-white dark:bg-white/5 rounded-2xl border border-primary/10 p-12 text-center shadow-sm">
           <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
             <span class="material-symbols-outlined text-4xl">travel_explore</span>
@@ -327,7 +289,6 @@
           </button>
         </div>
 
-        <!-- ESTADO DE ERROR -->
         <div id="errorState" class="hidden bg-red-50 border border-red-200 rounded-2xl p-8 text-center text-red-700">
           <span class="material-symbols-outlined text-4xl text-red-500 mb-2 block">error</span>
           <h3 class="font-bold text-base mb-1">Ocurrió un error al consultar el catálogo</h3>
@@ -343,9 +304,6 @@
 
   </main>
 
-  <!-- ====================================================================
-       DRAWER MÓVIL DE FILTROS
-       ==================================================================== -->
   <div id="drawerFiltros" class="drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="tituloDrawerFiltros">
     <div class="drawer-container p-6 overflow-y-auto">
       <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
@@ -356,10 +314,8 @@
         <button id="btnCerrarDrawer" type="button" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1" aria-label="Cerrar filtros">&times;</button>
       </div>
       
-      <!-- Contenido del formulario móvil idéntico -->
       <div class="text-xs text-slate-500 mb-4">Aplica los filtros para actualizar la lista de planes.</div>
       
-      <!-- Botones de acción móvil -->
       <div class="space-y-3 pt-2">
         <button 
           onclick="document.getElementById('formFiltros').dispatchEvent(new Event('submit'))" 
@@ -379,9 +335,6 @@
     </div>
   </div>
 
-  <!-- ====================================================================
-       MODAL DE DETALLES DEL PLAN TURÍSTICO
-       ==================================================================== -->
   <div id="modalDetallePlan" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tituloModalDetalle">
     <div class="modal-content-catalogo p-6 sm:p-8">
       
@@ -395,17 +348,12 @@
         <button id="btnCerrarModalPlan" type="button" class="text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none p-1" aria-label="Cerrar modal">&times;</button>
       </div>
 
-      <!-- Contenido inyectado dinámicamente -->
       <div id="modalPlanContenido" class="overflow-y-auto max-h-[65vh] pr-1">
-        <!-- Generado por catalogo.js -->
       </div>
 
     </div>
   </div>
 
-  <!-- ====================================================================
-       PIE DE PÁGINA ESTANDARIZADO
-       ==================================================================== -->
   <footer class="px-6 md:px-20 py-8 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400 mt-auto">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
       <p>© 2026 <strong>Dinastía AMV</strong> · Todos los derechos reservados · RNT 45291 Colombia</p>
@@ -419,8 +367,33 @@
 </div>
 </div>
 
-<!-- Script del Catálogo -->
 <script src="js/catalogo.js"></script>
+
+<!-- Script de intercepción de botones "Reservar" -->
+<script>
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('button, a');
+    if (!btn) return;
+
+    const texto = (btn.textContent || '').trim().toLowerCase();
+    if (!texto.includes('reservar')) return;
+
+    let viajeId = btn.dataset.id || btn.dataset.viajeId;
+    if (!viajeId) {
+      const m = (btn.getAttribute('href') || '').match(/(?:viaje_id|plan_id|id)=(\d+)/);
+      if (m) viajeId = m[1];
+    }
+    if (!viajeId) {
+      const card = btn.closest('article, [data-id], [data-viaje-id]');
+      if (card) viajeId = card.dataset.id || card.dataset.viajeId;
+    }
+    if (viajeId) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = 'Confirmacion_reserva.html?viaje_id=' + viajeId;
+    }
+  }, true);
+</script>
 
 </body>
 </html>
