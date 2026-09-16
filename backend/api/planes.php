@@ -67,14 +67,17 @@ $planes = [];
 // Imágenes de fallback de alta calidad según el destino colombiano
 function obtenerImagenPorDestino($nombreDestino) {
     $d = mb_strtolower($nombreDestino, 'UTF-8');
+    if (strpos($d, 'bogota') !== false || strpos($d, 'bogotá') !== false || strpos($d, 'cundinamarca') !== false || strpos($d, 'monserrate') !== false) {
+        return 'https://images.unsplash.com/photo-1599307767316-776533da872a?auto=format&fit=crop&w=800&q=80';
+    }
     if (strpos($d, 'cartagena') !== false) {
-        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuBvExoATYYi5sDh08TyPPpKcGBFiwHlycMmkBk5FC0OdZHqlImdFAXBLAxvA5dJzz0UzTvI6sns2Y4gg9yNq5PC5vDCQsjUqUxP3MrXpKQ0vcjYULysOsHoF1LCxQIAYzrcAXOsFo0_NpASTBhkFMThKRPE9WDT3fv2k8u5TF4thJQgKsXAX-AG_XlUx_uqxTAjmwvEcFJoKXsSvJ49YJIye1LHjRQw13CrFFvBDC8WvO78oaKxO8_9D9YyzfgoboksblDE0tcvsEo';
+        return 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';
     }
     if (strpos($d, 'cafe') !== false || strpos($d, 'salento') !== false || strpos($d, 'pereira') !== false || strpos($d, 'quindio') !== false || strpos($d, 'cocora') !== false) {
-        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuCvPrz-UJLgGXIH0Xj9xFFkT2pAErtARb9_kUsDaWTeNYoK90WuIr-r4f2Z5NE5T77dRYqDNb4PGgKUraUCh0Hnvx1jS8_zSwPsWNzowYY8gwjFPiVUfmWhF4wZtVb9aAV_fLElFnKQb44pSi34O-KCUpy8K3_eMvLHUQ6owRySIsVcdQDtOQUKamSenZHRMrBXSDSmnMgpmFyvVtuwSrpIxgrgPo2W70ONswYkq_4l3RS0eX0wLZf0xdtAbT2t0jQUZRqM9teIQik';
+        return 'https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=800&q=80';
     }
-    if (strpos($d, 'medellin') !== false || strpos($d, 'guatape') !== false || strpos($d, 'antioquia') !== false) {
-        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmvzIkEu7h8e83Z31QwWqQ7n5su1eKBEyRUobk1YJybkCWUwvqHDMfmC0jbhWQPCxubuHzk8cjKAfVr5eRMpk2COpC666qd6uUTkr8VnoYPZi0fhVpwoL1qD-1OHHHgcuPZqGOmcfp5ou0eF1sRahYPKZlSjxkwOsbRAnxHu3e_HcHZQutsJ24A30ECbAROL3MDJXjdnIa1mSqVJlcw6d-czAR56c8jxneUMLQzgBO1q3KrXJXRW911pQmSPrVyWNToinxExApd3M';
+    if (strpos($d, 'medellin') !== false || strpos($d, 'medellín') !== false || strpos($d, 'guatape') !== false || strpos($d, 'antioquia') !== false) {
+        return 'https://images.unsplash.com/photo-1599582374513-c29012a677b1?auto=format&fit=crop&w=800&q=80';
     }
     if (strpos($d, 'san andres') !== false || strpos($d, 'providencia') !== false) {
         return 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?auto=format&fit=crop&w=800&q=80';
@@ -166,13 +169,19 @@ if ($pdo instanceof PDO) {
                         if (strpos($imgItem, 'http') === 0) {
                             $rutasImagenes[] = $imgItem;
                         } else {
-                            $rutasImagenes[] = 'imagenes/' . rawurlencode($imgItem);
+                            $archivoLocal = __DIR__ . '/../../frontend/imagenes/' . $imgItem;
+                            if (file_exists($archivoLocal)) {
+                                $rutasImagenes[] = 'imagenes/' . rawurlencode($imgItem);
+                            }
                         }
                     }
-                    $primeraImg = $rutasImagenes[0];
-                } else {
+                }
+
+                if (empty($rutasImagenes)) {
                     $primeraImg = obtenerImagenPorDestino($row['destino']);
                     $rutasImagenes = [$primeraImg];
+                } else {
+                    $primeraImg = $rutasImagenes[0];
                 }
 
                 $precioNum = (float)$row['precio'];

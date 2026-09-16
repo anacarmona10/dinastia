@@ -494,8 +494,9 @@
                 const card = document.createElement("div");
                 card.className = "group bg-white rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover";
 
-                const imgUrl = viaje.imagenes && viaje.imagenes.length > 0
-                    ? rutaImagenes + encodeURIComponent(viaje.imagenes[0].url)
+                const primerImg = viaje.imagenes && viaje.imagenes.length > 0 ? (viaje.imagenes[0].url || '') : '';
+                const imgUrl = primerImg
+                    ? (primerImg.startsWith('http://') || primerImg.startsWith('https://') ? primerImg : rutaImagenes + encodeURIComponent(primerImg))
                     : "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
 
                 const precioFormateado = Number(viaje.precio).toLocaleString("es-CO");
@@ -595,7 +596,8 @@
                     contenedor.id = `img-actual-${img.id}`;
 
                     const imagen = document.createElement("img");
-                    imagen.src = rutaImagenes + encodeURIComponent(img.url);
+                    const urlImg = (img && img.url) ? img.url : '';
+                    imagen.src = (urlImg.startsWith('http://') || urlImg.startsWith('https://')) ? urlImg : rutaImagenes + encodeURIComponent(urlImg);
                     imagen.classList.add("preview-img");
                     imagen.onerror = function () {
                         this.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
@@ -826,7 +828,10 @@
 
             // Extraer URLs de las imágenes
             adminImagenesActuales = (viaje.imagenes && viaje.imagenes.length > 0)
-                ? viaje.imagenes.map(img => rutaImagenes + encodeURIComponent(img.url))
+                ? viaje.imagenes.map(img => {
+                    const u = (typeof img === 'object' ? img.url : img) || '';
+                    return (u.startsWith('http://') || u.startsWith('https://')) ? u : (rutaImagenes + encodeURIComponent(u));
+                  })
                 : ["https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80"];
 
             adminIndexImagenActual = 0;

@@ -362,7 +362,12 @@
       const btnNext = document.getElementById('btnNextUserModal');
 
       const actualizarImgModal = () => {
-        if (imgElem) imgElem.src = listaImagenes[indexImgModal];
+        if (imgElem) {
+          imgElem.onerror = function() {
+            this.src = 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';
+          };
+          imgElem.src = listaImagenes[indexImgModal];
+        }
         if (indexElem) indexElem.textContent = `${indexImgModal + 1} / ${listaImagenes.length}`;
       };
 

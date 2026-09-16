@@ -23,10 +23,13 @@ try {
     $imagenesPorViaje = [];
 
     foreach ($consultaImagenes->fetchAll() as $imagen) {
-        $imagenesPorViaje[$imagen['viaje_id']][] = [
-            'id' => $imagen['id'],
-            'url' => $imagen['url'],
-        ];
+        $u = $imagen['url'];
+        if (strpos($u, 'http') === 0 || file_exists(__DIR__ . '/../../frontend/imagenes/' . $u)) {
+            $imagenesPorViaje[$imagen['viaje_id']][] = [
+                'id' => $imagen['id'],
+                'url' => $imagen['url'],
+            ];
+        }
     }
 
     foreach ($viajes as &$viaje) {
