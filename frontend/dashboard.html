@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Dashboard - Dinastía AMV</title>
 
-  <!-- Tailwind CSS CDN con plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-  <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
@@ -51,7 +49,14 @@
       word-wrap: normal;
       direction: ltr;
       -webkit-font-feature-settings: 'liga';
+      font-feature-settings: 'liga';
       -webkit-font-smoothing: antialiased;
+    }
+
+    a.card-hover {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
   </style>
 </head>
@@ -59,7 +64,6 @@
 <body class="bg-background-light text-slate-900">
   <div class="min-h-screen flex flex-col">
 
-    <!-- Header estandarizado con el Catálogo -->
     <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
       <a href="dashboard.html" class="flex items-center gap-3 text-primary group" title="Mi Dashboard">
         <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
@@ -110,9 +114,13 @@
         </p>
       </section>
 
-      <!-- Tarjetas de Métricas Rediseñadas -->
-      <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+
+        <a
+          href="perfil.html"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          title="Ir a Mi Perfil — Próximos viajes"
+        >
           <div class="w-13 h-13 p-3 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0">
             <span class="material-symbols-outlined text-2xl">confirmation_number</span>
           </div>
@@ -121,9 +129,13 @@
             <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statReservas">0</p>
             <p class="text-xs sm:text-sm text-slate-500 font-semibold">Reservas activas</p>
           </div>
-        </div>
+        </a>
 
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+        <a
+          href="perfil.html?tab=pasados"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          title="Ir a Mi Perfil — Reservas anteriores"
+        >
           <div class="w-13 h-13 p-3 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-600 shrink-0">
             <span class="material-symbols-outlined text-2xl">travel_explore</span>
           </div>
@@ -132,18 +144,7 @@
             <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statViajes">0</p>
             <p class="text-xs sm:text-sm text-slate-500 font-semibold">Viajes realizados</p>
           </div>
-        </div>
-
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
-          <div class="w-13 h-13 p-3 rounded-2xl bg-orange-100 flex items-center justify-center text-accent shrink-0">
-            <span class="material-symbols-outlined text-2xl">favorite</span>
-          </div>
-
-          <div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statFavoritos">0</p>
-            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Destinos favoritos</p>
-          </div>
-        </div>
+        </a>
       </section>
 
       <section class="mb-12">
@@ -164,7 +165,6 @@
           </a>
         </div>
 
-        <!-- Aquí JavaScript inserta los viajes de la base de datos -->
         <div id="listaDestinos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <p class="text-slate-500">Cargando viajes...</p>
         </div>
@@ -221,5 +221,31 @@
   </script>
 
   <script src="js/dashboard_viajes.js"></script>
+
+  <!-- Script de intercepción de botones "Reservar" -->
+  <script>
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('button, a');
+      if (!btn) return;
+
+      const texto = (btn.textContent || '').trim().toLowerCase();
+      if (!texto.includes('reservar')) return;
+
+      let viajeId = btn.dataset.id || btn.dataset.viajeId;
+      if (!viajeId) {
+        const m = (btn.getAttribute('href') || '').match(/(?:viaje_id|plan_id|id)=(\d+)/);
+        if (m) viajeId = m[1];
+      }
+      if (!viajeId) {
+        const card = btn.closest('article, [data-id], [data-viaje-id]');
+        if (card) viajeId = card.dataset.id || card.dataset.viajeId;
+      }
+      if (viajeId) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'Confirmacion_reserva.html?viaje_id=' + viajeId;
+      }
+    }, true);
+  </script>
 </body>
 </html>

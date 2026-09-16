@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Confirmar Reserva - Dinastía AMV</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#c800ff",
+            "accent": "#ff4d00",
+            "background-light": "#f8f6f6",
+            "background-dark": "#020C1C",
+          },
+          fontFamily: { "display": ["Public Sans", "sans-serif"] },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Public Sans', sans-serif; }
+    .gradient-btn {
+      background: linear-gradient(to right, #c800ff, #EF1D9C);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(200, 0, 255, 0.4);
+    }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.10); }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      justify-content: center; align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-content h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; color: #000; }
+    .modal-botones { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .modal-botones button {
+      padding: 0.6rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-cerrar-modal { background: #e5e7eb; color: #333; }
+    .btn-cerrar-modal:hover { background: #d1d5db; }
+    .btn-eliminar { background: #dc3545; color: white; }
+    .btn-eliminar:hover { background: #c82333; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.4s ease-out both; }
+
+    @keyframes pulseSoft {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200, 0, 255, 0.45); }
+      50% { box-shadow: 0 0 0 12px rgba(200, 0, 255, 0); }
+    }
+    .pulse-soft { animation: pulseSoft 1.8s infinite; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+    <a href="dashboard.html" class="flex items-center gap-3 text-primary group" title="Volver al dashboard">
+      <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full group-hover:scale-105 transition-transform shadow-sm">
+      <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
+        Dinastía <span class="text-primary">AMV</span>
+      </h2>
+    </a>
+
+    <div class="flex items-center gap-4 md:gap-6">
+      <a href="perfil.html" id="saludoUsuario" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50">
+        <span class="material-symbols-outlined text-primary text-base">account_circle</span>
+        ¡Hola, viajero!
+      </a>
+      <a href="perfil.html" class="flex items-center gap-1 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg text-primary">person</span>
+        <span class="hidden sm:inline">Mi Perfil</span>
+      </a>
+      <button id="btnCerrarSesion" type="button" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="hidden sm:inline">Cerrar sesión</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center px-4 sm:px-6 py-10">
+    <div class="w-full max-w-2xl">
+
+      <div class="mb-5">
+        <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors group">
+          <span class="material-symbols-outlined text-base group-hover:-translate-x-1 transition-transform">arrow_back</span>
+          <span>Volver al catálogo</span>
+        </a>
+      </div>
+
+      <section id="tarjetaConfirmacion" class="bg-white dark:bg-white/5 rounded-3xl border border-primary/15 shadow-xl shadow-purple-500/5 overflow-hidden card-hover relative">
+
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-pink-500 to-accent z-10"></div>
+
+        <div class="relative w-full aspect-[16/8] overflow-hidden bg-slate-200 dark:bg-slate-800">
+          <img id="imagenViaje" src="https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=1200&q=80"
+               alt="Imagen del viaje" class="w-full h-full object-cover transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+
+          <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7 text-white">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest bg-yellow-400 text-background-dark px-3 py-1 rounded-full mb-2 shadow-lg">
+              <span class="material-symbols-outlined text-sm">task_alt</span>
+              Confirma tu reserva
+            </span>
+            <h1 id="destinoViaje" class="text-2xl sm:text-4xl font-black tracking-tight leading-tight drop-shadow-lg">
+              Cargando viaje…
+            </h1>
+            <p class="text-slate-200 text-xs sm:text-sm font-semibold flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-sm text-primary">location_on</span>
+              <span id="ubicacionViaje">—</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-6">
+
+          <div class="text-center">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center pulse-soft">
+              <span class="material-symbols-outlined text-3xl text-primary font-bold">help_center</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100">
+              ¿Seguro que quieres confirmar la reserva?
+            </h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Revisa los detalles del plan antes de continuar al pago seguro con Stripe.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-2xl bg-purple-50/70 dark:bg-purple-950/20 border border-primary/20 p-4">
+              <div class="flex items-center gap-2 mb-1 text-primary">
+                <span class="material-symbols-outlined text-lg">calendar_month</span>
+                <span class="text-[11px] font-black uppercase tracking-wider">Fechas del viaje</span>
+              </div>
+              <p id="fechasViaje" class="text-sm font-bold text-slate-800 dark:text-slate-100">—</p>
+            </div>
+
+            <div class="rounded-2xl bg-pink-50/70 dark:bg-pink-950/20 border border-pink-500/20 p-4">
+              <div class="flex items-center gap-2 mb-1 text-pink-600">
+                <span class="material-symbols-outlined text-lg">group</span>
+                <span class="text-[11px] font-black uppercase tracking-wider">Número de viajeros</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btnRestarPersona"
+                  class="w-8 h-8 rounded-lg border border-pink-500/30 bg-white text-pink-600 font-black flex items-center justify-center hover:bg-pink-100 transition-colors"
+                  aria-label="Restar viajero">–</button>
+                <span id="cantidadPersonas" class="text-lg font-black text-slate-800 dark:text-slate-100 w-8 text-center">1</span>
+                <button type="button" id="btnSumarPersona"
+                  class="w-8 h-8 rounded-lg border border-pink-500/30 bg-white text-pink-600 font-black flex items-center justify-center hover:bg-pink-100 transition-colors"
+                  aria-label="Sumar viajero">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/50 p-4">
+            <div class="flex items-center gap-2 mb-2 text-slate-600 dark:text-slate-400">
+              <span class="material-symbols-outlined text-lg">description</span>
+              <span class="text-[11px] font-black uppercase tracking-wider">Descripción del plan</span>
+            </div>
+            <p id="descripcionViaje" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Cargando descripción…
+            </p>
+          </div>
+
+          <div class="rounded-2xl bg-gradient-to-br from-primary/10 to-pink-500/10 border border-primary/25 p-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Precio unitario:</span>
+              <span id="precioUnitario" class="font-bold text-slate-800 dark:text-slate-100">$0</span>
+            </div>
+            <div class="flex justify-between items-center pt-3 border-t border-primary/20">
+              <span class="text-sm font-black text-slate-800 dark:text-slate-100">TOTAL A PAGAR:</span>
+              <span id="precioTotal" class="text-2xl sm:text-3xl font-black text-primary">$0</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+            <a href="javascript:history.back()"
+              class="w-full sm:w-1/3 py-3.5 rounded-full border-2 border-slate-300 text-slate-700 dark:text-slate-300 font-bold text-sm text-center hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+              <span class="material-symbols-outlined text-sm align-middle mr-1">close</span>
+              Cancelar
+            </a>
+
+            <button id="btnPagarAqui" type="button"
+              class="w-full sm:w-2/3 gradient-btn py-3.5 px-6 rounded-full text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/25 pulse-soft">
+              <span class="material-symbols-outlined text-lg">shopping_bag</span>
+              <span>¡Págalo aquí!</span>
+              <span class="material-symbols-outlined text-lg">arrow_forward</span>
+            </button>
+          </div>
+
+          <p id="mensajeConfirmacion" class="text-center text-sm font-semibold min-h-[1.25rem]"></p>
+
+          <div class="pt-5 border-t border-slate-100 dark:border-slate-800/80 text-center">
+            <div class="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1">
+              <span class="material-symbols-outlined text-sm">security</span>
+              <span>Pago 100% seguro con encriptación SSL de 256 bits</span>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500">
+              Procesado por Stripe · Tarjetas de crédito, débito y PSE
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="px-6 md:px-20 py-6 bg-background-dark/5 dark:bg-background-dark border-t border-primary/10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <p>© 2024 Dinastía AMV · Todos los derechos reservados</p>
+  </footer>
+
+</div>
+</div>
+
+<div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true">
+  <div class="modal-content text-center">
+    <h3 class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
+    <p class="text-slate-600 text-sm mt-1">Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+    <div class="modal-botones justify-center mt-6">
+      <button type="button" class="btn-cerrar-modal" id="btnNoCerrar">No, quedarme</button>
+      <button type="button" class="btn-eliminar" id="btnSiCerrar">Sí, cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // 1. Saludo personalizado
+  // ============================================================
+  const nombreGuardado = localStorage.getItem('usuario_nombre');
+  if (nombreGuardado) {
+    const saludo = document.getElementById('saludoUsuario');
+    if (saludo) {
+      saludo.innerHTML = `<span class="material-symbols-outlined text-primary text-base">account_circle</span> ¡Hola, ${nombreGuardado}!`;
+    }
+  }
+
+  // ============================================================
+  // 2. Modal de cierre de sesión
+  // ============================================================
+  const modalCierre = document.getElementById('modalConfirmarCierre');
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+  const btnNoCerrar = document.getElementById('btnNoCerrar');
+  const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+  if (btnCerrarSesion && modalCierre) {
+    btnCerrarSesion.addEventListener('click', (e) => { e.preventDefault(); modalCierre.classList.add('active'); });
+    if (btnNoCerrar) btnNoCerrar.addEventListener('click', () => modalCierre.classList.remove('active'));
+    if (btnSiCerrar) btnSiCerrar.addEventListener('click', () => { window.location.href = 'index.html'; });
+    modalCierre.addEventListener('click', (e) => { if (e.target === modalCierre) modalCierre.classList.remove('active'); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalCierre.classList.contains('active')) modalCierre.classList.remove('active');
+    });
+  }
+
+  // ============================================================
+  // 3. Leer viaje_id de la URL
+  // ============================================================
+  const params = new URLSearchParams(window.location.search);
+  const viajeId = Number(params.get('viaje_id') || params.get('id'));
+
+  const elDestino = document.getElementById('destinoViaje');
+  const elUbicacion = document.getElementById('ubicacionViaje');
+  const elImagen = document.getElementById('imagenViaje');
+  const elFechas = document.getElementById('fechasViaje');
+  const elDescripcion = document.getElementById('descripcionViaje');
+  const elPrecioUnitario = document.getElementById('precioUnitario');
+  const elPrecioTotal = document.getElementById('precioTotal');
+  const elCantidad = document.getElementById('cantidadPersonas');
+  const btnPagarAqui = document.getElementById('btnPagarAqui');
+  const mensaje = document.getElementById('mensajeConfirmacion');
+
+  let precioUnitario = 0;
+  let cantidad = 1;
+
+  function formatearCOP(v) {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(v);
+  }
+
+  function actualizarTotal() {
+    elPrecioTotal.textContent = formatearCOP(precioUnitario * cantidad);
+  }
+
+  // ============================================================
+  // 4. Cargar datos del viaje desde el backend
+  // ============================================================
+  if (!Number.isInteger(viajeId) || viajeId < 1) {
+    elDestino.textContent = 'Viaje no válido';
+    elDescripcion.textContent = 'No se recibió un viaje válido desde el catálogo.';
+    btnPagarAqui.disabled = true;
+  } else {
+    fetch('../backend/api/listar_viajes_publicos.php', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(datos => {
+        if (!datos.success || !Array.isArray(datos.viajes)) {
+          throw new Error(datos.error || 'No fue posible cargar el viaje.');
+        }
+
+        const viaje = datos.viajes.find(v => Number(v.id) === viajeId);
+        if (!viaje) throw new Error('El viaje ya no está disponible.');
+
+        if (viaje.imagenes && viaje.imagenes.length > 0) {
+          const img = viaje.imagenes[0];
+          elImagen.src = 'imagenes/' + (typeof img === 'string' ? img : img.url);
+        }
+
+        elDestino.textContent = viaje.destino || 'Destino';
+        elUbicacion.textContent = viaje.departamento || viaje.ubicacion || 'Colombia';
+
+        const f1 = viaje.fecha_salida || 'Por confirmar';
+        const f2 = viaje.fecha_regreso || 'Por confirmar';
+        elFechas.textContent = `${f1} → ${f2}`;
+
+        elDescripcion.textContent = viaje.descripcion || 'Sin descripción adicional.';
+
+        precioUnitario = Number(viaje.precio) || 0;
+        elPrecioUnitario.textContent = formatearCOP(precioUnitario);
+        actualizarTotal();
+
+        document.getElementById('tarjetaConfirmacion').classList.add('fade-in-up');
+      })
+      .catch(err => {
+        console.error(err);
+        elDestino.textContent = 'Error al cargar';
+        elDescripcion.textContent = err.message;
+        btnPagarAqui.disabled = true;
+      });
+  }
+
+  // ============================================================
+  // 5. Botones +/- cantidad de viajeros
+  // ============================================================
+  document.getElementById('btnRestarPersona').addEventListener('click', () => {
+    if (cantidad > 1) { cantidad--; elCantidad.textContent = cantidad; actualizarTotal(); }
+  });
+  document.getElementById('btnSumarPersona').addEventListener('click', () => {
+    if (cantidad < 10) { cantidad++; elCantidad.textContent = cantidad; actualizarTotal(); }
+  });
+
+  // ============================================================
+  // 6. Botón "¡Págalo aquí!" → Stripe
+  // ============================================================
+  btnPagarAqui.addEventListener('click', async () => {
+    if (!viajeId || viajeId < 1) return;
+
+    btnPagarAqui.disabled = true;
+    mensaje.className = 'text-center text-sm font-semibold mt-3 text-primary animate-pulse';
+    mensaje.textContent = 'Preparando tu pago seguro…';
+
+    try {
+      const respuesta = await fetch('../backend/api/crear_checkout_stripe.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          viaje_id: viajeId,
+          cantidad_personas: cantidad
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.ok) {
+        throw new Error(datos.error || 'No fue posible iniciar el pago');
+      }
+
+      if (datos.reserva) {
+        sessionStorage.setItem('reserva_codigo_pendiente', datos.reserva.codigo);
+        sessionStorage.setItem('reserva_id_pendiente', datos.reserva.id);
+      }
+
+      mensaje.className = 'text-center text-sm font-semibold mt-3 text-green-600';
+      mensaje.textContent = 'Redirigiendo a Stripe…';
+
+      window.location.assign(datos.url);
+
+    } catch (error) {
+      console.error(error);
+      mensaje.className = 'text-center text-sm font-semibold mt-3 text-red-500';
+      mensaje.textContent = error.message;
+      btnPagarAqui.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
