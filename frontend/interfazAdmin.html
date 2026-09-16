@@ -377,15 +377,32 @@
         }
 
         async function guardarPlan() {
-            const destino = document.getElementById("destino").value;
+            const destino = document.getElementById("destino").value.trim();
             const precio = document.getElementById("precio").value;
             const fecha_salida = document.getElementById("fecha_salida").value;
             const fecha_regreso = document.getElementById("fecha_regreso").value;
-            const descripcion = document.getElementById("descripcion").value;
+            const descripcion = document.getElementById("descripcion").value.trim();
 
             if (!destino || !precio || !fecha_salida || !fecha_regreso) {
-                alert("Completa todos los campos obligatorios");
+                alert("Completa todos los campos obligatorios: destino, precio, fecha de salida y fecha de regreso.");
                 return;
+            }
+
+            if (Number(precio) <= 0) {
+                alert("El precio debe ser un número mayor a 0.");
+                return;
+            }
+
+            if (fecha_regreso < fecha_salida) {
+                alert("La fecha de regreso no puede ser anterior a la fecha de salida.");
+                return;
+            }
+
+            const btnGuardar = document.querySelector("#modal .btn-guardar");
+            if (btnGuardar) {
+                btnGuardar.disabled = true;
+                btnGuardar.style.opacity = "0.6";
+                btnGuardar.style.cursor = "not-allowed";
             }
 
             const formData = new FormData();
@@ -395,9 +412,15 @@
             formData.append("fecha_regreso", fecha_regreso);
             formData.append("descripcion", descripcion);
 
-            imagenesGuardadas.forEach((imagen) => {
-                formData.append("imagenes[]", imagen);
-            });
+            if (imagenesGuardadas.length > 0) {
+                imagenesGuardadas.forEach((imagen) => {
+                    formData.append("imagenes[]", imagen);
+                });
+            } else if (inputImagenes && inputImagenes.files && inputImagenes.files.length > 0) {
+                Array.from(inputImagenes.files).forEach((imagen) => {
+                    formData.append("imagenes[]", imagen);
+                });
+            }
 
             try {
                 const response = await fetch("../backend/api/guardar_viaje.php", {
@@ -408,14 +431,20 @@
                 const resultado = await response.json();
 
                 if (resultado.success) {
-                    alert(resultado.mensaje);
+                    alert(resultado.mensaje || "Viaje guardado correctamente");
                     cerrarModal();
                     cargarViajes();
                 } else {
-                    alert(resultado.error);
+                    alert(resultado.error || "No fue posible guardar el viaje.");
                 }
             } catch (error) {
                 alert("Error al conectar con el servidor: " + error.message);
+            } finally {
+                if (btnGuardar) {
+                    btnGuardar.disabled = false;
+                    btnGuardar.style.opacity = "";
+                    btnGuardar.style.cursor = "";
+                }
             }
         }
 

@@ -33,8 +33,10 @@ COPY . .
 # Copia las dependencias instaladas desde la primera etapa
 COPY --from=dependencies /app/backend/vendor ./backend/vendor
 
-# Apache debe poder leer/escribir imágenes y sesiones
-RUN mkdir -p /var/lib/php/sessions \
-    && chown -R www-data:www-data /var/www/html/frontend/imagenes /var/lib/php/sessions
+# Apache debe poder leer/escribir imágenes y sesiones con límite de subida adecuado
+RUN mkdir -p /var/lib/php/sessions /var/www/html/frontend/imagenes \
+    && chown -R www-data:www-data /var/www/html/frontend/imagenes /var/lib/php/sessions \
+    && chmod -R 777 /var/www/html/frontend/imagenes /var/lib/php/sessions \
+    && printf "upload_max_filesize = 25M\npost_max_size = 30M\nmemory_limit = 256M\n" > /usr/local/etc/php/conf.d/uploads.ini
 
 EXPOSE 80
