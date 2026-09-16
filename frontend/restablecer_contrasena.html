@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer contraseña</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style_olvido.css">
+</head>
+<body>
+    <a href="olvido_contraseña.html" class="back-button" aria-label="Volver a recuperación">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <main class="olvido-container">
+        <h2>Crea una nueva contraseña</h2>
+        <p class="descripcion-recuperacion">Escribe el código que llegó a tu correo y elige una contraseña de al menos 8 caracteres.</p>
+
+        <form id="formRestablecer" novalidate>
+            <div class="input-group">
+                <label for="codigoRecuperacion">Código de verificación</label>
+                <input type="text" id="codigoRecuperacion" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+            </div>
+
+            <div class="input-group">
+                <label for="contrasenaNueva">Nueva contraseña</label>
+                <input type="password" id="contrasenaNueva" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required>
+            </div>
+
+            <div class="input-group">
+                <label for="confirmacionNueva">Confirmar contraseña</label>
+                <input type="password" id="confirmacionNueva" autocomplete="new-password" placeholder="Repite tu contraseña" required>
+            </div>
+
+            <div id="mensajeRestablecer" role="status" aria-live="polite"></div>
+            <button type="submit" id="btnRestablecer">Guardar contraseña</button>
+
+            <p class="registro"><a href="olvido_contraseña.html">Solicitar otro código</a></p>
+        </form>
+    </main>
+
+    <script>
+        const form = document.getElementById('formRestablecer');
+        const boton = document.getElementById('btnRestablecer');
+        const mensaje = document.getElementById('mensajeRestablecer');
+
+        form.addEventListener('submit', async (evento) => {
+            evento.preventDefault();
+            const codigo = document.getElementById('codigoRecuperacion').value.trim();
+            const contrasena = document.getElementById('contrasenaNueva').value;
+            const confirmacion = document.getElementById('confirmacionNueva').value;
+
+            boton.disabled = true;
+            boton.textContent = 'Guardando…';
+            mensaje.textContent = '';
+
+            try {
+                const respuesta = await fetch('../backend/api/restablecer_contrasena.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ codigo, contrasena, confirmacion })
+                });
+                const datos = await respuesta.json();
+
+                if (!respuesta.ok || !datos.ok) {
+                    throw new Error(datos.mensaje || 'No fue posible cambiar la contraseña.');
+                }
+
+                mensaje.textContent = datos.mensaje;
+                mensaje.className = 'mensaje-exito';
+                setTimeout(() => window.location.assign('login.html'), 1800);
+            } catch (error) {
+                mensaje.textContent = error.message || 'No fue posible cambiar la contraseña.';
+                mensaje.className = 'mensaje-error';
+                boton.disabled = false;
+                boton.textContent = 'Guardar contraseña';
+            }
+        });
+    </script>
+</body>
+</html>

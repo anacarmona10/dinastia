@@ -118,6 +118,38 @@ function enviarCorreoVerificacion(string $correo, string $nombre, string $codigo
     }
 }
 
+function enviarCorreoRecuperacion(string $correo, string $nombre, string $codigo): bool
+{
+    $nombreSeguro = htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8');
+    $codigoSeguro = htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8');
+    $asunto = 'Código para restablecer tu contraseña - Dinastía AMV';
+    $html = "<div style='font-family:Arial,sans-serif;color:#1e293b;max-width:600px;margin:auto'><h1 style='color:#c800ff'>Restablece tu contraseña</h1><p>Hola <strong>{$nombreSeguro}</strong>,</p><p>Usa este código para crear una nueva contraseña en Dinastía AMV:</p><p style='font-size:32px;font-weight:bold;letter-spacing:8px;color:#c800ff'>{$codigoSeguro}</p><p>El código vence en 10 minutos. Si no solicitaste este cambio, puedes ignorar este correo.</p></div>";
+    $texto = "Tu código para restablecer la contraseña de Dinastía AMV es: {$codigo}. Vence en 10 minutos.";
+
+    if (correoConfig('RESEND_API_KEY') !== '') {
+        return enviarCorreoConResend($correo, $nombre, $asunto, $html, $texto);
+    }
+
+    $mail = new PHPMailer(true);
+
+    try {
+        configurarSmtp($mail);
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom(correoConfig('MAIL_FROM'), correoConfig('MAIL_FROM_NAME', 'Dinastía AMV'));
+        $mail->addAddress($correo, $nombre);
+        $mail->isHTML(true);
+        $mail->Subject = $asunto;
+        $mail->Body = $html;
+        $mail->AltBody = $texto;
+        $mail->send();
+
+        return true;
+    } catch (Exception $error) {
+        error_log('Error enviando correo de recuperación: ' . $error->getMessage());
+        return false;
+    }
+}
+
 function enviarCorreoConfirmacionPago(array $pago): bool
 {
     $mail = new PHPMailer(true);

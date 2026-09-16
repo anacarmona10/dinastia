@@ -3,36 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperación de Contraseña</title>
-
-    <!-- Font Awesome para el ícono de flecha -->
+    <title>Recuperación de contraseña</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- Hoja de estilos específica para esta página -->
     <link rel="stylesheet" href="style_olvido.css">
 </head>
 <body>
 
-    <!-- Botón de volver -->
-    <a href="index.html" class="back-button" aria-label="Volver al inicio">
+    <a href="login.html" class="back-button" aria-label="Volver al inicio de sesión">
         <i class="fas fa-arrow-left"></i>
     </a>
 
-    <div class="olvido-container">
+    <main class="olvido-container">
         <h2>Recuperación de contraseña</h2>
+        <p class="descripcion-recuperacion">Te enviaremos un código de seis dígitos al correo de tu cuenta.</p>
 
-        <form id="formRecuperar" action="#" method="post">
+        <form id="formRecuperar" novalidate>
             <div class="input-group">
-                <label>Correo electrónico</label>
-                <input type="email" name="correo" id="correoRecuperacion" placeholder="Ingresa tu correo">
+                <label for="correoRecuperacion">Correo electrónico</label>
+                <input type="email" name="correo" id="correoRecuperacion" placeholder="Ingresa tu correo" autocomplete="email" required>
             </div>
 
-            <div id="mensajeRecuperacion"></div>
+            <div id="mensajeRecuperacion" role="status" aria-live="polite"></div>
 
-            <button type="submit" id="btnRecuperar">Recuperar</button>
+            <button type="submit" id="btnRecuperar">Enviar código</button>
 
             <div class="mensaje-info">
-                <i class="fas fa-info-circle"></i> Te enviaremos un enlace para restablecer tu contraseña.
+                <i class="fas fa-info-circle"></i> El código vence en 10 minutos.
             </div>
 
             <p class="registro">
@@ -40,39 +36,48 @@
                 <a href="login.html">Inicia sesión</a>
             </p>
         </form>
-    </div>
+    </main>
 
-    <!-- JavaScript para simular el envío -->
     <script>
-        (function() {
-            const form = document.getElementById('formRecuperar');
-            const btn = document.getElementById('btnRecuperar');
-            const mensaje = document.getElementById('mensajeRecuperacion');
-            const correoInput = document.getElementById('correoRecuperacion');
+        const form = document.getElementById('formRecuperar');
+        const boton = document.getElementById('btnRecuperar');
+        const mensaje = document.getElementById('mensajeRecuperacion');
 
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+        form.addEventListener('submit', async (evento) => {
+            evento.preventDefault();
+            const correo = document.getElementById('correoRecuperacion').value.trim();
 
-                const correo = correoInput.value.trim();
+            if (!correo) {
+                mensaje.textContent = 'Ingresa tu correo electrónico.';
+                mensaje.className = 'mensaje-error';
+                return;
+            }
 
-                if (correo === '') {
-                    mensaje.innerHTML = '<span style="color: #dc3545; font-weight: bold;">Por favor ingresa tu correo electrónico.</span>';
-                    return;
+            boton.disabled = true;
+            boton.textContent = 'Enviando…';
+            mensaje.textContent = '';
+
+            try {
+                const respuesta = await fetch('../backend/api/solicitar_recuperacion.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ correo })
+                });
+                const datos = await respuesta.json();
+
+                if (!respuesta.ok || !datos.ok) {
+                    throw new Error(datos.mensaje || 'No fue posible enviar el código.');
                 }
 
-                mensaje.innerHTML = '<span style="color: #28a745; font-weight: bold;"><i class="fas fa-check-circle"></i> Se ha enviado un enlace a tu correo para restablecer tu contraseña.</span>';
-                btn.disabled = true;
-                btn.textContent = 'Enviado ✓';
-
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = 'Recuperar';
-                    setTimeout(() => {
-                        mensaje.innerHTML = '';
-                    }, 2000);
-                }, 3000);
-            });
-        })();
+                window.location.assign('restablecer_contrasena.html');
+            } catch (error) {
+                mensaje.textContent = error.message || 'No fue posible enviar el código.';
+                mensaje.className = 'mensaje-error';
+                boton.disabled = false;
+                boton.textContent = 'Enviar código';
+            }
+        });
     </script>
 
 </body>
