@@ -13,6 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
+  <!-- Font Awesome (para el ojito) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   <!-- jsPDF CDN para la generación y descarga de comprobantes en PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -46,19 +49,29 @@
   <link rel="stylesheet" href="style_perfil.css">
 
   <!-- ==========================================================
-       FUNCIÓN PARA MOSTRAR/OCULTAR CONTRASEÑA (onclick directo)
+       FUNCIÓN PARA MOSTRAR/OCULTAR CONTRASEÑA (con Font Awesome)
        ========================================================== -->
   <script>
     function togglePassword(inputId, boton) {
       var input = document.getElementById(inputId);
       if (!input) return;
 
+      var icono = boton.querySelector('i');
+
       if (input.type === "password") {
         input.type = "text";
         boton.classList.add("activo");
+        if (icono) {
+          icono.classList.remove('fa-eye');
+          icono.classList.add('fa-eye-slash');
+        }
       } else {
         input.type = "password";
         boton.classList.remove("activo");
+        if (icono) {
+          icono.classList.remove('fa-eye-slash');
+          icono.classList.add('fa-eye');
+        }
       }
     }
   </script>
@@ -330,7 +343,7 @@
         <div class="campo-password-wrapper">
           <input type="password" id="passwordActual" class="campo-input" required>
           <button type="button" class="btn-toggle-password" onclick="togglePassword('passwordActual', this)" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
-            <span class="material-symbols-outlined">visibility</span>
+            <i class="fas fa-eye"></i>
           </button>
         </div>
       </div>
@@ -340,7 +353,7 @@
         <div class="campo-password-wrapper">
           <input type="password" id="passwordNueva" class="campo-input" placeholder="Mínimo 6 caracteres, 1 mayúscula, 1 número" required>
           <button type="button" class="btn-toggle-password" onclick="togglePassword('passwordNueva', this)" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
-            <span class="material-symbols-outlined">visibility</span>
+            <i class="fas fa-eye"></i>
           </button>
         </div>
 
@@ -372,7 +385,7 @@
         <div class="campo-password-wrapper">
           <input type="password" id="passwordConfirmar" class="campo-input" placeholder="Repite la nueva contraseña" required>
           <button type="button" class="btn-toggle-password" onclick="togglePassword('passwordConfirmar', this)" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
-            <span class="material-symbols-outlined">visibility</span>
+            <i class="fas fa-eye"></i>
           </button>
         </div>
       </div>

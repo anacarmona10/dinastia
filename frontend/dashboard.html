@@ -58,6 +58,94 @@
       text-decoration: none;
       color: inherit;
     }
+
+    /* ======================================================
+       MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
+       ====================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(2, 12, 28, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content-custom {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+      text-align: center;
+    }
+
+    .modal-overlay.active .modal-content-custom {
+      transform: scale(1);
+    }
+
+    .modal-content-custom h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #020C1C;
+    }
+
+    .modal-content-custom p {
+      color: #475569;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .modal-botones-custom {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .modal-botones-custom button {
+      padding: 0.65rem 1.6rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.25s;
+      font-size: 0.9rem;
+    }
+
+    .btn-cerrar-modal-custom {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-cerrar-modal-custom:hover {
+      background: #d1d5db;
+    }
+
+    .btn-eliminar-custom {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-eliminar-custom:hover {
+      background: #c82333;
+    }
   </style>
 </head>
 
@@ -93,13 +181,15 @@
           ¡Hola, viajero!
         </a>
 
-        <a
-          href="../backend/api/logout.php"
-          class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors"
+        <!-- ✅ BOTÓN CERRAR SESIÓN (ahora abre el modal) -->
+        <button
+          type="button"
+          id="btnCerrarSesion"
+          class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors cursor-pointer"
         >
           <span class="material-symbols-outlined text-lg">logout</span>
           <span class="hidden sm:inline">Cerrar sesión</span>
-        </a>
+        </button>
       </div>
     </header>
 
@@ -206,6 +296,20 @@
     </footer>
   </div>
 
+  <!-- ======================================================
+       MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
+       ====================================================== -->
+  <div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
+    <div class="modal-content-custom">
+      <h3 id="tituloModalCierre" class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
+      <p class="text-slate-600 text-sm mt-1">Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+      <div class="modal-botones-custom">
+        <button type="button" class="btn-cerrar-modal-custom" id="btnNoCerrar">No, quedarme</button>
+        <button type="button" class="btn-eliminar-custom" id="btnSiCerrar">Sí, cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const nombre = localStorage.getItem('usuario_nombre');
 
@@ -246,6 +350,43 @@
         window.location.href = 'Confirmacion_reserva.html?viaje_id=' + viajeId;
       }
     }, true);
+  </script>
+
+  <!-- ✅ Script del modal de cierre de sesión -->
+  <script>
+    (function () {
+      const modalCierre = document.getElementById('modalConfirmarCierre');
+      const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+      const btnNoCerrar = document.getElementById('btnNoCerrar');
+      const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+      if (btnCerrarSesion && modalCierre) {
+        btnCerrarSesion.addEventListener('click', function (e) {
+          e.preventDefault();
+          modalCierre.classList.add('active');
+        });
+
+        btnNoCerrar.addEventListener('click', function () {
+          modalCierre.classList.remove('active');
+        });
+
+        btnSiCerrar.addEventListener('click', function () {
+          window.location.href = '../backend/api/logout.php';
+        });
+
+        modalCierre.addEventListener('click', function (e) {
+          if (e.target === modalCierre) {
+            modalCierre.classList.remove('active');
+          }
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modalCierre.classList.contains('active')) {
+            modalCierre.classList.remove('active');
+          }
+        });
+      }
+    })();
   </script>
 </body>
 </html>
