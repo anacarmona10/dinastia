@@ -15,6 +15,36 @@ function correoConfig(string $nombre, string $porDefecto = ''): string
         : trim((string) $valor);
 }
 
+function enviarCorreoVerificacion(string $correo, string $nombre, string $codigo): bool
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host = correoConfig('MAIL_HOST');
+        $mail->SMTPAuth = true;
+        $mail->Username = correoConfig('MAIL_USERNAME');
+        $mail->Password = correoConfig('MAIL_PASSWORD');
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = (int) correoConfig('MAIL_PORT', '587');
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom(correoConfig('MAIL_FROM'), correoConfig('MAIL_FROM_NAME', 'Dinastía AMV'));
+        $mail->addAddress($correo, $nombre);
+        $mail->isHTML(true);
+        $mail->Subject = 'Tu código de verificación - Dinastía AMV';
+
+        $nombreSeguro = htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8');
+        $codigoSeguro = htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8');
+        $mail->Body = "<div style='font-family:Arial,sans-serif;color:#1e293b;max-width:600px;margin:auto'><h1 style='color:#c800ff'>Verifica tu correo</h1><p>Hola <strong>{$nombreSeguro}</strong>,</p><p>Usa este código para completar tu registro en Dinastía AMV:</p><p style='font-size:32px;font-weight:bold;letter-spacing:8px;color:#c800ff'>{$codigoSeguro}</p><p>El código vence en 10 minutos. No lo compartas con nadie.</p></div>";
+        $mail->AltBody = "Tu código de verificación de Dinastía AMV es: {$codigo}. Vence en 10 minutos.";
+        $mail->send();
+        return true;
+    } catch (Exception $error) {
+        error_log('Error enviando correo de verificación: ' . $error->getMessage());
+        return false;
+    }
+}
+
 function enviarCorreoConfirmacionPago(array $pago): bool
 {
     $mail = new PHPMailer(true);
