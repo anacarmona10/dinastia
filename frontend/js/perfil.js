@@ -610,6 +610,8 @@
       card.className = 'group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover flex flex-col justify-between';
 
       const badgeEstadoHTML = obtenerBadgeEstado(res.estado, res.metodoPago);
+      const estadoNorm = normalizarEstado(res.estado);
+      const esPendiente = (estadoNorm === 'pendiente de pago');
       const descuentoHTML = res.descuento
         ? `<div class="absolute top-3 right-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs shadow-md">${res.descuento}</div>`
         : '';
@@ -654,16 +656,26 @@
           </div>
         </div>
 
-        <div class="p-5 pt-0 grid grid-cols-2 gap-3">
-          <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center" data-accion="detalles">
-            <span class="material-symbols-outlined text-sm">visibility</span> Ver detalles
-          </button>
-          <button type="button" class="py-2.5 rounded-full gradient-btn text-white font-bold text-xs shadow-lg shadow-primary/30 text-center" data-accion="comprobante">
-            <span class="material-symbols-outlined text-sm">download</span> Comprobante
-          </button>
+        <div class="p-5 pt-0 flex flex-col gap-2">
+          ${esPendiente ? `
+            <button type="button" class="w-full py-2.5 rounded-full gradient-btn text-white font-black text-xs shadow-md shadow-primary/25 flex items-center justify-center gap-1.5 cursor-pointer" data-accion="pagar">
+              <span class="material-symbols-outlined text-sm">credit_card</span> Pagar ahora con Stripe
+            </button>
+          ` : ''}
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" class="py-2.5 rounded-full btn-outline text-xs font-bold text-center cursor-pointer" data-accion="detalles">
+              <span class="material-symbols-outlined text-sm">visibility</span> Ver detalles
+            </button>
+            <button type="button" class="py-2.5 rounded-full bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-primary font-bold text-xs text-center border border-slate-200 transition-colors cursor-pointer" data-accion="comprobante">
+              <span class="material-symbols-outlined text-sm">download</span> ${esPendiente ? 'Orden PDF' : 'Comprobante'}
+            </button>
+          </div>
         </div>
       `;
 
+      if (esPendiente && card.querySelector('[data-accion="pagar"]')) {
+        card.querySelector('[data-accion="pagar"]').addEventListener('click', () => iniciarPagoReservaPendiente(res));
+      }
       card.querySelector('[data-accion="detalles"]').addEventListener('click', () => abrirModalDetalleReserva(res));
       card.querySelector('[data-accion="comprobante"]').addEventListener('click', () => generarYDescargarPDF(res));
 
@@ -746,11 +758,28 @@
           <span class="font-semibold ${esPagadoExito ? 'text-emerald-600' : 'text-slate-700'}">${textoEstado}</span>
         </div>
         <div class="flex justify-between items-center pt-2 border-t border-slate-200 text-sm">
-          <strong class="text-slate-800">Total Liquidado:</strong>
+          <strong class="text-slate-800">${normalizarEstado(reserva.estado) === 'pendiente de pago' ? 'Total Pendiente:' : 'Total Liquidado:'}</strong>
           <strong class="text-xl font-black text-primary">${formatearMonedaCOP(reserva.desglose.totalCOP)}</strong>
         </div>
       </div>
+
+      ${normalizarEstado(reserva.estado) === 'pendiente de pago' ? `
+        <div class="pt-2">
+          <button type="button" id="btnPagarDesdeModal" class="w-full gradient-btn py-3 px-6 rounded-full text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/25 cursor-pointer">
+            <span class="material-symbols-outlined text-base">credit_card</span>
+            <span>Pagar esta reserva ahora con Stripe</span>
+          </button>
+        </div>
+      ` : ''}
     `;
+
+    const btnPagarModal = DOM.detalleReservaContenido.querySelector('#btnPagarDesdeModal');
+    if (btnPagarModal) {
+      btnPagarModal.addEventListener('click', () => {
+        cerrarModalDetalleReserva();
+        iniciarPagoReservaPendiente(reserva);
+      });
+    }
 
     DOM.modalDetalleReserva.classList.add('active');
   }
@@ -760,12 +789,42 @@
     reservaSeleccionadaParaDetalle = null;
   }
 
+  async function iniciarPagoReservaPendiente(reserva) {
+    mostrarToast('💳 Conectando con Stripe para pagar tu reserva...', 'info', 2500);
+    try {
+      const resp = await fetch('../backend/api/crear_checkout_stripe.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          reserva_id: reserva.id || reserva.reserva_id,
+          viaje_id: reserva.viaje_id,
+          cantidad_personas: reserva.personas
+        })
+      });
+      const datos = await resp.json();
+      if (!resp.ok || !datos.ok || !datos.url) {
+        throw new Error(datos.error || 'No fue posible iniciar el pago con Stripe');
+      }
+      window.location.assign(datos.url);
+    } catch (err) {
+      console.error(err);
+      mostrarToast(err.message || 'Error al conectar con la pasarela de pago', 'error');
+    }
+  }
+
   // ==========================================================================
   // PDF
   // ==========================================================================
 
   async function generarYDescargarPDF(reserva) {
-    mostrarToast('📄 Generando comprobante de pago oficial...', 'info', 2000);
+    const estadoNormalizado = normalizarEstado(reserva.estado);
+    const esPagadoExito = (reserva.metodoPago && reserva.metodoPago.toLowerCase().includes('éxito'));
+    const esPagado = (esPagadoExito || estadoNormalizado === 'pagado con éxito' || estadoNormalizado === 'pagado');
+    const esPendiente = (estadoNormalizado === 'pendiente de pago');
+    const esCancelado = (estadoNormalizado === 'cancelado');
+
+    mostrarToast(esPendiente ? '📄 Generando orden de reserva...' : '📄 Generando comprobante de pago oficial...', 'info', 2000);
 
     try {
       const resUser = await ApiService.getPerfil();
@@ -779,8 +838,6 @@
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 16;
       let y = 18;
-
-      const esPagadoExito = (reserva.metodoPago && reserva.metodoPago.toLowerCase().includes('éxito'));
 
       // ENCABEZADO
       doc.setFillColor(200, 0, 255);
@@ -797,16 +854,30 @@
       doc.text('Agencia de Viajes & Experiencias Turísticas en Colombia', margin, y + 5);
       doc.text('NIT: 901.458.789-2 | RNT: 45291 | Bogotá, Colombia', margin, y + 9);
 
+      // Cuadro de estado del documento
+      let tituloDoc = 'COMPROBANTE';
+      let colorTitulo = [239, 29, 156];
+      if (esPagado) {
+        tituloDoc = 'PAGO CONFIRMADO';
+        colorTitulo = [16, 185, 129];
+      } else if (esPendiente) {
+        tituloDoc = 'ORDEN DE RESERVA';
+        colorTitulo = [202, 138, 4];
+      } else if (esCancelado) {
+        tituloDoc = 'RESERVA CANCELADA';
+        colorTitulo = [220, 38, 38];
+      }
+
       doc.setFillColor(248, 246, 246);
-      doc.roundedRect(pageWidth - margin - 60, y - 4, 60, 20, 2, 2, 'F');
+      doc.roundedRect(pageWidth - margin - 62, y - 4, 62, 20, 2, 2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(239, 29, 156);
-      doc.text('COMPROBANTE OFICIAL', pageWidth - margin - 56, y + 2);
+      doc.setFontSize(9.5);
+      doc.setTextColor(colorTitulo[0], colorTitulo[1], colorTitulo[2]);
+      doc.text(tituloDoc, pageWidth - margin - 58, y + 2);
       doc.setFontSize(8);
       doc.setTextColor(30, 41, 59);
-      doc.text(`N°: ${reserva.codigo}`, pageWidth - margin - 56, y + 8);
-      doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin - 56, y + 13);
+      doc.text(`N°: ${reserva.codigo}`, pageWidth - margin - 58, y + 8);
+      doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin - 58, y + 13);
 
       y += 24;
       doc.setDrawColor(226, 232, 240);
@@ -849,7 +920,10 @@
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
-      doc.text('DETALLE DEL PLAN TURÍSTICO ADQUIRIDO', margin, y);
+      const seccionPlanTitulo = esPagado
+        ? 'DETALLE DEL PLAN TURÍSTICO ADQUIRIDO'
+        : (esPendiente ? 'DETALLE DEL PLAN TURÍSTICO RESERVADO' : 'DETALLE DEL PLAN TURÍSTICO (CANCELADO)');
+      doc.text(seccionPlanTitulo, margin, y);
       y += 6;
 
       doc.setFillColor(248, 250, 252);
@@ -875,7 +949,7 @@
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
-      doc.text('DESGLOSE DE PAGO Y FACTURACIÓN', margin, y);
+      doc.text('DESGLOSE DE TARIFA Y CONCEPTOS', margin, y);
       y += 5;
 
       doc.setFillColor(200, 0, 255);
@@ -908,7 +982,9 @@
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
       doc.setTextColor(200, 0, 255);
-      doc.text('TOTAL PAGADO (COP)', margin + 4, y + 6);
+
+      const labelTotal = esPagado ? 'TOTAL PAGADO (COP)' : (esPendiente ? 'TOTAL A PAGAR (COP)' : 'VALOR DEL PLAN (COP)');
+      doc.text(labelTotal, margin + 4, y + 6);
       doc.text(`${formatearMonedaCOP(reserva.desglose.totalCOP)}`, pageWidth - margin - 35, y + 6);
       y += 15;
 
@@ -916,19 +992,19 @@
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
       doc.setTextColor(100, 116, 139);
-      const metodoTexto = esPagadoExito ? 'Pagado con éxito' : (reserva.metodoPago || 'Pendiente');
-      doc.text(`Método de Transacción: ${metodoTexto}`, margin, y);
-      doc.text(`Fecha y Hora de Pago: ${reserva.fechaPago}`, margin, y + 5);
+      const metodoTexto = esPagado ? (reserva.metodoPago || 'Pagado con éxito') : (reserva.metodoPago || 'Pagar después / En destino');
+      const fechaTransaccionTexto = esPagado ? (reserva.fechaPago || 'Confirmado') : 'Pendiente de pago';
+      doc.text(`Modalidad / Método: ${metodoTexto}`, margin, y);
+      doc.text(`Estado del Pago: ${obtenerTextoEstado(reserva.estado, reserva.metodoPago)} | Fecha: ${fechaTransaccionTexto}`, margin, y + 5);
 
       // SELLO DINÁMICO
-      const estadoNormalizado = normalizarEstado(reserva.estado);
-      let selloTexto = 'PAGADO / VÁLIDO';
+      let selloTexto = 'PAGADO CON ÉXITO';
       let selloColor = [16, 185, 129];
 
-      if (esPagadoExito || estadoNormalizado === 'pagado con éxito') {
+      if (esPagado) {
         selloTexto = 'PAGADO CON ÉXITO';
         selloColor = [16, 185, 129];
-      } else if (estadoNormalizado === 'pendiente de pago') {
+      } else if (esPendiente) {
         selloTexto = 'PENDIENTE DE PAGO';
         selloColor = [202, 138, 4];
       } else if (estadoNormalizado === 'no pagado') {
@@ -937,7 +1013,7 @@
       } else if (estadoNormalizado === 'en proceso de pago') {
         selloTexto = 'EN PROCESO';
         selloColor = [37, 99, 235];
-      } else if (estadoNormalizado === 'cancelado') {
+      } else if (esCancelado) {
         selloTexto = 'CANCELADO';
         selloColor = [220, 38, 38];
       }
@@ -945,16 +1021,16 @@
       doc.setDrawColor(selloColor[0], selloColor[1], selloColor[2]);
       doc.setTextColor(selloColor[0], selloColor[1], selloColor[2]);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(13);
+      doc.setFontSize(12);
 
-      const selloAncho = 60;
+      const selloAncho = 64;
       const selloAlto = 16;
       const selloX = pageWidth - margin - selloAncho;
       const selloY = y - 2;
 
       doc.roundedRect(selloX, selloY, selloAncho, selloAlto, 2, 2);
 
-      doc.setFontSize(11);
+      doc.setFontSize(10.5);
       const textoAncho = doc.getTextWidth(selloTexto);
       doc.text(selloTexto, selloX + (selloAncho - textoAncho) / 2, selloY + 11);
 
@@ -974,12 +1050,18 @@
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(148, 163, 184);
-      const clausula = 'Este documento constituye el comprobante oficial de su compra en Dinastía AMV. Para soporte o modificaciones comuníquese con soporte@dinastia.com.';
+      const clausula = esPagado
+        ? 'Este documento constituye el comprobante oficial de pago de su plan turístico en Dinastía AMV. Presente este documento al momento del viaje.'
+        : (esPendiente
+          ? 'Esta orden certifica la reserva y separación de su cupo en el viaje seleccionado. Su estado actual es PENDIENTE DE PAGO. Puede liquidar el pago en cualquier momento desde su perfil de usuario o en el punto de encuentro previo al viaje.'
+          : 'Esta reserva se encuentra actualmente CANCELADA. Para más información o soporte comuníquese con soporte@dinastia.com.');
       doc.text(doc.splitTextToSize(clausula, pageWidth - (margin * 2)), margin, y);
 
-      const nombreArchivo = `Comprobante_AMV_${reserva.codigo}.pdf`;
+      const nombreArchivo = esPagado
+        ? `Comprobante_Pago_AMV_${reserva.codigo}.pdf`
+        : (esPendiente ? `Orden_Reserva_AMV_${reserva.codigo}.pdf` : `Reserva_Cancelada_AMV_${reserva.codigo}.pdf`);
       doc.save(nombreArchivo);
-      mostrarToast(`✅ Comprobante descargado: ${nombreArchivo}`, 'success');
+      mostrarToast(`✅ Documento descargado: ${nombreArchivo}`, 'success');
     } catch (err) {
       console.error(err);
       mostrarToast('Error al generar comprobante PDF.', 'error');

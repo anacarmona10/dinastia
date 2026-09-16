@@ -101,6 +101,33 @@ try {
         ]);
 
         $pagoConfirmado = $actualizarPago->fetch();
+
+        // Actualizar también la tabla reservas
+        if ($estado === 'APPROVED') {
+            $actualizarReserva = $pdo->prepare(
+                "UPDATE reservas
+                 SET estado = 'APPROVED',
+                     metodo_pago = 'Stripe (Pagado con éxito)',
+                     fecha_pago = NOW(),
+                     stripe_payment_intent_id = COALESCE(:payment_intent, stripe_payment_intent_id),
+                     updated_at = NOW()
+                 WHERE stripe_checkout_session_id = :session_id"
+            );
+            $actualizarReserva->execute([
+                'payment_intent' => is_string($checkout->payment_intent ?? null) ? $checkout->payment_intent : null,
+                'session_id' => $checkout->id,
+            ]);
+        } elseif ($estado === 'FAILED' || $estado === 'EXPIRED') {
+            $actualizarReserva = $pdo->prepare(
+                "UPDATE reservas
+                 SET estado = 'CANCELLED',
+                     updated_at = NOW()
+                 WHERE stripe_checkout_session_id = :session_id AND estado = 'PENDING'"
+            );
+            $actualizarReserva->execute([
+                'session_id' => $checkout->id,
+            ]);
+        }
     }
 
     $pdo->commit();
