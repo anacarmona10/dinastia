@@ -5,15 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Administrador</title>
 
-    <!-- Font Awesome para el ícono de flecha -->
+    <!-- Font Awesome (flecha + ojito) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Hoja de estilos compartida -->
     <link rel="stylesheet" href="style_login.css">
+
+    <!-- Función del ojito -->
+    <script>
+        function togglePassword(inputId, boton) {
+            var input = document.getElementById(inputId);
+            if (!input) return;
+
+            var icono = boton.querySelector('i');
+
+            if (input.type === "password") {
+                input.type = "text";
+                boton.classList.add("activo");
+                if (icono) {
+                    icono.classList.remove('fa-eye');
+                    icono.classList.add('fa-eye-slash');
+                }
+            } else {
+                input.type = "password";
+                boton.classList.remove("activo");
+                if (icono) {
+                    icono.classList.remove('fa-eye-slash');
+                    icono.classList.add('fa-eye');
+                }
+            }
+        }
+    </script>
 </head>
 <body>
 
-    <!-- Botón de volver con el mismo estilo que login.html -->
     <a href="index.html" class="back-button" aria-label="Volver al inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
@@ -30,14 +55,18 @@
 
             <div class="input-group">
                 <label>Contraseña</label>
-                <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+                <div class="campo-password-wrapper">
+                    <input type="password" name="contraseña" id="contraseñaLogin" placeholder="Ingresa tu contraseña">
+                    <button type="button" class="btn-toggle-password" onclick="togglePassword('contraseñaLogin', this)" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
             <div id="mensajeLogin"></div>
 
             <button type="submit">Ingresar</button>
 
-            <!-- Enlace para recuperar contraseña -->
             <p class="registro olvido">
                 ¿Olvidaste tu contraseña? 
                 <a href="olvido_contraseña.html">Ingresa aquí</a>

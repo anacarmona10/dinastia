@@ -96,10 +96,9 @@ html, body {
     color: white;
 }
 
-/* 🟣 BOTÓN – CON !important Y SELECTORES MÚLTIPLES PARA ASEGURAR */
-.registro-container button,
-button.form-button,
+/* 🟣 BOTÓN PRINCIPAL */
 .registro-container button[type="submit"],
+button.form-button,
 button.form-button[type="submit"] {
     width: 100%;
     padding: 12px;
@@ -111,11 +110,11 @@ button.form-button[type="submit"] {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    margin-top: 5px;
 }
 
-.registro-container button:hover,
-button.form-button:hover,
 .registro-container button[type="submit"]:hover,
+button.form-button:hover,
 button.form-button[type="submit"]:hover {
     opacity: 0.9;
     transform: scale(1.03);
@@ -210,11 +209,122 @@ button.form-button[type="submit"]:hover {
         font-size: 12px;
         padding: 8px 10px;
     }
-    .registro-container button,
-    button.form-button,
     .registro-container button[type="submit"],
+    button.form-button,
     button.form-button[type="submit"] {
         font-size: 13px;
         padding: 10px;
     }
+}
+
+/* ==========================================================================
+   CAMPO DE CONTRASEÑA CON OJITO (Font Awesome)
+   ========================================================================== */
+.campo-password-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.campo-password-wrapper input {
+    margin-bottom: 0;
+    padding-right: 3rem;
+    width: 100%;
+}
+
+/* Ocultar ojo nativo del navegador */
+.campo-password-wrapper input[type="password"]::-ms-reveal,
+.campo-password-wrapper input[type="password"]::-ms-clear {
+    display: none !important;
+    width: 0;
+    height: 0;
+}
+
+.campo-password-wrapper input[type="password"]::-webkit-credentials-auto-fill-button,
+.campo-password-wrapper input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}
+
+/* ============================================
+   BOTÓN DEL OJITO - Sobrescribe reglas generales
+   ============================================ */
+.campo-password-wrapper .btn-toggle-password,
+button.btn-toggle-password,
+.registro-container .btn-toggle-password {
+    position: absolute !important;
+    top: 50% !important;
+    right: 10px !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    color: #94a3b8 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transition: color 0.2s ease !important;
+    z-index: 10 !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    text-align: center !important;
+    line-height: 1 !important;
+    scale: 1 !important;
+}
+
+.campo-password-wrapper .btn-toggle-password:hover,
+button.btn-toggle-password:hover,
+.registro-container .btn-toggle-password:hover {
+    color: #c800ff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    transform: translateY(-50%) !important;
+    opacity: 1 !important;
+    scale: 1 !important;
+    box-shadow: none !important;
+}
+
+.campo-password-wrapper .btn-toggle-password.activo,
+button.btn-toggle-password.activo,
+.registro-container .btn-toggle-password.activo {
+    color: #c800ff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.campo-password-wrapper .btn-toggle-password i,
+button.btn-toggle-password i,
+.registro-container .btn-toggle-password i {
+    font-size: 16px !important;
+    color: inherit !important;
+    pointer-events: none !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+}
+
+/* Forzar que el ojo nativo no interfiera */
+.campo-password-wrapper input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
