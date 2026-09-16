@@ -21,7 +21,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
@@ -159,15 +159,20 @@ if ($pdo instanceof PDO) {
                 $viajeId = (int)$row['id'];
                 $imgs = $imgMap[$viajeId] ?? [];
                 
-                // Determinar imagen principal
-                $primeraImg = '';
+                // Determinar imágenes y asegurar rutas web válidas
+                $rutasImagenes = [];
                 if (!empty($imgs)) {
-                    $primeraImg = $imgs[0];
-                    if (strpos($primeraImg, 'http') !== 0) {
-                        $primeraImg = 'imagenes/' . $primeraImg;
+                    foreach ($imgs as $imgItem) {
+                        if (strpos($imgItem, 'http') === 0) {
+                            $rutasImagenes[] = $imgItem;
+                        } else {
+                            $rutasImagenes[] = 'imagenes/' . rawurlencode($imgItem);
+                        }
                     }
+                    $primeraImg = $rutasImagenes[0];
                 } else {
                     $primeraImg = obtenerImagenPorDestino($row['destino']);
+                    $rutasImagenes = [$primeraImg];
                 }
 
                 $precioNum = (float)$row['precio'];
@@ -206,7 +211,7 @@ if ($pdo instanceof PDO) {
                     "servicios_incluidos" => "Tiquetes, Hospedaje, Desayunos buffet, Tour guiado, Asistencia médica",
                     "alojamiento" => "Hotel Seleccionado Categoría Turista",
                     "imagen_url" => $primeraImg,
-                    "imagenes" => $imgs,
+                    "imagenes" => $rutasImagenes,
                     "estado" => "activo",
                     "admin_id" => (int)($row['admin_id'] ?? 1),
                     "created_at" => $row['created_at'] ?? date('Y-m-d H:i:s'),

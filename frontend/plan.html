@@ -198,8 +198,24 @@
     <!-- CONTENIDO (sin padding extra) -->
     <main class="plan-container max-w-6xl mx-auto px-4 md:px-6 py-8">
         <div class="plan-card grid md:grid-cols-2 gap-0">
-            <div class="relative h-64 md:h-auto">
-                <img id="planImage" src="" alt="Imagen del plan" class="plan-image" />
+            <div class="relative h-64 md:h-full min-h-[320px] bg-slate-900 overflow-hidden group">
+                <img id="planImage" src="" alt="Imagen del plan" class="plan-image w-full h-full object-cover transition-all duration-300" />
+
+                <!-- Flecha izquierda (solo si hay más de 1 imagen) -->
+                <button type="button" id="btnPrevPlan" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none z-10" title="Imagen anterior" style="display: none;">
+                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                </button>
+
+                <!-- Flecha derecha (solo si hay más de 1 imagen) -->
+                <button type="button" id="btnNextPlan" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none z-10" title="Imagen siguiente" style="display: none;">
+                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                </button>
+
+                <!-- Indicador de fotos -->
+                <div id="planImgBadge" class="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow z-10" style="display: none;">
+                    <span class="material-symbols-outlined text-xs text-primary">photo_camera</span>
+                    <span id="planImgIndex">1 / 1</span>
+                </div>
             </div>
             <div class="plan-details flex flex-col justify-between">
                 <div>
@@ -243,9 +259,10 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             // Cargar datos del plan
             const params = new URLSearchParams(window.location.search);
+            const viajeId = params.get('viaje_id') || params.get('id');
             const destino = params.get('destino') || 'Cartagena de Indias';
             const imagen = params.get('imagen') || '';
             const descripcion = params.get('descripcion') || 'Descripción no disponible.';
@@ -256,7 +273,6 @@
             const personas = params.get('personas') || '0';
             const hotel = params.get('hotel') || 'Hotel no especificado';
 
-            document.getElementById('planImage').src = imagen || 'https://via.placeholder.com/600x400?text=Imagen+no+disponible';
             document.getElementById('planTitle').textContent = destino;
             document.getElementById('planDescription').textContent = descripcionLarga;
             document.getElementById('planFechas').textContent = fechas;
@@ -264,6 +280,76 @@
             document.getElementById('planNoches').textContent = noches + ' noches';
             document.getElementById('planPrecio').textContent = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(precio);
             document.getElementById('planHotel').textContent = hotel;
+
+            // Gestión de imágenes para el carrusel
+            let listaImagenes = [];
+            if (imagen) {
+                listaImagenes.push(imagen);
+            }
+
+            // Si se proporciona viaje_id o id, consultar las imágenes reales del viaje
+            if (viajeId) {
+                try {
+                    const res = await fetch('../backend/api/listar_viajes_publicos.php');
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.viajes)) {
+                        const viajeEncontrado = data.viajes.find(v => v.id == viajeId);
+                        if (viajeEncontrado && Array.isArray(viajeEncontrado.imagenes) && viajeEncontrado.imagenes.length > 0) {
+                            listaImagenes = viajeEncontrado.imagenes.map(img => {
+                                if (img.url.startsWith('http')) return img.url;
+                                return 'imagenes/' + encodeURIComponent(img.url);
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Error al obtener imágenes adicionales del viaje:', err);
+                }
+            }
+
+            if (listaImagenes.length === 0) {
+                listaImagenes.push('https://via.placeholder.com/600x400?text=Imagen+no+disponible');
+            }
+
+            // Carrusel de imágenes
+            let currentImgIndex = 0;
+            const imgElem = document.getElementById('planImage');
+            const btnPrev = document.getElementById('btnPrevPlan');
+            const btnNext = document.getElementById('btnNextPlan');
+            const badge = document.getElementById('planImgBadge');
+            const indexElem = document.getElementById('planImgIndex');
+
+            function actualizarCarruselPlan() {
+                imgElem.src = listaImagenes[currentImgIndex];
+                imgElem.onerror = function() {
+                    this.src = 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';
+                };
+
+                // REGLA ESTRICTA: Las flechitas SOLO se muestran si hay más de 1 imagen
+                if (listaImagenes.length > 1) {
+                    btnPrev.style.display = 'flex';
+                    btnNext.style.display = 'flex';
+                    badge.style.display = 'flex';
+                    indexElem.textContent = `${currentImgIndex + 1} / ${listaImagenes.length}`;
+                } else {
+                    btnPrev.style.display = 'none';
+                    btnNext.style.display = 'none';
+                    badge.style.display = 'none';
+                }
+            }
+
+            btnPrev.addEventListener('click', () => {
+                if (listaImagenes.length <= 1) return;
+                currentImgIndex = (currentImgIndex - 1 + listaImagenes.length) % listaImagenes.length;
+                actualizarCarruselPlan();
+            });
+
+            btnNext.addEventListener('click', () => {
+                if (listaImagenes.length <= 1) return;
+                currentImgIndex = (currentImgIndex + 1) % listaImagenes.length;
+                actualizarCarruselPlan();
+            });
+
+            actualizarCarruselPlan();
 
             const btnReservar = document.getElementById('btnReservar');
             const urlParams = new URLSearchParams({
@@ -274,9 +360,12 @@
                 noches: noches,
                 personas: personas,
                 hotel: hotel,
-                imagen: imagen
+                imagen: listaImagenes[0] || imagen
             });
-            btnReservar.href = 'pagos.html?' + urlParams.toString();
+            if (viajeId) {
+                urlParams.append('viaje_id', viajeId);
+            }
+            btnReservar.href = viajeId ? `Confirmacion_reserva.html?viaje_id=${viajeId}` : 'pagos.html?' + urlParams.toString();
 
             // Modal cerrar sesión
             const modalCierre = document.getElementById('modalConfirmarCierre');
