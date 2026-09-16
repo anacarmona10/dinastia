@@ -278,39 +278,60 @@ body {
 }
 
 /* ==========================================================================
-   Badges de Estado de Reserva
+   BADGES DE ESTADO DE TRANSACCIÓN (4 estados oficiales)
    ========================================================================== */
+
+/* Estilo base del badge */
 .badge-estado {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 0.5rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
-.badge-pagada {
-  background: #22c55e;
-  color: #ffffff;
+/* 🟢 PAGADO — Verde */
+.badge-pagado {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border-color: #16a34a;
 }
 
-.badge-pendiente {
-  background: #facc15;
-  color: #020C1C;
+/* 🟠 NO PAGADO — Naranja */
+.badge-no-pagado {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+  border-color: #d97706;
 }
 
-.badge-finalizada {
-  background: #94a3b8;
-  color: #ffffff;
+/* 🔵 EN PROCESO DE PAGO — Azul */
+.badge-en-proceso {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border-color: #2563eb;
 }
 
-.badge-cancelada {
-  background: #ef4444;
-  color: #ffffff;
+/* 🔴 CANCELADO — Rojo */
+.badge-cancelado {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border-color: #dc2626;
 }
+
+/* ==========================================================================
+   Compatibilidad con estados antiguos
+   ========================================================================== */
+.badge-pagada   { background: rgba(34, 197, 94, 0.12); color: #16a34a; border-color: #16a34a; }
+.badge-pendiente{ background: rgba(245, 158, 11, 0.12); color: #d97706; border-color: #d97706; }
+.badge-finalizada{ background: rgba(148, 163, 184, 0.15); color: #475569; border-color: #94a3b8; }
+.badge-cancelada{ background: rgba(239, 68, 68, 0.12); color: #dc2626; border-color: #dc2626; }
 
 /* ==========================================================================
    Medidor de Fortaleza de Contraseña
@@ -402,7 +423,6 @@ body {
   padding-right: 3rem;
 }
 
-/* Ocultar el ojo nativo del navegador (Edge / IE) */
 .campo-password-wrapper input[type="password"]::-ms-reveal,
 .campo-password-wrapper input[type="password"]::-ms-clear {
   display: none !important;
@@ -410,7 +430,6 @@ body {
   height: 0;
 }
 
-/* Ocultar el ojo nativo en WebKit */
 .campo-password-wrapper input[type="password"]::-webkit-credentials-auto-fill-button,
 .campo-password-wrapper input[type="password"]::-webkit-textfield-decoration-container {
   display: none !important;
@@ -420,7 +439,6 @@ body {
   right: 0;
 }
 
-/* Botón del ojito personalizado */
 .btn-toggle-password {
   position: absolute;
   top: 50%;
@@ -454,7 +472,6 @@ body {
   pointer-events: none;
 }
 
-/* Forzar que el ojo nativo no interfiera */
 .campo-password-wrapper input {
   -webkit-appearance: none;
   -moz-appearance: none;

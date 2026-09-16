@@ -51,7 +51,15 @@
       word-wrap: normal;
       direction: ltr;
       -webkit-font-feature-settings: 'liga';
+      font-feature-settings: 'liga';
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* Asegura que las tarjetas clicables tengan cursor pointer */
+    a.card-hover {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
   </style>
 </head>
@@ -110,9 +118,17 @@
         </p>
       </section>
 
-      <!-- Tarjetas de Métricas Rediseñadas -->
-      <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+      <!-- =====================================================================
+           Tarjetas de Métricas (solo 2 tarjetas: Reservas activas y Viajes realizados)
+           ===================================================================== -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+
+        <!-- 🔹 Reservas activas → perfil.html -->
+        <a
+          href="perfil.html"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          title="Ir a Mi Perfil — Próximos viajes"
+        >
           <div class="w-13 h-13 p-3 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0">
             <span class="material-symbols-outlined text-2xl">confirmation_number</span>
           </div>
@@ -121,9 +137,14 @@
             <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statReservas">0</p>
             <p class="text-xs sm:text-sm text-slate-500 font-semibold">Reservas activas</p>
           </div>
-        </div>
+        </a>
 
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
+        <!-- 🔹 Viajes realizados → perfil.html?tab=pasados -->
+        <a
+          href="perfil.html?tab=pasados"
+          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          title="Ir a Mi Perfil — Reservas anteriores"
+        >
           <div class="w-13 h-13 p-3 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-600 shrink-0">
             <span class="material-symbols-outlined text-2xl">travel_explore</span>
           </div>
@@ -132,18 +153,7 @@
             <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statViajes">0</p>
             <p class="text-xs sm:text-sm text-slate-500 font-semibold">Viajes realizados</p>
           </div>
-        </div>
-
-        <div class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover">
-          <div class="w-13 h-13 p-3 rounded-2xl bg-orange-100 flex items-center justify-center text-accent shrink-0">
-            <span class="material-symbols-outlined text-2xl">favorite</span>
-          </div>
-
-          <div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statFavoritos">0</p>
-            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Destinos favoritos</p>
-          </div>
-        </div>
+        </a>
       </section>
 
       <section class="mb-12">

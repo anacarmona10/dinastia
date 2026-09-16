@@ -2,10 +2,6 @@
  * ============================================================================
  * Dinastía AMV - Sistema de Perfil de Usuario Estandarizado (perfil.js)
  * Estilo unificado con dashboard.html, index.html y pagos.html
- * Cumple con: RF-007, RF-011, HU-01, HU-02, HU-09, CU-02, CU-09
- * Funcionalidades: Edición de perfil, cambio de contraseña con medidor de fuerza,
- * gestión de reservas de viajes en Colombia, descarga de comprobantes en PDF
- * y accesos de administración condicionales.
  * ============================================================================
  */
 
@@ -23,7 +19,6 @@
     USER_ROLE: 'dinastia_user_role'
   };
 
-  // Datos iniciales de demostración verosímiles
   const DEFAULT_USER = {
     id: 101,
     nombreCompleto: 'Ana María Valencia',
@@ -32,11 +27,15 @@
     correo: 'anamaria.valencia@dinastia.com',
     telefono: '+57 312 456 7890',
     ciudad: 'Bogotá D.C., Colombia',
-    rol: 'usuario', // 'usuario' | 'admin'
+    rol: 'usuario',
     passwordHash: 'Demo123*',
     fechaRegistro: '15 de enero de 2024'
   };
 
+  // =========================================================================
+  // Estados soportados: 'pagado' | 'pendiente de pago' | 'no pagado' |
+  //                     'en proceso de pago' | 'cancelado'
+  // =========================================================================
   const DEFAULT_RESERVAS = [
     {
       id: 'RES-001',
@@ -49,8 +48,8 @@
       fechasFormato: '12-16 Oct · 4 noches',
       personas: 2,
       personasTexto: '2 personas',
-      estado: 'pagada', // 'pagada' | 'pendiente' | 'finalizada' | 'cancelada'
-      tipoTab: 'proximos', // 'proximos' | 'pasados'
+      estado: 'pagado',
+      tipoTab: 'proximos',
       descuento: '-35% Dcto',
       precioAnterior: '$850.000',
       alojamiento: 'Hotel Boutique Las Carretas',
@@ -80,7 +79,7 @@
       fechasFormato: '10-13 Jul · 3 noches',
       personas: 2,
       personasTexto: '2 personas',
-      estado: 'pendiente',
+      estado: 'pendiente de pago',
       tipoTab: 'proximos',
       descuento: '-45% Dcto',
       precioAnterior: '$620.000',
@@ -110,7 +109,7 @@
       fechasFormato: '05-09 Ago · 4 noches',
       personas: 2,
       personasTexto: '2 personas',
-      estado: 'finalizada',
+      estado: 'pagado',
       tipoTab: 'pasados',
       descuento: '-30% Dcto',
       precioAnterior: '$710.000',
@@ -140,7 +139,7 @@
       fechasFormato: '18-22 Nov · 4 noches',
       personas: 4,
       personasTexto: '4 personas',
-      estado: 'finalizada',
+      estado: 'cancelado',
       tipoTab: 'pasados',
       descuento: '-25% Dcto',
       precioAnterior: '$1.200.000',
@@ -161,7 +160,6 @@
     }
   ];
 
-  // Servicio API conectado a la sesión PHP y la base de datos.
   const ApiService = {
     getAuthToken() {
       return null;
@@ -249,7 +247,6 @@
   // 2. ELEMENTOS DEL DOM
   // ==========================================================================
   const DOM = {
-    // Bloque 1: Perfil
     formPerfil: document.getElementById('formPerfil'),
     inputNombre: document.getElementById('nombreCompleto'),
     selectTipoDoc: document.getElementById('tipoDocumento'),
@@ -271,7 +268,6 @@
     errorNumDoc: document.getElementById('errorNumDoc'),
     errorCorreo: document.getElementById('errorCorreo'),
 
-    // Bloque 2: Seguridad
     btnAbrirModalPassword: document.getElementById('btnAbrirModalPassword'),
     modalPassword: document.getElementById('modalPassword'),
     formPassword: document.getElementById('formPassword'),
@@ -287,7 +283,6 @@
     reqNumber: document.getElementById('reqNumber'),
     mensajeModalPassword: document.getElementById('mensajeModalPassword'),
 
-    // Bloque 3: Reservas & Tabs
     tabProximos: document.getElementById('tabProximos'),
     tabPasados: document.getElementById('tabPasados'),
     badgeCountProximos: document.getElementById('badgeCountProximos'),
@@ -295,24 +290,20 @@
     contenedorReservas: document.getElementById('contenedorReservas'),
     emptyStateReservas: document.getElementById('emptyStateReservas'),
 
-    // Modal Detalle
     modalDetalleReserva: document.getElementById('modalDetalleReserva'),
     btnCerrarModalDetalle: document.getElementById('btnCerrarModalDetalle'),
     detalleReservaContenido: document.getElementById('detalleReservaContenido'),
     btnDescargarDesdeDetalle: document.getElementById('btnDescargarDesdeDetalle'),
 
-    // Bloque 4: Admin
     bloqueAdmin: document.getElementById('bloqueAdmin'),
     btnIrAdmin: document.getElementById('btnIrAdmin'),
     selectSimuladorRol: document.getElementById('selectSimuladorRol'),
 
-    // Bloque 5: Cierre de Sesión (modalConfirmarCierre)
     btnCerrarSesion: document.getElementById('btnCerrarSesion'),
     modalConfirmarCierre: document.getElementById('modalConfirmarCierre'),
     btnNoCerrar: document.getElementById('btnNoCerrar'),
     btnSiCerrar: document.getElementById('btnSiCerrar'),
 
-    // Toast Container
     toastContainer: document.getElementById('toast-container')
   };
 
@@ -321,7 +312,68 @@
   let reservaSeleccionadaParaDetalle = null;
 
   // ==========================================================================
-  // 3. UTILIDADES Y NOTIFICACIONES TOAST
+  // 3. FUNCIONES AUXILIARES DE ESTADOS
+  // ==========================================================================
+
+  function normalizarEstado(estado) {
+    if (!estado) return 'no pagado';
+    const e = String(estado).toLowerCase().trim()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    if (['pagado', 'pagada', 'valido', 'aprobado', 'aprobada', 'confirmado', 'confirmada'].includes(e)) {
+      return 'pagado';
+    }
+
+    if (['pendiente de pago', 'pendiente_pago', 'pendiente', 'pendiente pago'].includes(e)) {
+      return 'pendiente de pago';
+    }
+
+    if (['no pagado', 'no_pagado', 'sin pagar', 'rechazado', 'rechazada'].includes(e)) {
+      return 'no pagado';
+    }
+
+    if (['en proceso', 'en proceso de pago', 'en_proceso', 'en_proceso_de_pago', 'procesando'].includes(e)) {
+      return 'en proceso de pago';
+    }
+
+    if (['cancelado', 'cancelada', 'anulado', 'anulada'].includes(e)) {
+      return 'cancelado';
+    }
+
+    return 'no pagado';
+  }
+
+  function obtenerBadgeEstado(estado) {
+    const normalizado = normalizarEstado(estado);
+    switch (normalizado) {
+      case 'pagado':
+        return '<span class="badge-estado badge-pagado">PAGADO / VÁLIDO</span>';
+      case 'pendiente de pago':
+        return '<span class="badge-estado badge-pendiente-pago">PENDIENTE DE PAGO</span>';
+      case 'en proceso de pago':
+        return '<span class="badge-estado badge-en-proceso">EN PROCESO DE PAGO</span>';
+      case 'cancelado':
+        return '<span class="badge-estado badge-cancelado">CANCELADO</span>';
+      case 'no pagado':
+      default:
+        return '<span class="badge-estado badge-no-pagado">NO PAGADO</span>';
+    }
+  }
+
+  function obtenerTextoEstado(estado) {
+    const normalizado = normalizarEstado(estado);
+    switch (normalizado) {
+      case 'pagado': return 'Pagado / Válido';
+      case 'pendiente de pago': return 'Pendiente de pago';
+      case 'en proceso de pago': return 'En proceso de pago';
+      case 'cancelado': return 'Cancelado';
+      case 'no pagado':
+      default: return 'No pagado';
+    }
+  }
+
+  // ==========================================================================
+  // 4. UTILIDADES Y NOTIFICACIONES TOAST
   // ==========================================================================
 
   function mostrarToast(mensaje, tipo = 'info', duracion = 3500) {
@@ -329,7 +381,7 @@
 
     const toast = document.createElement('div');
     toast.className = `toast-item toast-${tipo}`;
-    
+
     let icono = 'info';
     let iconClass = 'text-primary';
     if (tipo === 'success') { icono = 'check_circle'; iconClass = 'text-green-600'; }
@@ -381,7 +433,7 @@
   }
 
   // ==========================================================================
-  // 4. LÓGICA DEL BLOQUE 1: INFORMACIÓN PERSONAL
+  // 5. LÓGICA DEL BLOQUE 1: INFORMACIÓN PERSONAL
   // ==========================================================================
 
   async function cargarDatosPerfil() {
@@ -410,7 +462,7 @@
 
   function toggleModoEdicion(habilitar) {
     const campos = [DOM.inputNombre, DOM.selectTipoDoc, DOM.inputNumDoc, DOM.inputCorreo];
-    
+
     campos.forEach(campo => {
       if (habilitar) {
         campo.removeAttribute('readonly');
@@ -534,7 +586,7 @@
   }
 
   // ==========================================================================
-  // 5. LÓGICA DEL BLOQUE 2: SEGURIDAD (CAMBIO DE CONTRASEÑA)
+  // 6. LÓGICA DEL BLOQUE 2: SEGURIDAD (CAMBIO DE CONTRASEÑA)
   // ==========================================================================
 
   function abrirModalPassword() {
@@ -660,7 +712,7 @@
   }
 
   // ==========================================================================
-  // 6. LÓGICA DEL BLOQUE 3: HISTORIAL DE RESERVAS
+  // 7. LÓGICA DEL BLOQUE 3: HISTORIAL DE RESERVAS
   // ==========================================================================
 
   async function cargarReservas(filtro = tabActual) {
@@ -721,43 +773,43 @@
       const card = document.createElement('div');
       card.className = 'group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/10 shadow-sm card-hover flex flex-col justify-between';
 
-      let badgeBg = 'bg-yellow-400 text-background-dark';
-      let badgeLabel = res.descuento || 'Plan Activo';
-      if (res.estado === 'pagada') { badgeBg = 'bg-green-500 text-white'; badgeLabel = 'Pagada'; }
-      if (res.estado === 'pendiente') { badgeBg = 'bg-yellow-400 text-background-dark'; badgeLabel = 'Pendiente de Pago'; }
-      if (res.estado === 'finalizada') { badgeBg = 'bg-slate-500 text-white'; badgeLabel = 'Viaje Realizado'; }
+      const badgeEstadoHTML = obtenerBadgeEstado(res.estado);
+      const descuentoHTML = res.descuento
+        ? `<div class="absolute top-3 right-3 bg-yellow-400 text-background-dark font-black px-3 py-1 rounded-lg text-xs shadow-md">${res.descuento}</div>`
+        : '';
 
       card.innerHTML = `
         <div>
-          <!-- Imagen con efecto hover similar a dashboard.html -->
           <div class="relative w-full aspect-[4/3] overflow-hidden">
             <img 
               alt="${res.destino}" 
               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
               src="${res.imagen}" 
             />
-            <div class="absolute top-3 left-3 ${badgeBg} font-black px-3 py-1 rounded-lg text-xs shadow-md">
-              ${badgeLabel}
-            </div>
+            ${descuentoHTML}
             <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <span class="material-symbols-outlined text-sm text-primary">location_on</span>
               ${res.departamento}
             </div>
           </div>
 
-          <!-- Contenido de la Card -->
           <div class="p-5">
-            <div class="flex justify-between items-start mb-2">
-              <div>
+            <div class="flex justify-between items-start mb-2 gap-2">
+              <div class="flex-1 min-w-0">
                 <h4 class="text-xl font-bold text-slate-900 dark:text-slate-100">${res.destino}</h4>
                 <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
                   <span class="material-symbols-outlined text-primary text-xs">calendar_month</span> ${res.fechasFormato} · ${res.personasTexto}
                 </p>
               </div>
-              <div class="text-right">
+              <div class="text-right flex-shrink-0">
                 <p class="text-xs text-slate-400 line-through">${res.precioAnterior || ''}</p>
                 <p class="text-xl font-black text-primary">${formatearMonedaCOP(res.desglose.totalCOP)}</p>
               </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between gap-2 flex-wrap">
+              ${badgeEstadoHTML}
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">${res.codigo}</span>
             </div>
 
             <div class="mt-3 text-xs text-slate-600 dark:text-slate-300 bg-primary/5 p-2.5 rounded-xl border border-primary/10">
@@ -766,7 +818,6 @@
           </div>
         </div>
 
-        <!-- Botones de Acción -->
         <div class="p-5 pt-0 grid grid-cols-2 gap-3">
           <button 
             type="button" 
@@ -797,6 +848,9 @@
     reservaSeleccionadaParaDetalle = reserva;
     if (!DOM.detalleReservaContenido) return;
 
+    const badgeEstadoHTML = obtenerBadgeEstado(reserva.estado);
+    const textoEstado = obtenerTextoEstado(reserva.estado);
+
     DOM.detalleReservaContenido.innerHTML = `
       <div class="relative h-44 rounded-2xl overflow-hidden mb-3">
         <img src="${reserva.imagen}" alt="${reserva.destino}" class="w-full h-full object-cover"/>
@@ -815,7 +869,7 @@
         </div>
         <div>
           <span class="text-slate-400 block mb-0.5 font-semibold">Estado de Pago</span>
-          <strong class="text-slate-900 uppercase font-black">${reserva.estado}</strong>
+          <div class="mt-1">${badgeEstadoHTML}</div>
         </div>
         <div>
           <span class="text-slate-400 block mb-0.5 font-semibold">Itinerario</span>
@@ -859,6 +913,10 @@
           <span>Fecha de Aprobación:</span>
           <span class="font-semibold text-slate-700">${reserva.fechaPago}</span>
         </div>
+        <div class="flex justify-between text-xs text-slate-500 mb-2">
+          <span>Estado actual:</span>
+          <span class="font-semibold text-slate-700">${textoEstado}</span>
+        </div>
         <div class="flex justify-between items-center pt-2 border-t border-slate-200 text-sm">
           <strong class="text-slate-800">Total Liquidado:</strong>
           <strong class="text-xl font-black text-primary">${formatearMonedaCOP(reserva.desglose.totalCOP)}</strong>
@@ -875,7 +933,7 @@
   }
 
   // ==========================================================================
-  // 7. GENERADOR DE COMPROBANTES DE PAGO EN PDF (jsPDF)
+  // 8. GENERADOR DE COMPROBANTES DE PAGO EN PDF (jsPDF)
   // ==========================================================================
 
   async function generarYDescargarPDF(reserva) {
@@ -900,11 +958,10 @@
       const margin = 16;
       let y = 18;
 
-      // Barra superior violeta
+      // ENCABEZADO
       doc.setFillColor(200, 0, 255);
       doc.rect(0, 0, pageWidth, 6, 'F');
 
-      // Título Dinastía AMV
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
       doc.setTextColor(200, 0, 255);
@@ -916,7 +973,6 @@
       doc.text('Agencia de Viajes & Experiencias Turísticas en Colombia', margin, y + 5);
       doc.text('NIT: 901.458.789-2 | RNT: 45291 | Bogotá, Colombia', margin, y + 9);
 
-      // Recuadro de Recibo
       doc.setFillColor(248, 246, 246);
       doc.roundedRect(pageWidth - margin - 60, y - 4, 60, 20, 2, 2, 'F');
       doc.setFont('helvetica', 'bold');
@@ -933,7 +989,7 @@
       doc.line(margin, y, pageWidth - margin, y);
       y += 8;
 
-      // Datos Titular
+      // DATOS DEL TITULAR
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
@@ -967,7 +1023,7 @@
       doc.setFont('helvetica', 'normal');
       y += 10;
 
-      // Detalle Plan
+      // DETALLE DEL PLAN
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
@@ -990,10 +1046,10 @@
       doc.text(`Alojamiento: ${reserva.alojamiento}`, margin + 4, y + 23);
 
       doc.text(`Pasajeros: ${reserva.personasTexto}`, col2, y + 12);
-      doc.text(`Estado: ${reserva.estado.toUpperCase()}`, col2, y + 18);
+      doc.text(`Estado: ${obtenerTextoEstado(reserva.estado).toUpperCase()}`, col2, y + 18);
       y += 32;
 
-      // Tabla Liquidación
+      // DESGLOSE DE PAGO
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(30, 41, 59);
@@ -1034,22 +1090,52 @@
       doc.text(`${formatearMonedaCOP(reserva.desglose.totalCOP)}`, pageWidth - margin - 35, y + 6);
       y += 15;
 
-      // Métodos y sello
+      // MÉTODO DE PAGO
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
       doc.setTextColor(100, 116, 139);
       doc.text(`Método de Transacción: ${reserva.metodoPago}`, margin, y);
       doc.text(`Fecha y Hora de Pago: ${reserva.fechaPago}`, margin, y + 5);
-      doc.text(`Transacción aprobada mediante pasarela de pagos segura.`, margin, y + 10);
 
-      doc.setDrawColor(16, 185, 129);
-      doc.setTextColor(16, 185, 129);
+      // SELLO DINÁMICO SEGÚN ESTADO (5 estados)
+      const estadoNormalizado = normalizarEstado(reserva.estado);
+
+      let selloTexto = 'PAGADO / VÁLIDO';
+      let selloColor = [16, 185, 129];
+
+      if (estadoNormalizado === 'pendiente de pago') {
+        selloTexto = 'PENDIENTE DE PAGO';
+        selloColor = [202, 138, 4];
+      } else if (estadoNormalizado === 'no pagado') {
+        selloTexto = 'NO PAGADO';
+        selloColor = [217, 119, 6];
+      } else if (estadoNormalizado === 'en proceso de pago') {
+        selloTexto = 'EN PROCESO';
+        selloColor = [37, 99, 235];
+      } else if (estadoNormalizado === 'cancelado') {
+        selloTexto = 'CANCELADO';
+        selloColor = [220, 38, 38];
+      }
+
+      doc.setDrawColor(selloColor[0], selloColor[1], selloColor[2]);
+      doc.setTextColor(selloColor[0], selloColor[1], selloColor[2]);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.roundedRect(pageWidth - margin - 48, y - 2, 48, 16, 2, 2);
-      doc.text('PAGADO / VÁLIDO', pageWidth - margin - 44, y + 8);
+      doc.setFontSize(13);
+
+      const selloAncho = 55;
+      const selloAlto = 16;
+      const selloX = pageWidth - margin - selloAncho;
+      const selloY = y - 2;
+
+      doc.roundedRect(selloX, selloY, selloAncho, selloAlto, 2, 2);
+
+      doc.setFontSize(11);
+      const textoAncho = doc.getTextWidth(selloTexto);
+      doc.text(selloTexto, selloX + (selloAncho - textoAncho) / 2, selloY + 11);
 
       y += 24;
+
+      // TÉRMINOS Y CONDICIONES
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y, pageWidth - margin, y);
       y += 6;
@@ -1066,6 +1152,7 @@
       const clausula = 'Este documento constituye el comprobante oficial de su compra en Dinastía AMV. Para soporte o modificaciones comuníquese con soporte@dinastia.com.';
       doc.text(doc.splitTextToSize(clausula, pageWidth - (margin * 2)), margin, y);
 
+      // GUARDAR PDF
       const nombreArchivo = `Comprobante_AMV_${reserva.codigo}.pdf`;
       doc.save(nombreArchivo);
       mostrarToast(`✅ Comprobante descargado: ${nombreArchivo}`, 'success');
@@ -1077,7 +1164,7 @@
   }
 
   // ==========================================================================
-  // 8. LÓGICA DEL BLOQUE 4: ACCESO ADMIN & SIMULADOR DE ROL
+  // 9. LÓGICA DEL BLOQUE 4: ACCESO ADMIN & SIMULADOR DE ROL
   // ==========================================================================
 
   function actualizarVisualizacionRol(rol) {
@@ -1101,12 +1188,34 @@
       }
     }
 
+    // ==========================================================
+    // BLOQUEAR SELECTOR DE ROL SEGÚN EL TIPO DE USUARIO
+    // ==========================================================
     if (DOM.selectSimuladorRol) {
       DOM.selectSimuladorRol.value = rol;
+
+      if (esAdmin) {
+        // Administrador: puede cambiar el rol (para pruebas)
+        DOM.selectSimuladorRol.disabled = false;
+        DOM.selectSimuladorRol.classList.remove('cursor-not-allowed', 'opacity-70');
+        DOM.selectSimuladorRol.classList.add('cursor-pointer');
+        DOM.selectSimuladorRol.title = 'Cambiar rol (modo administrador)';
+      } else {
+        // Viajero: el selector se bloquea y no se puede cambiar
+        DOM.selectSimuladorRol.disabled = true;
+        DOM.selectSimuladorRol.classList.add('cursor-not-allowed', 'opacity-70');
+        DOM.selectSimuladorRol.classList.remove('cursor-pointer');
+        DOM.selectSimuladorRol.title = 'Rol asignado automáticamente (solo lectura)';
+      }
     }
   }
 
   function cambiarRolSimulado(nuevoRol) {
+    // Seguridad adicional: no permitir cambiar si no es admin
+    if (DOM.selectSimuladorRol && DOM.selectSimuladorRol.disabled) {
+      return;
+    }
+
     localStorage.setItem(STORAGE_KEYS.USER_ROLE, nuevoRol);
     const localData = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
     if (localData) {
@@ -1120,7 +1229,7 @@
   }
 
   // ==========================================================================
-  // 9. LÓGICA DEL BLOQUE 5: CIERRE DE SESIÓN SEGURO (Estandarizado con dashboard.html)
+  // 10. LÓGICA DEL BLOQUE 5: CIERRE DE SESIÓN SEGURO
   // ==========================================================================
 
   function abrirModalCierreSesion() {
@@ -1141,16 +1250,14 @@
   }
 
   // ==========================================================================
-  // 10. REGISTRO DE EVENTOS Y CICLO DE VIDA
+  // 11. REGISTRO DE EVENTOS Y CICLO DE VIDA
   // ==========================================================================
 
   function registrarEventos() {
-    // Perfil
     if (DOM.btnEditarPerfil) DOM.btnEditarPerfil.addEventListener('click', () => toggleModoEdicion(true));
     if (DOM.btnCancelarPerfil) DOM.btnCancelarPerfil.addEventListener('click', cancelarEdicionPerfil);
     if (DOM.formPerfil) DOM.formPerfil.addEventListener('submit', guardarCambiosPerfil);
 
-    // Contraseña
     if (DOM.btnAbrirModalPassword) DOM.btnAbrirModalPassword.addEventListener('click', abrirModalPassword);
     if (DOM.btnCerrarModalPassword) DOM.btnCerrarModalPassword.addEventListener('click', cerrarModalPassword);
     if (DOM.btnCancelarModalPassword) DOM.btnCancelarModalPassword.addEventListener('click', cerrarModalPassword);
@@ -1159,11 +1266,9 @@
     }
     if (DOM.formPassword) DOM.formPassword.addEventListener('submit', procesarCambioPassword);
 
-    // Reservas
     if (DOM.tabProximos) DOM.tabProximos.addEventListener('click', () => cargarReservas('proximos'));
     if (DOM.tabPasados) DOM.tabPasados.addEventListener('click', () => cargarReservas('pasados'));
 
-    // Modal Detalle
     if (DOM.btnCerrarModalDetalle) DOM.btnCerrarModalDetalle.addEventListener('click', cerrarModalDetalleReserva);
     if (DOM.btnDescargarDesdeDetalle) {
       DOM.btnDescargarDesdeDetalle.addEventListener('click', () => {
@@ -1171,7 +1276,6 @@
       });
     }
 
-    // Admin & Simulador
     if (DOM.btnIrAdmin) {
       DOM.btnIrAdmin.addEventListener('click', () => {
         window.location.href = 'interfazAdmin.html';
@@ -1181,12 +1285,10 @@
       DOM.selectSimuladorRol.addEventListener('change', (e) => cambiarRolSimulado(e.target.value));
     }
 
-    // Cierre de Sesión (dashboard.html style)
     if (DOM.btnCerrarSesion) DOM.btnCerrarSesion.addEventListener('click', abrirModalCierreSesion);
     if (DOM.btnNoCerrar) DOM.btnNoCerrar.addEventListener('click', cerrarModalCierreSesion);
     if (DOM.btnSiCerrar) DOM.btnSiCerrar.addEventListener('click', ejecutarCierreSesion);
 
-    // Clic exterior en modales
     [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre].forEach(modal => {
       if (modal) {
         modal.addEventListener('click', (e) => {
@@ -1195,7 +1297,6 @@
       }
     });
 
-    // Tecla Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         [DOM.modalPassword, DOM.modalDetalleReserva, DOM.modalConfirmarCierre].forEach(m => {
@@ -1205,11 +1306,30 @@
     });
   }
 
+  // ==========================================================================
+  // 12. INICIALIZACIÓN
+  // ==========================================================================
+
   async function inicializar() {
     ApiService.getAuthToken();
     registrarEventos();
     await cargarDatosPerfil();
-    await cargarReservas('proximos');
+
+    // Detectar si viene con ?tab=pasados para abrir directamente esa pestaña
+    const params = new URLSearchParams(window.location.search);
+    const tabInicial = params.get('tab') === 'pasados' ? 'pasados' : 'proximos';
+
+    await cargarReservas(tabInicial);
+
+    // Si viene con tab=pasados, hacer scroll suave hasta la sección de reservas
+    if (params.get('tab') === 'pasados') {
+      setTimeout(() => {
+        const seccionReservas = document.getElementById('tituloHistorialViajes');
+        if (seccionReservas) {
+          seccionReservas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 400);
+    }
   }
 
   if (document.readyState === 'loading') {
