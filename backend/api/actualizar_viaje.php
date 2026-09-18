@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "conexion.php";
+require_once __DIR__ . '/cloudinary.php';
 
 // Solo un admin con sesión iniciada puede actualizar viajes
 if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admin') {
@@ -35,15 +36,8 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$destino, $descripcion, $precio, $fecha_salida, $fecha_regreso, $id]);
 
-    // 3. Si se agregaron imágenes nuevas, se guardan (se suman a las que ya tenía)
+    // 3. Si se agregaron imágenes nuevas, se suben a Cloudinary (se suman a las que ya tenía)
     if (!empty($_FILES['imagenes']['name']) && is_array($_FILES['imagenes']['name'])) {
-        $carpeta = dirname(__DIR__, 2) . '/frontend/imagenes/';
-
-        if (!is_dir($carpeta)) {
-            @mkdir($carpeta, 0777, true);
-        }
-        @chmod($carpeta, 0777);
-
         $sql_img = "INSERT INTO imagenes_viajes (viaje_id, url) VALUES (?, ?)";
         $stmt_img = $pdo->prepare($sql_img);
 
@@ -55,18 +49,16 @@ try {
                 continue;
             }
 
+            if ($errorSubida === UPLOAD_ERR_INI_SIZE || $errorSubida === UPLOAD_ERR_FORM_SIZE) {
+                throw new InvalidArgumentException("La imagen '{$nombreOriginal}' supera el tamaño máximo permitido.");
+            }
+
             if ($errorSubida !== UPLOAD_ERR_OK || empty($tmp_name) || !is_uploaded_file($tmp_name)) {
-                continue;
+                throw new InvalidArgumentException("No fue posible recibir la imagen '{$nombreOriginal}'.");
             }
 
-            $nombre = bin2hex(random_bytes(8)) . "_" . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', basename($nombreOriginal));
-            $ruta = $carpeta . $nombre;
-
-            if (@move_uploaded_file($tmp_name, $ruta)) {
-                $stmt_img->execute([$id, $nombre]);
-            } else {
-                error_log("Aviso: no se pudo guardar una de las imágenes en actualizar_viaje.php: " . $nombreOriginal);
-            }
+            $urlCloudinary = subirImagenPlanACloudinary($tmp_name, $nombreOriginal);
+            $stmt_img->execute([$id, $urlCloudinary]);
         }
     }
 
