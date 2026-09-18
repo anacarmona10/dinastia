@@ -37,7 +37,15 @@
     modalDetalle: document.getElementById('modalDetallePlan'),
     btnCerrarModal: document.getElementById('btnCerrarModalPlan'),
     modalContenido: document.getElementById('modalPlanContenido'),
-    btnReservarModal: document.getElementById('btnReservarModal')
+    btnReservarModal: document.getElementById('btnReservarModal'),
+
+    contenedorFiltrosAside: document.getElementById('contenedorFiltrosAside'),
+    contenedorFiltrosDrawer: document.getElementById('contenedorFiltrosDrawer'),
+    btnLimpiarFiltrosMobile: document.getElementById('btnLimpiarFiltrosMobile'),
+    btnMiPerfilNav: document.getElementById('btnMiPerfilNav'),
+    btnIniciarSesionNav: document.getElementById('btnIniciarSesionNav'),
+    btnCerrarSesionNav: document.getElementById('btnCerrarSesionNav'),
+    navDashboard: document.getElementById('navDashboard')
   };
 
   let planesCargados = [];
@@ -505,7 +513,79 @@
     });
   }
 
+  function sincronizarUbicacionFiltros() {
+    const aside = DOM.contenedorFiltrosAside;
+    const drawer = DOM.contenedorFiltrosDrawer;
+    const form = DOM.formFiltros;
+    if (!aside || !drawer || !form) return;
+
+    // En pantallas delgadas / celulares (ancho < 1024px) montamos el formulario de filtros dentro del drawer
+    const esPantallaDelgada = window.innerWidth < 1024;
+    if (esPantallaDelgada) {
+      if (form.parentElement !== drawer) {
+        drawer.appendChild(form);
+      }
+    } else {
+      if (form.parentElement !== aside) {
+        aside.appendChild(form);
+      }
+    }
+  }
+
+  async function verificarEstadoSesion() {
+    try {
+      const response = await fetch('../backend/api/verificar_sesion.php', {
+        credentials: 'same-origin',
+        cache: 'no-store'
+      });
+      if (!response.ok) return;
+
+      const data = await response.json();
+      if (data && data.autenticado) {
+        // Usuario autenticado con sesión activa:
+        if (DOM.btnMiPerfilNav) {
+          if (data.tipo === 'admin') {
+            DOM.btnMiPerfilNav.href = 'interfazAdmin.html';
+            DOM.btnMiPerfilNav.innerHTML = '<span class="material-symbols-outlined text-primary text-base sm:text-lg">admin_panel_settings</span> Panel Admin';
+          }
+          DOM.btnMiPerfilNav.classList.remove('hidden');
+          DOM.btnMiPerfilNav.classList.add('inline-flex');
+        }
+        if (DOM.navDashboard) {
+          DOM.navDashboard.classList.remove('hidden');
+        }
+        if (DOM.btnIniciarSesionNav) {
+          DOM.btnIniciarSesionNav.classList.add('hidden');
+        }
+        if (DOM.btnCerrarSesionNav) {
+          DOM.btnCerrarSesionNav.classList.remove('hidden');
+          DOM.btnCerrarSesionNav.classList.add('inline-flex');
+        }
+      } else {
+        // Usuario NO autenticado (ej: entró como invitado desde el landing):
+        // NO mostramos "Mi Perfil" ni "Dashboard", en su lugar aparece "Iniciar Sesión"
+        if (DOM.btnMiPerfilNav) {
+          DOM.btnMiPerfilNav.classList.add('hidden');
+          DOM.btnMiPerfilNav.classList.remove('inline-flex');
+        }
+        if (DOM.navDashboard) {
+          DOM.navDashboard.classList.add('hidden');
+        }
+        if (DOM.btnIniciarSesionNav) {
+          DOM.btnIniciarSesionNav.classList.remove('hidden');
+        }
+        if (DOM.btnCerrarSesionNav) {
+          DOM.btnCerrarSesionNav.classList.add('hidden');
+          DOM.btnCerrarSesionNav.classList.remove('inline-flex');
+        }
+      }
+    } catch (err) {
+      console.warn('Error al verificar sesión en catálogo:', err);
+    }
+  }
+
   function abrirDrawer() {
+    sincronizarUbicacionFiltros();
     DOM.drawerFiltros.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -523,6 +603,10 @@
 
     DOM.btnAplicarFiltros.addEventListener('click', aplicarFiltros);
     DOM.btnLimpiarFiltros.addEventListener('click', limpiarFiltros);
+
+    if (DOM.btnLimpiarFiltrosMobile) {
+      DOM.btnLimpiarFiltrosMobile.addEventListener('click', limpiarFiltros);
+    }
 
     DOM.rangePrecioMax.addEventListener('input', (e) => {
       const valor = parseFloat(e.target.value);
@@ -556,6 +640,8 @@
     DOM.drawerFiltros.addEventListener('click', (e) => {
       if (e.target === DOM.drawerFiltros) cerrarDrawer();
     });
+
+    window.addEventListener('resize', sincronizarUbicacionFiltros);
 
     if (DOM.btnCerrarModal) DOM.btnCerrarModal.addEventListener('click', cerrarModalDetalle);
     DOM.modalDetalle.addEventListener('click', (e) => {
@@ -614,8 +700,10 @@
   }
 
   function iniciar() {
+    sincronizarUbicacionFiltros();
     registrarEventos();
     cargarFiltrosDesdeURL();
+    verificarEstadoSesion();
   }
 
   if (document.readyState === 'loading') {
