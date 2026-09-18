@@ -14,9 +14,21 @@ function formatearFecha(fecha) {
   return `${dia}/${mes}/${anio}`;
 }
 
+function resolverUrlImagen(imagen) {
+  const url = typeof imagen === 'string' ? imagen : imagen?.url;
+
+  if (!url) {
+    return 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';
+  }
+
+  return /^https?:\/\//i.test(url)
+    ? url
+    : `imagenes/${encodeURIComponent(url)}`;
+}
+
 function crearTarjetaViaje(viaje) {
   const imagen = viaje.imagenes?.length
-    ? `imagenes/${encodeURIComponent(viaje.imagenes[0].url)}`
+    ? resolverUrlImagen(viaje.imagenes[0])
     : 'https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80';
 
   const precio = Number(viaje.precio).toLocaleString('es-CO', {
