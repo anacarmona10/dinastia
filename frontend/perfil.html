@@ -43,6 +43,8 @@
   </script>
 
   <link rel="stylesheet" href="style_perfil.css">
+  <link rel="stylesheet" href="style_dark.css">
+  <script src="js/theme.js"></script>
 
   <script>
     function togglePassword(inputId, boton) {
@@ -86,6 +88,16 @@
         <span class="hidden sm:inline">Dashboard</span>
       </a>
       <span class="hidden sm:inline text-sm font-bold text-primary" id="saludoUsuario">¡Hola, viajero!</span>
+      <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+      <button
+        type="button"
+        id="btnToggleTheme"
+        class="theme-toggle-btn"
+        title="Cambiar modo claro / oscuro"
+        aria-label="Cambiar tema"
+      >
+        <span class="material-symbols-outlined text-xl">dark_mode</span>
+      </button>
       <button id="btnCerrarSesion" class="flex items-center gap-1 text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
         <span class="material-symbols-outlined text-lg">logout</span>
         <span class="hidden sm:inline">Cerrar sesión</span>

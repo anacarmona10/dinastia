@@ -1,0 +1,293 @@
+﻿/* ==========================================================================
+   Dinastía AMV - Hoja de Estilos de Modo Oscuro Oficial (style_dark.css)
+   Garantiza contraste óptimo: textos negros pasan a blanco en modo oscuro.
+   No altera funcionalidades, botones de acción ni la base de datos.
+   ========================================================================== */
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #020C1C !important;
+  color: #f8fafc !important;
+}
+
+/* ==========================================================================
+   Títulos y Textos: cambio garantizado de negro/oscuro a blanco
+   ========================================================================== */
+html.dark h1:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]),
+html.dark h2:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]),
+html.dark h3:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]),
+html.dark h4:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]),
+html.dark h5:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]),
+html.dark h6:not([class*="text-primary"]):not([class*="text-accent"]):not([class*="text-pink"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-yellow"]):not([class*="text-white"]) {
+  color: #ffffff !important;
+}
+
+/* Clases de utilidades de texto oscuro */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-black,
+html.dark [class*="text-[#000]"],
+html.dark [class*="text-[#020C1C]"],
+html.dark [class*="text-[#1E293B]"] {
+  color: #ffffff !important;
+}
+
+/* Textos secundarios / párrafos */
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   Cabeceras, Navegación y Menús
+   ========================================================================== */
+html.dark header,
+html.dark header.bg-white\/90,
+html.dark header.bg-background-light\/80,
+html.dark header.bg-background-light\/90 {
+  background-color: rgba(2, 12, 28, 0.90) !important;
+  border-bottom-color: rgba(200, 0, 255, 0.20) !important;
+}
+
+html.dark header nav a.text-slate-700,
+html.dark header nav a.text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark header nav a.text-slate-700:hover,
+html.dark header nav a.text-slate-600:hover {
+  color: #c800ff !important;
+}
+
+html.dark #mobile-menu {
+  background-color: #07152b !important;
+  border-bottom-color: rgba(200, 0, 255, 0.20) !important;
+}
+
+html.dark #mobile-menu a {
+  color: #cbd5e1 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark #mobile-menu a:hover {
+  color: #c800ff !important;
+}
+
+/* Enlaces con borde redondeado en index.html */
+html.dark nav a.border-\[\#020C1C\] {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark nav a.border-\[\#020C1C\]:hover {
+  border-color: #c800ff !important;
+  color: #c800ff !important;
+}
+
+/* ==========================================================================
+   Tarjetas, Contenedores y Secciones
+   ========================================================================== */
+html.dark article.bg-white,
+html.dark .card-pago,
+html.dark .metodo-pago,
+html.dark .content-side,
+html.dark .login-container,
+html.dark .registro-container,
+html.dark .olvido-container,
+html.dark .bg-white:not([class*="gradient-btn"]):not([class*="badge-"]):not(button):not(input) {
+  background-color: #07152b !important;
+  border-color: rgba(200, 0, 255, 0.18) !important;
+}
+
+html.dark .card-hover:not(button) {
+  border-color: rgba(200, 0, 255, 0.20) !important;
+}
+
+/* ==========================================================================
+   Campos de Formulario (Inputs, Selects, Labels)
+   ========================================================================== */
+html.dark input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.dark select,
+html.dark textarea,
+html.dark .campo-input,
+html.dark .campo-filtro {
+  background-color: #07152b !important;
+  color: #ffffff !important;
+  border-color: rgba(200, 0, 255, 0.35) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark input:disabled,
+html.dark input[readonly],
+html.dark select:disabled,
+html.dark .campo-input:disabled,
+html.dark .campo-input[readonly] {
+  background-color: #0d1e38 !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+html.dark label,
+html.dark .label-campo,
+html.dark .label-filtro,
+html.dark .label-pago {
+  color: #e2e8f0 !important;
+}
+
+html.dark .pill-radio-label {
+  background-color: #0d1e38 !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(200, 0, 255, 0.20) !important;
+}
+
+/* ==========================================================================
+   Modales en Modo Oscuro
+   ========================================================================== */
+html.dark .modal-content,
+html.dark .modal-content-custom {
+  background: #07152b !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(200, 0, 255, 0.25) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark .modal-content h3,
+html.dark .modal-content-custom h3 {
+  color: #ffffff !important;
+}
+
+html.dark .modal-content p,
+html.dark .modal-content-custom p {
+  color: #cbd5e1 !important;
+}
+
+html.dark .btn-cerrar-modal,
+html.dark .btn-cerrar-modal-custom,
+html.dark .btn-ghost-custom {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .btn-cerrar-modal:hover,
+html.dark .btn-cerrar-modal-custom:hover,
+html.dark .btn-ghost-custom:hover {
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Selector Login (Pestañas Usuario / Administrador)
+   ========================================================================== */
+html.dark .selector-login {
+  border-color: rgba(200, 0, 255, 0.35) !important;
+  background-color: #0d1e38 !important;
+}
+
+html.dark .selector-login button {
+  background: #0d1e38 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .selector-login button.active {
+  background: linear-gradient(to right, #c800ff, #EF1D9C) !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Estilos Oficiales del Botón de Cambio de Tema
+   ========================================================================== */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(200, 0, 255, 0.25);
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(200, 0, 255, 0.08);
+  color: #c800ff;
+  border-color: #c800ff;
+  transform: scale(1.06) rotate(12deg);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+html.dark .theme-toggle-btn {
+  color: #f1f5f9;
+  border-color: rgba(200, 0, 255, 0.45);
+}
+
+html.dark .theme-toggle-btn:hover {
+  background: rgba(200, 0, 255, 0.18);
+  color: #fbbf24;
+  border-color: #fbbf24;
+  transform: scale(1.06) rotate(-12deg);
+}
+
+/* Botón flotante para pantallas de inicio de sesión / registro */
+.theme-toggle-auth {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+}
+
+html.dark .theme-toggle-auth {
+  background: rgba(7, 21, 43, 0.92);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* Estilo para botón en menú móvil */
+.theme-toggle-mobile {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1.5px solid rgba(200, 0, 255, 0.25);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+html.dark .theme-toggle-mobile {
+  color: #e2e8f0;
+  border-color: rgba(200, 0, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.04);
+}

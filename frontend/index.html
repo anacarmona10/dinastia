@@ -38,6 +38,8 @@
       font-family: 'Public Sans', sans-serif;
     }
   </style>
+  <link rel="stylesheet" href="style_dark.css">
+  <script src="js/theme.js"></script>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
   <div class="relative flex h-auto min-screen w-full flex-col overflow-x-hidden">
@@ -57,8 +59,18 @@
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#precios">Precios Locales</a>
             <a class="text-slate-700 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors border border-[#020C1C] dark:border-slate-100 rounded-full px-4 py-2 hover:border-primary" href="#contacto">Contacto</a>
           </nav>
-          <!-- Ambos botones con fondo morado -->
+          <!-- Ambos botones con fondo morado y botón tema -->
           <div class="flex items-center gap-3">
+            <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+            <button
+              type="button"
+              id="btnToggleTheme"
+              class="theme-toggle-btn"
+              title="Cambiar modo claro / oscuro"
+              aria-label="Cambiar tema"
+            >
+              <span class="material-symbols-outlined text-xl">dark_mode</span>
+            </button>
             <a href="login.html" class="flex items-center justify-center px-5 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/30 hover:scale-105 transition-transform">
               Iniciar sesión
             </a>
@@ -67,14 +79,34 @@
             </a>
           </div>
         </div>
-        <!-- Botón hamburguesa (visible solo en móviles y tablets pequeñas < md) -->
-        <div id="menu-btn" class="md:hidden flex items-center text-primary cursor-pointer">
-          <span class="material-symbols-outlined text-3xl">menu</span>
+        <!-- Botones móvil (tema + hamburguesa) -->
+        <div class="md:hidden flex items-center gap-2">
+          <button
+            type="button"
+            class="theme-toggle-btn"
+            title="Cambiar modo claro / oscuro"
+            aria-label="Cambiar tema"
+          >
+            <span class="material-symbols-outlined text-xl">dark_mode</span>
+          </button>
+          <div id="menu-btn" class="flex items-center text-primary cursor-pointer">
+            <span class="material-symbols-outlined text-3xl">menu</span>
+          </div>
         </div>
       </header>
 
       <!-- Menú desplegable móvil -->
       <div id="mobile-menu" class="hidden md:hidden flex-col bg-white dark:bg-background-dark shadow-lg absolute top-20 left-0 w-full p-6 space-y-4 z-50 border-b border-primary/10 transition-all duration-300">
+        <!-- Alternar tema en menú móvil -->
+        <button
+          type="button"
+          class="theme-toggle-mobile theme-toggle-btn"
+          title="Cambiar modo claro / oscuro"
+          aria-label="Cambiar tema"
+        >
+          <span class="theme-label-text">Modo Oscuro</span>
+          <span class="material-symbols-outlined text-xl">dark_mode</span>
+        </button>
         <a href="catalogo.html" class="text-gray-700 dark:text-gray-300 font-bold text-lg py-3 hover:text-primary transition-colors border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
           <span class="material-symbols-outlined text-primary">explore</span> Catálogo de Planes
         </a>

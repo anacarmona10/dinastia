@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Reservas - Panel de Administración | Dinastía AMV</title>
 
-    <!-- Tailwind CSS CDN con plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    <!-- Tipografía Oficial Public Sans & Iconos Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
@@ -38,45 +36,55 @@
 
 <body class="bg-background-light text-slate-900 min-h-screen flex flex-col">
 
-    <!-- Header Estandarizado de Administrador -->
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40">
-        <div class="flex items-center gap-3">
-            <a href="interfazAdmin.html" class="flex items-center gap-3 text-primary group" title="Panel Admin">
-                <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
-                <h2 class="text-slate-900 text-xl font-black leading-tight tracking-tight">
+    <!-- Header Estandarizado de Administrador (Responsive) -->
+    <header class="flex items-center justify-between gap-2 sm:gap-4 border-b border-solid border-primary/20 px-3 sm:px-8 lg:px-20 py-3 sm:py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40">
+
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <a href="interfazAdmin.html" class="flex items-center gap-2 sm:gap-3 text-primary group" title="Panel Admin">
+                <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV"
+                     class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                <h2 class="hidden min-[400px]:block text-slate-900 text-base sm:text-xl font-black leading-tight tracking-tight whitespace-nowrap">
                     Dinastía <span class="text-primary">AMV</span>
                 </h2>
             </a>
-            <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-purple-100 text-primary text-[11px] font-black uppercase tracking-wider">
+            <span class="hidden xl:inline-block px-2.5 py-0.5 rounded-full bg-purple-100 text-primary text-[11px] font-black uppercase tracking-wider whitespace-nowrap">
                 Panel Admin
             </span>
         </div>
 
-        <!-- Menú de Navegación del Panel de Administrador -->
-        <div class="flex items-center gap-3 sm:gap-6">
+        <div class="flex items-center gap-1 sm:gap-3 lg:gap-4 min-w-0">
+
             <nav class="flex items-center gap-1 sm:gap-2 text-sm font-semibold">
-                <a href="interfazAdmin.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                <a href="interfazAdmin.html"
+                   title="Viajes"
+                   class="shrink-0 text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">flight_takeoff</span>
-                    <span>Viajes</span>
+                    <span class="hidden sm:inline">Viajes</span>
                 </a>
-                <a href="admin_reservas.html" class="bg-purple-100 text-primary font-black px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
+                <a href="admin_reservas.html"
+                   title="Reservas"
+                   class="shrink-0 bg-purple-100 text-primary font-black px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">confirmation_number</span>
-                    <span>Reservas</span>
+                    <span class="hidden sm:inline">Reservas</span>
                 </a>
-                <a href="admin_usuarios.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                <a href="admin_usuarios.html"
+                   title="Usuarios"
+                   class="shrink-0 text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
-                    <span>Usuarios</span>
+                    <span class="hidden sm:inline">Usuarios</span>
                 </a>
             </nav>
 
-            <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+            <div class="h-6 w-px bg-slate-200 hidden lg:block shrink-0"></div>
 
-            <span class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 py-1.5 px-3 rounded-xl bg-purple-50/70 border border-primary/10">
+            <span class="hidden lg:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 py-1.5 px-3 rounded-xl bg-purple-50/70 border border-primary/10 whitespace-nowrap shrink-0">
                 <span class="material-symbols-outlined text-primary text-base">admin_panel_settings</span>
                 <span id="adminNombre">Administrador</span>
             </span>
 
-            <a href="../backend/api/logout.php" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors">
+            <a href="../backend/api/logout.php"
+               title="Cerrar sesión"
+               class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-2 sm:px-3 rounded-xl transition-colors">
                 <span class="material-symbols-outlined text-lg">logout</span>
                 <span class="hidden sm:inline">Cerrar sesión</span>
             </a>
@@ -146,16 +154,16 @@
             </div>
 
             <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-                <button type="button" class="btn-filtro-estado active px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all" data-filtro="todos">
+                <button type="button" class="btn-filtro-estado active px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0" data-filtro="todos">
                     Todas
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-emerald-700" data-filtro="APPROVED">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-emerald-700 shrink-0" data-filtro="APPROVED">
                     Pagadas
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-amber-700" data-filtro="PENDING">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-amber-700 shrink-0" data-filtro="PENDING">
                     Pendientes
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-red-700" data-filtro="CANCELLED">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-red-700 shrink-0" data-filtro="CANCELLED">
                     Canceladas
                 </button>
             </div>
@@ -163,8 +171,8 @@
 
         <!-- Tabla de Reservas -->
         <div class="bg-white rounded-2xl border border-primary/15 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+            <div class="table-responsive">
+                <table class="w-full min-w-[860px] text-left border-collapse">
                     <thead>
                         <tr class="border-b border-purple-100 bg-purple-50/50 text-xs font-black uppercase tracking-wider text-slate-500">
                             <th class="p-4 sm:px-6">Referencia / Fecha</th>
@@ -289,17 +297,14 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-purple-50/30 transition-colors";
 
-                // Monto en COP
                 const montoCop = (Number(r.monto_centavos) / 100).toLocaleString('es-CO', {
                     style: 'currency',
                     currency: 'COP',
                     minimumFractionDigits: 0
                 });
 
-                // Fecha
                 const fechaCreacion = r.created_at ? new Date(r.created_at).toLocaleDateString('es-CO') : 'N/A';
 
-                // Badges de estado
                 let estadoBadge = '';
                 let botonCancelar = '';
 
@@ -390,13 +395,11 @@
             verificarSesionAdmin();
             cargarReservas();
 
-            // Buscador en vivo
             document.getElementById('inputBusqueda').addEventListener('input', (e) => {
                 busquedaActual = e.target.value;
                 renderizarReservas();
             });
 
-            // Botones de filtro de estado
             document.querySelectorAll('.btn-filtro-estado').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.btn-filtro-estado').forEach(b => b.classList.remove('active'));

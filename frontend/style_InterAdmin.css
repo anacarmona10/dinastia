@@ -262,3 +262,218 @@ body {
 .btn-eliminar-card:active {
     transform: scale(0.98);
 }
+
+/* ==========================================================================
+   RESPONSIVE - Navegación del header (scroll horizontal en móvil)
+   ========================================================================== */
+.admin-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    max-width: 100%;
+    padding-bottom: 2px;
+}
+
+.admin-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE - Contenedor de tablas con scroll horizontal elegante
+   ========================================================================== */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f3e8ff;
+    border-radius: 999px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c800ff;
+    border-radius: 999px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a300d1;
+}
+
+/* ==========================================================================
+   RESPONSIVE - Modales en móvil
+   ========================================================================== */
+@media (max-width: 640px) {
+    .modal {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 14px;
+    }
+
+    .modal-content {
+        padding: 20px 16px;
+        border-radius: 20px;
+        max-height: calc(100vh - 28px);
+        max-height: calc(100dvh - 28px);
+    }
+
+    .modal-content h2 {
+        font-size: 18px;
+    }
+
+    .modal-content input,
+    .modal-content textarea {
+        padding: 11px 14px;
+        font-size: 15px;
+    }
+
+    .preview-img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .btn-guardar {
+        padding: 13px;
+        font-size: 14px;
+    }
+
+    .btn-eliminar-card,
+    .btn-outline {
+        padding: 11px 14px;
+        font-size: 12px;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE - Touch targets para dispositivos táctiles
+   ========================================================================== */
+@media (hover: none) and (pointer: coarse) {
+    .btn-eliminar-card,
+    .btn-outline,
+    .btn-guardar {
+        min-height: 42px;
+    }
+}
+
+/* ==========================================================================
+   MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
+   ========================================================================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(2, 12, 28, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    box-sizing: border-box;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content-custom {
+    background: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    max-width: 460px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.25s ease;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.modal-overlay.active .modal-content-custom {
+    transform: scale(1);
+}
+
+.modal-content-custom h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    color: #020C1C;
+}
+
+.modal-content-custom p {
+    color: #475569;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+}
+
+.modal-botones-custom {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.modal-botones-custom button {
+    padding: 0.65rem 1.6rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s;
+    font-size: 0.9rem;
+    font-family: 'Public Sans', sans-serif;
+}
+
+.btn-cerrar-modal-custom {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.btn-cerrar-modal-custom:hover {
+    background: #d1d5db;
+}
+
+.btn-eliminar-custom {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-eliminar-custom:hover {
+    background: #c82333;
+}
+
+/* Ajustes móvil para el modal de cierre */
+@media (max-width: 640px) {
+    .modal-content-custom {
+        padding: 1.5rem 1.25rem;
+        border-radius: 1.25rem;
+    }
+    .modal-content-custom h3 {
+        font-size: 1.15rem;
+    }
+    .modal-content-custom p {
+        font-size: 0.85rem;
+    }
+    .modal-botones-custom {
+        gap: 0.5rem;
+    }
+    .modal-botones-custom button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: 0;
+    }
+}

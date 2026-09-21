@@ -37,6 +37,108 @@
   </script>
 
   <link rel="stylesheet" href="style_catalogo.css">
+  <link rel="stylesheet" href="style_dark.css">
+  <script src="js/theme.js"></script>
+
+  <!-- =========================================================
+       FIX MODO OSCURO — Tarjetas del catálogo de planes turísticos
+       Garantiza que los destinos, descripciones y metadatos
+       sean legibles cuando el tema está en oscuro.
+       ========================================================= -->
+  <style>
+    /* 1. Fondo de la tarjeta: forzamos oscuro en dark mode */
+    html.dark #gridPlanes article,
+    html.dark #gridPlanes > div,
+    html.dark #gridPlanes > div > .bg-white,
+    html.dark #gridPlanes .bg-white {
+      background-color: #07152b !important;
+      border-color: rgba(200, 0, 255, 0.22) !important;
+    }
+
+    /* 2. Título del destino dentro de la tarjeta: SIEMPRE blanco en dark */
+    html.dark #gridPlanes h2,
+    html.dark #gridPlanes h3,
+    html.dark #gridPlanes h4,
+    html.dark #gridPlanes h5,
+    html.dark #gridPlanes .destino,
+    html.dark #gridPlanes .destino-titulo,
+    html.dark #gridPlanes .nombre-destino,
+    html.dark #gridPlanes .text-slate-900,
+    html.dark #gridPlanes .text-slate-800,
+    html.dark #gridPlanes .text-gray-900,
+    html.dark #gridPlanes .text-gray-800 {
+      color: #ffffff !important;
+    }
+
+    /* 3. Descripciones y textos secundarios dentro de la tarjeta */
+    html.dark #gridPlanes p,
+    html.dark #gridPlanes .text-slate-700,
+    html.dark #gridPlanes .text-slate-600,
+    html.dark #gridPlanes .text-slate-500,
+    html.dark #gridPlanes .text-gray-700,
+    html.dark #gridPlanes .text-gray-600,
+    html.dark #gridPlanes .text-gray-500 {
+      color: #cbd5e1 !important;
+    }
+
+    /* 4. Metadatos pequeños (Salida, Días, etc.) */
+    html.dark #gridPlanes .text-slate-400,
+    html.dark #gridPlanes .text-gray-400 {
+      color: #94a3b8 !important;
+    }
+
+    /* 5. Precio destacado: rosa claro para buen contraste */
+    html.dark #gridPlanes .text-primary {
+      color: #e879f9 !important;
+    }
+
+    /* 6. Badge del destino sobre la imagen: siempre blanco */
+    html.dark #gridPlanes .absolute.bottom-3,
+    html.dark #gridPlanes .absolute.bottom-3 * {
+      color: #ffffff !important;
+    }
+
+    /* 7. Etiquetas de servicios (Tiquetes, Hospedaje, Desayunos, etc.) */
+    html.dark #gridPlanes .bg-purple-50,
+    html.dark #gridPlanes .bg-purple-100,
+    html.dark #gridPlanes .bg-slate-50,
+    html.dark #gridPlanes .bg-slate-100 {
+      background-color: rgba(200, 0, 255, 0.14) !important;
+    }
+
+    html.dark #gridPlanes .bg-purple-50,
+    html.dark #gridPlanes .bg-purple-50 *,
+    html.dark #gridPlanes .bg-purple-100,
+    html.dark #gridPlanes .bg-purple-100 *,
+    html.dark #gridPlanes .bg-slate-50,
+    html.dark #gridPlanes .bg-slate-50 *,
+    html.dark #gridPlanes .bg-slate-100,
+    html.dark #gridPlanes .bg-slate-100 * {
+      color: #f1f5f9 !important;
+    }
+
+    /* 8. Separadores internos (líneas sutiles claras) */
+    html.dark #gridPlanes .border-t,
+    html.dark #gridPlanes .border-slate-100,
+    html.dark #gridPlanes .border-slate-200 {
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+
+    /* 9. Botón "Ver detalles" (btn-outline) en dark */
+    html.dark #gridPlanes .btn-outline {
+      background-color: transparent !important;
+      color: #ffffff !important;
+      border-color: rgba(200, 0, 255, 0.45) !important;
+    }
+
+    html.dark #gridPlanes .btn-outline:hover {
+      background-color: rgba(200, 0, 255, 0.15) !important;
+      color: #ffffff !important;
+    }
+
+    /* 10. Pills de "Salida", "días", "-25% Dcto", "10 cupos" no se tocan
+           porque tienen sus propios colores (yellow, pink, etc.) */
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
@@ -63,7 +165,18 @@
 
       <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
 
-      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50">
+      <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+      <button
+        type="button"
+        id="btnToggleTheme"
+        class="theme-toggle-btn"
+        title="Cambiar modo claro / oscuro"
+        aria-label="Cambiar tema"
+      >
+        <span class="material-symbols-outlined text-xl">dark_mode</span>
+      </button>
+
+      <a href="perfil.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50 dark:hover:bg-white/5">
         <span class="material-symbols-outlined text-primary text-lg">account_circle</span>
         Mi Perfil
       </a>

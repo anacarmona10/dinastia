@@ -30,6 +30,8 @@
   </script>
 
   <link rel="stylesheet" href="style_catalogo.css">
+  <link rel="stylesheet" href="style_dark.css">
+  <script src="js/theme.js"></script>
 
   <style>
     body {
@@ -149,19 +151,19 @@
   </style>
 </head>
 
-<body class="bg-background-light text-slate-900">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
   <div class="min-h-screen flex flex-col">
 
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50">
+    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
       <a href="dashboard.html" class="flex items-center gap-3 text-primary group" title="Mi Dashboard">
         <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
-        <h2 class="text-slate-900 text-xl font-black leading-tight tracking-tight">
+        <h2 class="text-slate-900 dark:text-slate-100 text-xl font-black leading-tight tracking-tight">
           Dinastía <span class="text-primary">AMV</span>
         </h2>
       </a>
 
       <div class="flex items-center gap-3 sm:gap-6">
-        <nav class="hidden md:flex items-center gap-4 text-sm font-semibold text-slate-700">
+        <nav class="hidden md:flex items-center gap-4 text-sm font-semibold text-slate-700 dark:text-slate-300">
           <a href="catalogo.html" class="hover:text-primary transition-colors flex items-center gap-1.5">
             <span class="material-symbols-outlined text-base text-primary">travel_explore</span> Destinos
           </a>
@@ -170,16 +172,27 @@
           </a>
         </nav>
 
-        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+        <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
 
         <a
           href="perfil.html"
           id="saludoUsuario"
-          class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50"
+          class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50 dark:hover:bg-white/5"
         >
           <span class="material-symbols-outlined text-primary text-base">account_circle</span>
           ¡Hola, viajero!
         </a>
+
+        <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+        <button
+          type="button"
+          id="btnToggleTheme"
+          class="theme-toggle-btn"
+          title="Cambiar modo claro / oscuro"
+          aria-label="Cambiar tema"
+        >
+          <span class="material-symbols-outlined text-xl">dark_mode</span>
+        </button>
 
         <!-- ✅ BOTÓN CERRAR SESIÓN (ahora abre el modal) -->
         <button
@@ -195,11 +208,11 @@
 
     <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8">
       <section class="mb-8">
-        <h1 id="tituloBienvenida" class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2 text-slate-900">
+        <h1 id="tituloBienvenida" class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2 text-slate-900 dark:text-slate-100">
           ¡Bienvenido de nuevo!
         </h1>
 
-        <p class="text-slate-600 text-sm sm:text-base">
+        <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
           Explora nuestros planes turísticos y reserva tu próxima experiencia nacional.
         </p>
       </section>
@@ -208,31 +221,31 @@
 
         <a
           href="perfil.html"
-          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          class="rounded-2xl bg-white dark:bg-white/5 border border-primary/15 dark:border-white/10 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
           title="Ir a Mi Perfil — Próximos viajes"
         >
-          <div class="w-13 h-13 p-3 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0">
+          <div class="w-13 h-13 p-3 rounded-2xl bg-purple-100 dark:bg-purple-950/40 flex items-center justify-center text-primary shrink-0">
             <span class="material-symbols-outlined text-2xl">confirmation_number</span>
           </div>
 
           <div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statReservas">0</p>
-            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Reservas activas</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100" id="statReservas">0</p>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold">Reservas activas</p>
           </div>
         </a>
 
         <a
           href="perfil.html?tab=pasados"
-          class="rounded-2xl bg-white border border-primary/15 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
+          class="rounded-2xl bg-white dark:bg-white/5 border border-primary/15 dark:border-white/10 shadow-sm p-5 flex items-center gap-4 card-hover no-underline text-inherit"
           title="Ir a Mi Perfil — Reservas anteriores"
         >
-          <div class="w-13 h-13 p-3 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-600 shrink-0">
+          <div class="w-13 h-13 p-3 rounded-2xl bg-pink-100 dark:bg-pink-950/40 flex items-center justify-center text-pink-600 shrink-0">
             <span class="material-symbols-outlined text-2xl">travel_explore</span>
           </div>
 
           <div>
-            <p class="text-2xl sm:text-3xl font-black text-slate-900" id="statViajes">0</p>
-            <p class="text-xs sm:text-sm text-slate-500 font-semibold">Viajes realizados</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100" id="statViajes">0</p>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold">Viajes realizados</p>
           </div>
         </a>
       </section>
@@ -240,8 +253,8 @@
       <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="text-2xl font-black">Destinos disponibles</h2>
-            <p class="text-sm text-slate-500 mt-1">
+            <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100">Destinos disponibles</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Planes creados y administrados desde el panel de administración.
             </p>
           </div>

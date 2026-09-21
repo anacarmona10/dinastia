@@ -1,15 +1,96 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Administrador</title>
 
+    <!-- Anti-FOUC -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Font Awesome (flecha + ojito) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Hoja de estilos compartida -->
+    <!-- Material Symbols (para el botón de tema) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Hojas de estilo -->
     <link rel="stylesheet" href="style_login.css">
+    <link rel="stylesheet" href="style_dark.css">
+
+    <!-- Script del tema -->
+    <script src="js/theme.js"></script>
+
+    <!-- Ajustes específicos modo oscuro -->
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html.dark body {
+            background: linear-gradient(rgba(2, 12, 28, 0.82), rgba(2, 12, 28, 0.88)),
+                        url("imagenes/Iglesia.jpg") no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        html.dark .login-container h2 {
+            color: #ffffff !important;
+        }
+
+        html.dark .registro {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .back-button {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .back-button:hover {
+            background: rgba(200, 0, 255, 0.28) !important;
+            color: #ffffff !important;
+        }
+
+        html.dark .campo-password-wrapper .btn-toggle-password,
+        html.dark button.btn-toggle-password,
+        html.dark .login-container .btn-toggle-password {
+            color: #94a3b8 !important;
+        }
+
+        html.dark .campo-password-wrapper .btn-toggle-password:hover,
+        html.dark button.btn-toggle-password:hover,
+        html.dark .login-container .btn-toggle-password:hover,
+        html.dark .campo-password-wrapper .btn-toggle-password.activo,
+        html.dark button.btn-toggle-password.activo,
+        html.dark .login-container .btn-toggle-password.activo {
+            color: #c800ff !important;
+        }
+    </style>
 
     <!-- Función del ojito -->
     <script>
@@ -42,6 +123,17 @@
     <a href="index.html" class="back-button" aria-label="Volver al inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
+
+    <!-- ✅ Botón modo claro / oscuro -->
+    <button
+        type="button"
+        id="btnToggleTheme"
+        class="theme-toggle-auth"
+        title="Cambiar modo claro / oscuro"
+        aria-label="Cambiar tema"
+    >
+        <span class="material-symbols-outlined">dark_mode</span>
+    </button>
 
     <div class="login-container">
         <h2>Acceso Administradores</h2>

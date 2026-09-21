@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -34,52 +34,79 @@
 
     <link rel="stylesheet" href="style_catalogo.css">
     <link rel="stylesheet" href="style_InterAdmin.css">
+    <link rel="stylesheet" href="style_dark.css">
+    <script src="js/theme.js"></script>
 </head>
 
-<body class="bg-background-light text-slate-900 min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
 
-    <!-- Header Estandarizado de Administrador -->
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-8 lg:px-20 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40">
-        <div class="flex items-center gap-3">
-            <a href="interfazAdmin.html" class="flex items-center gap-3 text-primary group" title="Panel Admin">
-                <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV" class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform">
-                <h2 class="text-slate-900 text-xl font-black leading-tight tracking-tight">
+    <!-- Header Estandarizado de Administrador (Responsive) -->
+    <header class="flex items-center justify-between gap-2 sm:gap-4 border-b border-solid border-primary/20 px-3 sm:px-8 lg:px-20 py-3 sm:py-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-40">
+
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <a href="interfazAdmin.html" class="flex items-center gap-2 sm:gap-3 text-primary group" title="Panel Admin">
+                <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV"
+                     class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                <h2 class="hidden min-[400px]:block text-slate-900 dark:text-slate-100 text-base sm:text-xl font-black leading-tight tracking-tight whitespace-nowrap">
                     Dinastía <span class="text-primary">AMV</span>
                 </h2>
             </a>
-            <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-purple-100 text-primary text-[11px] font-black uppercase tracking-wider">
+            <span class="hidden xl:inline-block px-2.5 py-0.5 rounded-full bg-purple-100 text-primary text-[11px] font-black uppercase tracking-wider whitespace-nowrap">
                 Panel Admin
             </span>
         </div>
 
-        <!-- Menú de Navegación del Panel de Administrador -->
-        <div class="flex items-center gap-3 sm:gap-6">
+        <div class="flex items-center gap-1 sm:gap-3 lg:gap-4 min-w-0">
+
             <nav class="flex items-center gap-1 sm:gap-2 text-sm font-semibold">
-                <a href="interfazAdmin.html" class="bg-purple-100 text-primary font-black px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
+                <a href="interfazAdmin.html"
+                   title="Viajes"
+                   class="shrink-0 bg-purple-100 text-primary font-black px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">flight_takeoff</span>
-                    <span>Viajes</span>
+                    <span class="hidden sm:inline">Viajes</span>
                 </a>
-                <a href="admin_reservas.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                <a href="admin_reservas.html"
+                   title="Reservas"
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">confirmation_number</span>
-                    <span>Reservas</span>
+                    <span class="hidden sm:inline">Reservas</span>
                 </a>
-                <a href="admin_usuarios.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                <a href="admin_usuarios.html"
+                   title="Usuarios"
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
-                    <span>Usuarios</span>
+                    <span class="hidden sm:inline">Usuarios</span>
                 </a>
             </nav>
 
-            <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden lg:block shrink-0"></div>
 
-            <span class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 py-1.5 px-3 rounded-xl bg-purple-50/70 border border-primary/10">
+            <span class="hidden lg:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 py-1.5 px-3 rounded-xl bg-purple-50/70 dark:bg-white/5 border border-primary/10 whitespace-nowrap shrink-0">
                 <span class="material-symbols-outlined text-primary text-base">admin_panel_settings</span>
                 <span id="adminNombre">Administrador</span>
             </span>
 
-            <a href="../backend/api/logout.php" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors">
+            <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+            <button
+                type="button"
+                id="btnToggleTheme"
+                class="theme-toggle-btn shrink-0"
+                title="Cambiar modo claro / oscuro"
+                aria-label="Cambiar tema"
+            >
+                <span class="material-symbols-outlined text-xl">dark_mode</span>
+            </button>
+
+            <!-- ✅ BOTÓN CERRAR SESIÓN (abre el modal de confirmación) -->
+            <button
+                type="button"
+                id="btnCerrarSesion"
+                title="Cerrar sesión"
+                class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-2 sm:px-3 rounded-xl transition-colors cursor-pointer"
+            >
                 <span class="material-symbols-outlined text-lg">logout</span>
                 <span class="hidden sm:inline">Cerrar sesión</span>
-            </a>
+            </button>
         </div>
     </header>
 
@@ -87,8 +114,8 @@
     <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8 max-w-7xl mx-auto w-full">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Gestión de Planes Turísticos</h1>
-                <p class="text-slate-500 text-sm mt-1">Crea, actualiza o elimina viajes publicados en el catálogo de Dinastía AMV.</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Gestión de Planes Turísticos</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Crea, actualiza o elimina viajes publicados en el catálogo de Dinastía AMV.</p>
             </div>
 
             <button class="px-5 py-2.5 rounded-full gradient-btn text-white text-xs sm:text-sm font-bold shadow-md shadow-primary/25 flex items-center gap-2 self-start sm:self-auto" onclick="abrirModal()">
@@ -125,7 +152,7 @@
             <label>Precio (COP)</label>
             <input type="number" id="precio" placeholder="Ej: 1500000">
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3">
                 <div>
                     <label>Fecha salida</label>
                     <input type="date" id="fecha_salida">
@@ -175,7 +202,7 @@
             <label>Precio (COP)</label>
             <input type="number" id="editar_precio" placeholder="Ingresa el precio">
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3">
                 <div>
                     <label>Fecha salida</label>
                     <input type="date" id="editar_fecha_salida">
@@ -208,28 +235,23 @@
                 <button type="button" onclick="cerrarModalDetalles()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1 leading-none transition-colors" aria-label="Cerrar modal">&times;</button>
             </div>
 
-            <!-- Carrusel de imágenes con navegación condicional -->
             <div class="relative w-full aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mt-4 shadow-sm group">
                 <img id="adminCarouselImg" src="" alt="Imagen del viaje" class="w-full h-full object-cover transition-all duration-300">
 
-                <!-- Flecha izquierda (solo si hay >1 imagen) -->
                 <button type="button" id="adminBtnPrevImg" onclick="cambiarImagenAdmin(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none" title="Imagen anterior">
                     <span class="material-symbols-outlined text-xl">chevron_left</span>
                 </button>
 
-                <!-- Flecha derecha (solo si hay >1 imagen) -->
                 <button type="button" id="adminBtnNextImg" onclick="cambiarImagenAdmin(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md focus:outline-none" title="Imagen siguiente">
                     <span class="material-symbols-outlined text-xl">chevron_right</span>
                 </button>
 
-                <!-- Indicador de cantidad de fotos -->
                 <div id="adminCarouselBadge" class="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
                     <span class="material-symbols-outlined text-xs text-primary">photo_camera</span>
                     <span id="adminCarouselIndex">1 / 1</span>
                 </div>
             </div>
 
-            <!-- Información del viaje -->
             <div class="grid grid-cols-2 gap-3 mt-4">
                 <div class="bg-purple-50/70 p-3 rounded-xl border border-primary/10">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tarifa por persona</span>
@@ -263,8 +285,19 @@
         </div>
     </div>
 
+    <!-- ✅ MODAL CONFIRMACIÓN CIERRE DE SESIÓN -->
+    <div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
+        <div class="modal-content-custom">
+            <h3 id="tituloModalCierre">¿Seguro que quieres cerrar sesión?</h3>
+            <p>Se cerrará tu sesión actual de Dinastía AMV y volverás a la página de inicio.</p>
+            <div class="modal-botones-custom">
+                <button type="button" class="btn-cerrar-modal-custom" id="btnNoCerrar">No, quedarme</button>
+                <button type="button" class="btn-eliminar-custom" id="btnSiCerrar">Sí, cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Verificación de sesión de Administrador
         async function verificarSesionAdmin() {
             try {
                 const res = await fetch('../backend/api/verificar_sesion_admin.php');
@@ -448,7 +481,6 @@
             }
         }
 
-        // Auto-expand textarea
         document.addEventListener("DOMContentLoaded", () => {
             const textarea = document.getElementById("descripcion");
             textarea.addEventListener("input", () => {
@@ -492,7 +524,7 @@
 
             viajesData.forEach((viaje) => {
                 const card = document.createElement("div");
-                card.className = "group bg-white rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover";
+                card.className = "group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover";
 
                 const primerImg = viaje.imagenes && viaje.imagenes.length > 0 ? (viaje.imagenes[0].url || '') : '';
                 const imgUrl = primerImg
@@ -503,7 +535,6 @@
 
                 card.innerHTML = `
                     <div>
-                        <!-- Imagen con badges al estilo catálogo -->
                         <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100">
                             <img src="${imgUrl}" alt="${viaje.destino}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80'">
@@ -517,7 +548,6 @@
                             </div>
                         </div>
 
-                        <!-- Contenido -->
                         <div class="p-5">
                             <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
                                 <span class="flex items-center gap-1">
@@ -530,7 +560,7 @@
                                 </span>
                             </div>
 
-                            <h3 class="text-lg font-black text-slate-900 line-clamp-1 mb-2 group-hover:text-primary transition-colors">
+                            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100 line-clamp-1 mb-2 group-hover:text-primary transition-colors">
                                 ${viaje.destino}
                             </h3>
 
@@ -545,7 +575,6 @@
                         </div>
                     </div>
 
-                    <!-- Botones de Acción (Detalles, Editar y Eliminar) -->
                     <div class="p-5 pt-0 flex flex-col gap-2 mt-2">
                         <button type="button" class="w-full py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-primary text-xs font-black text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm" onclick="abrirModalDetalles(${viaje.id})">
                             <span class="material-symbols-outlined text-base">visibility</span> Ver detalles
@@ -767,7 +796,6 @@
             }
         }
 
-        // ======= ELIMINAR IMAGEN EXISTENTE (ADMIN) =======
         async function eliminarImagenExistente(imagenId, viajeId) {
             const confirmar = confirm("¿Estás seguro de que deseas eliminar esta imagen de forma definitiva?");
             if (!confirmar) return;
@@ -784,11 +812,9 @@
                 const resultado = await response.json();
 
                 if (resultado.success) {
-                    // Remover del DOM en preview_actuales
                     const elem = document.getElementById(`img-actual-${imagenId}`);
                     if (elem) elem.remove();
 
-                    // Actualizar memoria local de viajesData
                     const viaje = viajesData.find(v => v.id == viajeId);
                     if (viaje && viaje.imagenes) {
                         viaje.imagenes = viaje.imagenes.filter(img => img.id != imagenId);
@@ -800,7 +826,6 @@
                         }
                     }
 
-                    // Actualizar tarjetas del panel
                     renderizarViajes();
                     alert(resultado.mensaje || "Imagen eliminada correctamente.");
                 } else {
@@ -826,7 +851,6 @@
             document.getElementById("detalles_admin_regreso").textContent = formatearFecha(viaje.fecha_regreso);
             document.getElementById("detalles_admin_descripcion").textContent = viaje.descripcion || "Sin descripción adicional para este viaje.";
 
-            // Extraer URLs de las imágenes
             adminImagenesActuales = (viaje.imagenes && viaje.imagenes.length > 0)
                 ? viaje.imagenes.map(img => {
                     const u = (typeof img === 'object' ? img.url : img) || '';
@@ -870,7 +894,6 @@
                 this.src = "https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80";
             };
 
-            // REGLA ESTRICTA: Las flechitas SOLO se muestran si hay más de 1 imagen
             if (adminImagenesActuales.length > 1) {
                 btnPrev.style.display = "flex";
                 btnNext.style.display = "flex";
@@ -882,6 +905,41 @@
                 badge.style.display = "none";
             }
         }
+
+        // ======= ✅ MODAL CONFIRMACIÓN CIERRE DE SESIÓN =======
+        (function () {
+            const modalCierre = document.getElementById('modalConfirmarCierre');
+            const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+            const btnNoCerrar = document.getElementById('btnNoCerrar');
+            const btnSiCerrar = document.getElementById('btnSiCerrar');
+
+            if (btnCerrarSesion && modalCierre) {
+                btnCerrarSesion.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    modalCierre.classList.add('active');
+                });
+
+                btnNoCerrar.addEventListener('click', function () {
+                    modalCierre.classList.remove('active');
+                });
+
+                btnSiCerrar.addEventListener('click', function () {
+                    window.location.href = '../backend/api/logout.php';
+                });
+
+                modalCierre.addEventListener('click', function (e) {
+                    if (e.target === modalCierre) {
+                        modalCierre.classList.remove('active');
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && modalCierre.classList.contains('active')) {
+                        modalCierre.classList.remove('active');
+                    }
+                });
+            }
+        })();
     </script>
 
 </body>

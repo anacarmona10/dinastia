@@ -26,9 +26,9 @@ function crearTarjetaViaje(viaje) {
   });
 
   return `
-    <article class="group bg-white rounded-2xl overflow-hidden border border-primary/15 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover" data-viaje-id="${viaje.id}">
+    <article class="group bg-white dark:bg-white/5 rounded-2xl overflow-hidden border border-primary/15 dark:border-white/10 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between card-hover" data-viaje-id="${viaje.id}">
       <div>
-        <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100">
+        <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
           <img
             src="${imagen}"
             alt="${escaparHtml(viaje.destino)}"
@@ -46,28 +46,28 @@ function crearTarjetaViaje(viaje) {
         </div>
 
         <div class="p-5">
-          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2 font-medium">
             <span class="flex items-center gap-1">
               <span class="material-symbols-outlined text-xs text-primary">flight_takeoff</span>
-              Salida: <strong class="text-slate-700">${formatearFecha(viaje.fecha_salida)}</strong>
+              Salida: <strong class="text-slate-700 dark:text-slate-300">${formatearFecha(viaje.fecha_salida)}</strong>
             </span>
-            <span class="flex items-center gap-1 bg-purple-50 text-primary px-2 py-0.5 rounded-full font-bold text-[11px]">
+            <span class="flex items-center gap-1 bg-purple-50 dark:bg-purple-950/40 text-primary px-2 py-0.5 rounded-full font-bold text-[11px]">
               <span class="material-symbols-outlined text-xs">schedule</span>
               Hasta ${formatearFecha(viaje.fecha_regreso)}
             </span>
           </div>
 
-          <h4 class="text-lg font-black text-slate-900 line-clamp-1 mb-2 group-hover:text-primary transition-colors">
+          <h4 class="text-lg font-black text-slate-900 dark:text-slate-100 line-clamp-1 mb-2 group-hover:text-primary transition-colors">
             ${escaparHtml(viaje.destino)}
           </h4>
 
-          <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
+          <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
             ${escaparHtml(viaje.descripcion || 'Plan turístico Dinastía AMV con tiquetes, hospedaje y actividades incluidas.')}
           </p>
 
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+          <div class="pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between">
             <div>
-              <span class="text-xs text-slate-400 font-semibold block">Tarifa por persona</span>
+              <span class="text-xs text-slate-400 dark:text-slate-500 font-semibold block">Tarifa por persona</span>
             </div>
             <span class="text-xl font-black text-primary">${precio}</span>
           </div>
