@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Reservas - Panel de Administración | Dinastía AMV</title>
+
+    <!-- Anti-FOUC: aplica el tema guardado antes de renderizar -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
@@ -32,18 +48,129 @@
 
     <link rel="stylesheet" href="style_catalogo.css">
     <link rel="stylesheet" href="style_InterAdmin.css">
+    <link rel="stylesheet" href="style_dark.css">
+    <script src="js/theme.js"></script>
+
+    <!-- =========================================================
+         FIX MODO OSCURO ESPECÍFICO DEL PANEL DE RESERVAS
+         ========================================================= -->
+    <style>
+      /* Tarjetas de métricas */
+      html.dark .bg-white.p-5 {
+        background-color: #07152b !important;
+        border-color: rgba(200, 0, 255, 0.20) !important;
+      }
+      html.dark .bg-white.p-5 .text-slate-900 {
+        color: #ffffff !important;
+      }
+      html.dark .bg-white.p-5 .text-slate-500 {
+        color: #94a3b8 !important;
+      }
+
+      /* Panel de filtros y búsqueda */
+      html.dark .bg-white.p-4,
+      html.dark .bg-white.p-4.sm\:p-5 {
+        background-color: #07152b !important;
+        border-color: rgba(200, 0, 255, 0.20) !important;
+      }
+
+      /* Tabla de reservas */
+      html.dark .bg-white.rounded-2xl.border {
+        background-color: #07152b !important;
+        border-color: rgba(200, 0, 255, 0.22) !important;
+      }
+      html.dark table thead tr {
+        background-color: rgba(200, 0, 255, 0.10) !important;
+        border-bottom-color: rgba(200, 0, 255, 0.25) !important;
+      }
+      html.dark table thead th {
+        color: #e2e8f0 !important;
+      }
+      html.dark table tbody tr {
+        border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+      }
+      html.dark table tbody tr:hover {
+        background-color: rgba(200, 0, 255, 0.06) !important;
+      }
+      html.dark table tbody td {
+        color: #cbd5e1 !important;
+      }
+      html.dark table tbody td .text-slate-900,
+      html.dark table tbody td .text-slate-800,
+      html.dark table tbody td strong {
+        color: #ffffff !important;
+      }
+      html.dark table tbody td .text-slate-500,
+      html.dark table tbody td .text-slate-400 {
+        color: #94a3b8 !important;
+      }
+
+      /* Botones de filtro (no activos) */
+      html.dark .btn-filtro-estado:not(.active) {
+        background-color: rgba(255, 255, 255, 0.04) !important;
+        border-color: rgba(200, 0, 255, 0.25) !important;
+        color: #cbd5e1 !important;
+      }
+      html.dark .btn-filtro-estado:not(.active):hover {
+        background-color: rgba(200, 0, 255, 0.12) !important;
+        color: #ffffff !important;
+      }
+      html.dark .btn-filtro-estado.active {
+        background-color: #c800ff !important;
+        color: #ffffff !important;
+        border-color: #c800ff !important;
+      }
+
+      /* Input de búsqueda en dark */
+      html.dark #inputBusqueda {
+        background-color: #0d1e38 !important;
+        color: #ffffff !important;
+        border-color: rgba(200, 0, 255, 0.35) !important;
+      }
+      html.dark #inputBusqueda::placeholder {
+        color: #64748b !important;
+      }
+
+      /* Badges de estado dentro de la tabla */
+      html.dark .bg-emerald-100 {
+        background-color: rgba(16, 185, 129, 0.18) !important;
+      }
+      html.dark .text-emerald-700 {
+        color: #6ee7b7 !important;
+      }
+      html.dark .bg-amber-100 {
+        background-color: rgba(245, 158, 11, 0.18) !important;
+      }
+      html.dark .text-amber-800 {
+        color: #fcd34d !important;
+      }
+      html.dark .bg-red-100 {
+        background-color: rgba(239, 68, 68, 0.18) !important;
+      }
+      html.dark .text-red-700 {
+        color: #fca5a5 !important;
+      }
+
+      /* Botón "Cancelar" en la tabla */
+      html.dark .border-red-200 {
+        border-color: rgba(239, 68, 68, 0.45) !important;
+      }
+      html.dark .text-red-600 {
+        color: #f87171 !important;
+      }
+    </style>
 </head>
 
-<body class="bg-background-light text-slate-900 min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
 
     <!-- Header Estandarizado de Administrador (Responsive) -->
-    <header class="flex items-center justify-between gap-2 sm:gap-4 border-b border-solid border-primary/20 px-3 sm:px-8 lg:px-20 py-3 sm:py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40">
+    <header class="flex items-center justify-between gap-2 sm:gap-4 border-b border-solid border-primary/20 px-3 sm:px-8 lg:px-20 py-3 sm:py-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-40">
 
         <div class="flex items-center gap-2 sm:gap-3 shrink-0">
             <a href="interfazAdmin.html" class="flex items-center gap-2 sm:gap-3 text-primary group" title="Panel Admin">
                 <img src="imagenes/Logo Dinastia AMV nuevo.jpg" alt="Logo Dinastía AMV"
                      class="w-9 h-9 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                <h2 class="hidden min-[400px]:block text-slate-900 text-base sm:text-xl font-black leading-tight tracking-tight whitespace-nowrap">
+                <h2 class="hidden min-[400px]:block text-slate-900 dark:text-slate-100 text-base sm:text-xl font-black leading-tight tracking-tight whitespace-nowrap">
                     Dinastía <span class="text-primary">AMV</span>
                 </h2>
             </a>
@@ -57,7 +184,7 @@
             <nav class="flex items-center gap-1 sm:gap-2 text-sm font-semibold">
                 <a href="interfazAdmin.html"
                    title="Viajes"
-                   class="shrink-0 text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 dark:hover:bg-white/5 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">flight_takeoff</span>
                     <span class="hidden sm:inline">Viajes</span>
                 </a>
@@ -69,22 +196,33 @@
                 </a>
                 <a href="admin_usuarios.html"
                    title="Usuarios"
-                   class="shrink-0 text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 dark:hover:bg-white/5 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
                     <span class="hidden sm:inline">Usuarios</span>
                 </a>
             </nav>
 
-            <div class="h-6 w-px bg-slate-200 hidden lg:block shrink-0"></div>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden lg:block shrink-0"></div>
 
-            <span class="hidden lg:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 py-1.5 px-3 rounded-xl bg-purple-50/70 border border-primary/10 whitespace-nowrap shrink-0">
+            <span class="hidden lg:inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-300 py-1.5 px-3 rounded-xl bg-purple-50/70 dark:bg-white/5 border border-primary/10 whitespace-nowrap shrink-0">
                 <span class="material-symbols-outlined text-primary text-base">admin_panel_settings</span>
                 <span id="adminNombre">Administrador</span>
             </span>
 
+            <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
+            <button
+                type="button"
+                id="btnToggleTheme"
+                class="theme-toggle-btn shrink-0"
+                title="Cambiar modo claro / oscuro"
+                aria-label="Cambiar tema"
+            >
+                <span class="material-symbols-outlined text-xl">dark_mode</span>
+            </button>
+
             <a href="../backend/api/logout.php"
                title="Cerrar sesión"
-               class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-2 sm:px-3 rounded-xl transition-colors">
+               class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 py-1.5 px-2 sm:px-3 rounded-xl transition-colors">
                 <span class="material-symbols-outlined text-lg">logout</span>
                 <span class="hidden sm:inline">Cerrar sesión</span>
             </a>
@@ -94,62 +232,62 @@
     <!-- Contenido Principal -->
     <main class="flex-1 px-4 sm:px-8 lg:px-20 py-8 max-w-7xl mx-auto w-full">
         <div class="mb-8">
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Gestión y Control de Reservas</h1>
-            <p class="text-slate-500 text-sm mt-1">Supervisa los pagos y reservas de los clientes y gestiona solicitudes de cancelación.</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Gestión y Control de Reservas</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Supervisa los pagos y reservas de los clientes y gestiona solicitudes de cancelación.</p>
         </div>
 
         <!-- Métricas Rápidas -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-primary shrink-0">
+            <div class="bg-white dark:bg-white/5 p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/40 flex items-center justify-center text-primary shrink-0">
                     <span class="material-symbols-outlined text-2xl">confirmation_number</span>
                 </div>
                 <div>
-                    <p class="text-2xl font-black text-slate-900" id="metricTotal">0</p>
-                    <p class="text-xs text-slate-500 font-semibold">Total Reservas</p>
+                    <p class="text-2xl font-black text-slate-900 dark:text-slate-100" id="metricTotal">0</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Total Reservas</p>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+            <div class="bg-white dark:bg-white/5 p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                     <span class="material-symbols-outlined text-2xl">check_circle</span>
                 </div>
                 <div>
-                    <p class="text-2xl font-black text-emerald-600" id="metricPagadas">0</p>
-                    <p class="text-xs text-slate-500 font-semibold">Aprobadas / Pagadas</p>
+                    <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400" id="metricPagadas">0</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Aprobadas / Pagadas</p>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+            <div class="bg-white dark:bg-white/5 p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                     <span class="material-symbols-outlined text-2xl">pending</span>
                 </div>
                 <div>
-                    <p class="text-2xl font-black text-amber-600" id="metricPendientes">0</p>
-                    <p class="text-xs text-slate-500 font-semibold">Pendientes</p>
+                    <p class="text-2xl font-black text-amber-600 dark:text-amber-400" id="metricPendientes">0</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Pendientes</p>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center text-red-600 shrink-0">
+            <div class="bg-white dark:bg-white/5 p-5 rounded-2xl border border-primary/15 shadow-sm card-hover flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
                     <span class="material-symbols-outlined text-2xl">cancel</span>
                 </div>
                 <div>
-                    <p class="text-2xl font-black text-red-600" id="metricCanceladas">0</p>
-                    <p class="text-xs text-slate-500 font-semibold">Canceladas</p>
+                    <p class="text-2xl font-black text-red-600 dark:text-red-400" id="metricCanceladas">0</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Canceladas</p>
                 </div>
             </div>
         </div>
 
         <!-- Filtros y Búsqueda -->
-        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-primary/15 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-2xl border border-primary/15 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="relative w-full md:w-96">
                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
                 <input 
                     type="text" 
                     id="inputBusqueda" 
                     placeholder="Buscar por referencia, cliente o destino..." 
-                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-purple-200 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-purple-200 dark:border-purple-800/50 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                 >
             </div>
 
@@ -157,24 +295,24 @@
                 <button type="button" class="btn-filtro-estado active px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0" data-filtro="todos">
                     Todas
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-emerald-700 shrink-0" data-filtro="APPROVED">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-700 shrink-0" data-filtro="APPROVED">
                     Pagadas
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-amber-700 shrink-0" data-filtro="PENDING">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 dark:text-slate-300 hover:text-amber-700 shrink-0" data-filtro="PENDING">
                     Pendientes
                 </button>
-                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 hover:text-red-700 shrink-0" data-filtro="CANCELLED">
+                <button type="button" class="btn-filtro-estado px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-slate-600 dark:text-slate-300 hover:text-red-700 shrink-0" data-filtro="CANCELLED">
                     Canceladas
                 </button>
             </div>
         </div>
 
         <!-- Tabla de Reservas -->
-        <div class="bg-white rounded-2xl border border-primary/15 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-white/5 rounded-2xl border border-primary/15 shadow-sm overflow-hidden">
             <div class="table-responsive">
                 <table class="w-full min-w-[860px] text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-purple-100 bg-purple-50/50 text-xs font-black uppercase tracking-wider text-slate-500">
+                        <tr class="border-b border-purple-100 dark:border-purple-800/40 bg-purple-50/50 dark:bg-purple-950/30 text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-300">
                             <th class="p-4 sm:px-6">Referencia / Fecha</th>
                             <th class="p-4 sm:px-6">Cliente</th>
                             <th class="p-4 sm:px-6">Destino e Itinerario</th>
@@ -183,9 +321,9 @@
                             <th class="p-4 sm:px-6 text-right">Acción</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaReservasBody" class="divide-y divide-slate-100 text-sm">
+                    <tbody id="tablaReservasBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-500">Cargando reservas...</td>
+                            <td colspan="6" class="p-8 text-center text-slate-500 dark:text-slate-400">Cargando reservas...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -284,7 +422,7 @@
             if (filtradas.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="p-12 text-center text-slate-500">
+                        <td colspan="6" class="p-12 text-center text-slate-500 dark:text-slate-400">
                             <span class="material-symbols-outlined text-4xl text-purple-300 mb-2">search_off</span>
                             <p class="font-medium">No se encontraron reservas con los filtros aplicados.</p>
                         </td>
@@ -295,7 +433,7 @@
 
             filtradas.forEach(r => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-purple-50/30 transition-colors";
+                tr.className = "hover:bg-purple-50/30 dark:hover:bg-purple-950/20 transition-colors";
 
                 const montoCop = (Number(r.monto_centavos) / 100).toLocaleString('es-CO', {
                     style: 'currency',
@@ -309,23 +447,23 @@
                 let botonCancelar = '';
 
                 if (r.estado === 'APPROVED') {
-                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700"><span class="material-symbols-outlined text-xs">check_circle</span> Aprobada</span>';
+                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300"><span class="material-symbols-outlined text-xs">check_circle</span> Aprobada</span>';
                     botonCancelar = `
-                        <button type="button" onclick="cancelarReserva(${r.id}, '${r.referencia}')" class="px-3 py-1.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center gap-1 ml-auto">
+                        <button type="button" onclick="cancelarReserva(${r.id}, '${r.referencia}')" class="px-3 py-1.5 rounded-xl border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center gap-1 ml-auto">
                             <span class="material-symbols-outlined text-sm">cancel</span>
                             Cancelar
                         </button>
                     `;
                 } else if (r.estado === 'PENDING') {
-                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800"><span class="material-symbols-outlined text-xs">hourglass_empty</span> Pendiente</span>';
+                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300"><span class="material-symbols-outlined text-xs">hourglass_empty</span> Pendiente</span>';
                     botonCancelar = `
-                        <button type="button" onclick="cancelarReserva(${r.id}, '${r.referencia}')" class="px-3 py-1.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center gap-1 ml-auto">
+                        <button type="button" onclick="cancelarReserva(${r.id}, '${r.referencia}')" class="px-3 py-1.5 rounded-xl border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center gap-1 ml-auto">
                             <span class="material-symbols-outlined text-sm">cancel</span>
                             Cancelar
                         </button>
                     `;
                 } else {
-                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-700"><span class="material-symbols-outlined text-xs">block</span> Cancelada</span>';
+                    estadoBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-300"><span class="material-symbols-outlined text-xs">block</span> Cancelada</span>';
                     botonCancelar = `
                         <span class="text-xs text-slate-400 font-semibold italic">Sin acciones</span>
                     `;
@@ -333,28 +471,28 @@
 
                 tr.innerHTML = `
                     <td class="p-4 sm:px-6">
-                        <strong class="font-mono text-xs text-slate-900 block">${r.referencia}</strong>
-                        <span class="text-xs text-slate-500">${fechaCreacion}</span>
+                        <strong class="font-mono text-xs text-slate-900 dark:text-slate-100 block">${r.referencia}</strong>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">${fechaCreacion}</span>
                     </td>
                     <td class="p-4 sm:px-6">
-                        <span class="font-bold text-slate-900 block">${r.usuario_nombre}</span>
-                        <span class="text-xs text-slate-500 block">${r.usuario_tipo_doc || 'DOC'}: ${r.usuario_documento || 'N/A'}</span>
-                        <span class="text-xs text-slate-400">${r.usuario_correo}</span>
+                        <span class="font-bold text-slate-900 dark:text-slate-100 block">${r.usuario_nombre}</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 block">${r.usuario_tipo_doc || 'DOC'}: ${r.usuario_documento || 'N/A'}</span>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">${r.usuario_correo}</span>
                     </td>
                     <td class="p-4 sm:px-6">
                         <span class="font-bold text-primary block flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">location_on</span>
                             ${r.destino}
                         </span>
-                        <span class="text-xs text-slate-500">${r.fecha_salida} → ${r.fecha_regreso}</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">${r.fecha_salida} → ${r.fecha_regreso}</span>
                     </td>
                     <td class="p-4 sm:px-6">
-                        <strong class="text-slate-900 block font-black">${montoCop}</strong>
-                        <span class="text-xs text-slate-500">${r.cantidad_personas} ${r.cantidad_personas == 1 ? 'persona' : 'personas'}</span>
+                        <strong class="text-slate-900 dark:text-slate-100 block font-black">${montoCop}</strong>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">${r.cantidad_personas} ${r.cantidad_personas == 1 ? 'persona' : 'personas'}</span>
                     </td>
                     <td class="p-4 sm:px-6">
                         ${estadoBadge}
-                        <span class="text-[11px] text-slate-500 block mt-1 font-semibold">${r.metodo_pago || 'Pagar después'}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-1 font-semibold">${r.metodo_pago || 'Pagar después'}</span>
                     </td>
                     <td class="p-4 sm:px-6 text-right">
                         ${botonCancelar}
