@@ -5,6 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/cloudinary.php';
 
 // Validar que el usuario tenga rol de administrador
 if (empty($_SESSION['logged_in']) || ($_SESSION['tipo_usuario'] ?? '') !== 'admin') {
@@ -75,16 +76,9 @@ try {
         throw new RuntimeException('No se pudo obtener el ID del viaje registrado.');
     }
 
-    // Procesar imágenes si fueron enviadas
+    // Procesar imágenes si fueron enviadas. Se almacenan en Cloudinary, no en Render.
     $imagenesGuardadas = 0;
     if (!empty($_FILES['imagenes']['name']) && is_array($_FILES['imagenes']['name'])) {
-        $carpetaImagenes = dirname(__DIR__, 2) . '/frontend/imagenes/';
-
-        if (!is_dir($carpetaImagenes)) {
-            @mkdir($carpetaImagenes, 0777, true);
-        }
-        @chmod($carpetaImagenes, 0777);
-
         $stmtImagen = $pdo->prepare('INSERT INTO imagenes_viajes (viaje_id, url) VALUES (?, ?)');
 
         foreach ($_FILES['imagenes']['tmp_name'] as $indice => $archivoTemporal) {
@@ -96,23 +90,16 @@ try {
             }
 
             if ($errorSubida === UPLOAD_ERR_INI_SIZE || $errorSubida === UPLOAD_ERR_FORM_SIZE) {
-                error_log("Aviso: la imagen '{$nombreOriginal}' supera el tamaño máximo permitido por PHP.");
-                continue;
+                throw new InvalidArgumentException("La imagen '{$nombreOriginal}' supera el tamaño máximo permitido.");
             }
 
             if ($errorSubida !== UPLOAD_ERR_OK || empty($archivoTemporal) || !is_uploaded_file($archivoTemporal)) {
-                continue;
+                throw new InvalidArgumentException("No fue posible recibir la imagen '{$nombreOriginal}'.");
             }
 
-            $nombreLimpio = bin2hex(random_bytes(8)) . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', basename($nombreOriginal));
-            $rutaDestino = $carpetaImagenes . $nombreLimpio;
-
-            if (@move_uploaded_file($archivoTemporal, $rutaDestino)) {
-                $stmtImagen->execute([$viajeId, $nombreLimpio]);
-                $imagenesGuardadas++;
-            } else {
-                error_log("Aviso: no fue posible mover la imagen '{$nombreOriginal}' a '{$rutaDestino}'.");
-            }
+            $urlCloudinary = subirImagenPlanACloudinary($archivoTemporal, $nombreOriginal);
+            $stmtImagen->execute([$viajeId, $urlCloudinary]);
+            $imagenesGuardadas++;
         }
     }
 

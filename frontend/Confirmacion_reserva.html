@@ -392,7 +392,10 @@
 
         if (viaje.imagenes && viaje.imagenes.length > 0) {
           const img = viaje.imagenes[0];
-          elImagen.src = 'imagenes/' + (typeof img === 'string' ? img : img.url);
+          const urlImagen = typeof img === 'string' ? img : img.url;
+          elImagen.src = /^https?:\/\//i.test(urlImagen)
+            ? urlImagen
+            : 'imagenes/' + encodeURIComponent(urlImagen);
         }
 
         elDestino.textContent = viaje.destino || 'Destino';
