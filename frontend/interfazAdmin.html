@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Viajes - Panel de Administración | Dinastía AMV</title>
 
+    <!-- Aplica el tema guardado antes de dibujar la página. -->
+    <script>
+      (function () {
+        try {
+          var tema = localStorage.getItem('dinastia_theme');
+          if (tema === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch (_) {}
+      })();
+    </script>
+
     <!-- Tailwind CSS CDN con plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
