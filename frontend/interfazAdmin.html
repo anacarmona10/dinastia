@@ -6,6 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Viajes - Panel de Administración | Dinastía AMV</title>
 
+    <!-- Anti-FOUC: aplica el tema guardado antes de renderizar -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Tailwind CSS CDN con plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
@@ -36,6 +52,47 @@
     <link rel="stylesheet" href="style_InterAdmin.css">
     <link rel="stylesheet" href="style_dark.css">
     <script src="js/theme.js"></script>
+
+    <!-- =========================================================
+         FIX MODO OSCURO — Botones y pills dentro de las tarjetas
+         de viaje en el panel admin
+         ========================================================= -->
+    <style>
+      /* 1. Botón "Ver detalles" (bg-purple-50) */
+      html.dark #listaViajes button.bg-purple-50 {
+        background-color: rgba(200, 0, 255, 0.15) !important;
+        color: #e879f9 !important;
+        border: 1px solid rgba(200, 0, 255, 0.30) !important;
+      }
+      html.dark #listaViajes button.bg-purple-50:hover {
+        background-color: rgba(200, 0, 255, 0.28) !important;
+        color: #ffffff !important;
+      }
+
+      /* 2. Pill "Hasta X" (bg-purple-50 text-primary) */
+      html.dark #listaViajes span.bg-purple-50 {
+        background-color: rgba(200, 0, 255, 0.18) !important;
+        color: #e879f9 !important;
+      }
+
+      /* 3. Separador interno (border-t border-slate-100) */
+      html.dark #listaViajes .border-slate-100 {
+        border-color: rgba(255, 255, 255, 0.08) !important;
+      }
+
+      /* 4. Fechas y textos pequeños legibles en dark */
+      html.dark #listaViajes .text-slate-500 {
+        color: #cbd5e1 !important;
+      }
+      html.dark #listaViajes .text-slate-400 {
+        color: #94a3b8 !important;
+      }
+
+      /* 5. Descripción del viaje */
+      html.dark #listaViajes p.text-slate-500 {
+        color: #94a3b8 !important;
+      }
+    </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
@@ -67,13 +124,13 @@
                 </a>
                 <a href="admin_reservas.html"
                    title="Reservas"
-                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 dark:hover:bg-white/5 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">confirmation_number</span>
                     <span class="hidden sm:inline">Reservas</span>
                 </a>
                 <a href="admin_usuarios.html"
                    title="Usuarios"
-                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
+                   class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 dark:hover:bg-white/5 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
                     <span class="hidden sm:inline">Usuarios</span>
                 </a>
@@ -86,7 +143,6 @@
                 <span id="adminNombre">Administrador</span>
             </span>
 
-            <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
             <button
                 type="button"
                 id="btnToggleTheme"
@@ -97,12 +153,11 @@
                 <span class="material-symbols-outlined text-xl">dark_mode</span>
             </button>
 
-            <!-- ✅ BOTÓN CERRAR SESIÓN (abre el modal de confirmación) -->
             <button
                 type="button"
                 id="btnCerrarSesion"
                 title="Cerrar sesión"
-                class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-2 sm:px-3 rounded-xl transition-colors cursor-pointer"
+                class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 py-1.5 px-2 sm:px-3 rounded-xl transition-colors cursor-pointer"
             >
                 <span class="material-symbols-outlined text-lg">logout</span>
                 <span class="hidden sm:inline">Cerrar sesión</span>
@@ -227,12 +282,12 @@
     <!-- MODAL DETALLES VIAJE (ADMIN) -->
     <div class="modal" id="modalDetallesViaje">
         <div class="modal-content !max-w-xl">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h2 class="!mb-0 flex items-center gap-2 text-xl font-black text-slate-900">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h2 class="!mb-0 flex items-center gap-2 text-xl font-black text-slate-900 dark:text-slate-100">
                     <span class="material-symbols-outlined text-primary text-2xl">travel_explore</span>
                     <span id="detalles_admin_destino">Detalles del Viaje</span>
                 </h2>
-                <button type="button" onclick="cerrarModalDetalles()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold p-1 leading-none transition-colors" aria-label="Cerrar modal">&times;</button>
+                <button type="button" onclick="cerrarModalDetalles()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-2xl font-bold p-1 leading-none transition-colors" aria-label="Cerrar modal">&times;</button>
             </div>
 
             <div class="relative w-full aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mt-4 shadow-sm group">
@@ -253,30 +308,30 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3 mt-4">
-                <div class="bg-purple-50/70 p-3 rounded-xl border border-primary/10">
+                <div class="bg-purple-50/70 dark:bg-purple-950/30 p-3 rounded-xl border border-primary/10">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tarifa por persona</span>
                     <span id="detalles_admin_precio" class="text-lg font-black text-primary">$0</span>
                 </div>
-                <div class="bg-purple-50/70 p-3 rounded-xl border border-primary/10">
+                <div class="bg-purple-50/70 dark:bg-purple-950/30 p-3 rounded-xl border border-primary/10">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ID del Viaje</span>
-                    <span id="detalles_admin_id" class="text-lg font-black text-slate-800">#0</span>
+                    <span id="detalles_admin_id" class="text-lg font-black text-slate-800 dark:text-slate-100">#0</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 mt-3">
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700/50">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Fecha Salida</span>
-                    <span id="detalles_admin_salida" class="text-xs font-bold text-slate-700">--/--/----</span>
+                    <span id="detalles_admin_salida" class="text-xs font-bold text-slate-700 dark:text-slate-200">--/--/----</span>
                 </div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700/50">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Fecha Regreso</span>
-                    <span id="detalles_admin_regreso" class="text-xs font-bold text-slate-700">--/--/----</span>
+                    <span id="detalles_admin_regreso" class="text-xs font-bold text-slate-700 dark:text-slate-200">--/--/----</span>
                 </div>
             </div>
 
             <div class="mt-4">
                 <label class="!mt-0 !text-xs !font-bold text-slate-500 uppercase tracking-wider block mb-1">Descripción del Plan</label>
-                <p id="detalles_admin_descripcion" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200/70 whitespace-pre-line max-h-36 overflow-y-auto"></p>
+                <p id="detalles_admin_descripcion" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-700/50 whitespace-pre-line max-h-36 overflow-y-auto"></p>
             </div>
 
             <div class="mt-5 flex items-center justify-end gap-2">
@@ -518,7 +573,7 @@
             contenedor.innerHTML = "";
 
             if (viajesData.length === 0) {
-                contenedor.innerHTML = '<div class="col-span-full py-16 text-center"><span class="material-symbols-outlined text-4xl text-purple-300 mb-2">luggage</span><p class="text-slate-500 font-medium">No hay viajes creados todavía. ¡Crea el primero usando el botón superior!</p></div>';
+                contenedor.innerHTML = '<div class="col-span-full py-16 text-center"><span class="material-symbols-outlined text-4xl text-purple-300 mb-2">luggage</span><p class="text-slate-500 dark:text-slate-400 font-medium">No hay viajes creados todavía. ¡Crea el primero usando el botón superior!</p></div>';
                 return;
             }
 
@@ -535,7 +590,7 @@
 
                 card.innerHTML = `
                     <div>
-                        <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100">
+                        <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
                             <img src="${imgUrl}" alt="${viaje.destino}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1583531352515-8884af319dc1?auto=format&fit=crop&w=800&q=80'">
                             <div class="absolute top-3 right-3 bg-primary text-white font-bold px-2.5 py-0.5 rounded-full text-xs shadow-sm flex items-center gap-1">
@@ -549,12 +604,12 @@
                         </div>
 
                         <div class="p-5">
-                            <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-300 mb-2 font-medium">
                                 <span class="flex items-center gap-1">
                                     <span class="material-symbols-outlined text-xs text-primary">flight_takeoff</span>
                                     <span>${formatearFecha(viaje.fecha_salida)}</span>
                                 </span>
-                                <span class="flex items-center gap-1 bg-purple-50 text-primary px-2.5 py-0.5 rounded-full font-bold text-[11px]">
+                                <span class="flex items-center gap-1 bg-purple-50 dark:bg-purple-950/50 text-primary dark:text-fuchsia-300 px-2.5 py-0.5 rounded-full font-bold text-[11px]">
                                     <span class="material-symbols-outlined text-xs">schedule</span>
                                     <span>Hasta ${formatearFecha(viaje.fecha_regreso)}</span>
                                 </span>
@@ -564,19 +619,19 @@
                                 ${viaje.destino}
                             </h3>
 
-                            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
+                            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
                                 ${viaje.descripcion ? viaje.descripcion : "Sin descripción adicional"}
                             </p>
 
-                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                                <span class="text-xs text-slate-400 font-semibold">Tarifa por persona</span>
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                                <span class="text-xs text-slate-400 dark:text-slate-400 font-semibold">Tarifa por persona</span>
                                 <span class="text-xl font-black text-primary">$${precioFormateado}</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-5 pt-0 flex flex-col gap-2 mt-2">
-                        <button type="button" class="w-full py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-primary text-xs font-black text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm" onclick="abrirModalDetalles(${viaje.id})">
+                        <button type="button" class="w-full py-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-primary dark:text-fuchsia-300 text-xs font-black text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm border border-transparent dark:border-primary/30" onclick="abrirModalDetalles(${viaje.id})">
                             <span class="material-symbols-outlined text-base">visibility</span> Ver detalles
                         </button>
                         <div class="grid grid-cols-2 gap-2">
