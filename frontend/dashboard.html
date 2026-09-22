@@ -61,9 +61,6 @@
       color: inherit;
     }
 
-    /* ======================================================
-       MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
-       ====================================================== */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -183,7 +180,6 @@
           ¡Hola, viajero!
         </a>
 
-        <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
         <button
           type="button"
           id="btnToggleTheme"
@@ -194,11 +190,11 @@
           <span class="material-symbols-outlined text-xl">dark_mode</span>
         </button>
 
-        <!-- ✅ BOTÓN CERRAR SESIÓN (ahora abre el modal) -->
+        <!-- ✅ Botón Cerrar Sesión: solo cambia color de texto en hover -->
         <button
           type="button"
           id="btnCerrarSesion"
-          class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 py-1.5 px-3 rounded-xl transition-colors cursor-pointer"
+          class="flex items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 transition-colors cursor-pointer"
         >
           <span class="material-symbols-outlined text-lg">logout</span>
           <span class="hidden sm:inline">Cerrar sesión</span>
@@ -309,9 +305,6 @@
     </footer>
   </div>
 
-  <!-- ======================================================
-       MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
-       ====================================================== -->
   <div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
     <div class="modal-content-custom">
       <h3 id="tituloModalCierre" class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
@@ -339,7 +332,6 @@
 
   <script src="js/dashboard_viajes.js"></script>
 
-  <!-- Script de intercepción de botones "Reservar" -->
   <script>
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('button, a');
@@ -365,7 +357,6 @@
     }, true);
   </script>
 
-  <!-- ✅ Script del modal de cierre de sesión -->
   <script>
     (function () {
       const modalCierre = document.getElementById('modalConfirmarCierre');

@@ -41,10 +41,7 @@
   <script src="js/theme.js"></script>
 
   <style>
-    /* ========================================================
-       A) TARJETAS DEL CATÁLOGO (gridPlanes)
-       ======================================================== */
-
+    /* A) TARJETAS DEL CATÁLOGO */
     html.dark #gridPlanes article,
     html.dark #gridPlanes > div,
     html.dark #gridPlanes > div > .bg-white,
@@ -125,10 +122,7 @@
       color: #ffffff !important;
     }
 
-    /* ========================================================
-       B) MODAL "VER DETALLES" DEL CATÁLOGO
-       ======================================================== */
-
+    /* B) MODAL VER DETALLES */
     html.dark .modal-content-catalogo {
       background-color: #07152b !important;
       border: 1px solid rgba(200, 0, 255, 0.25) !important;
@@ -246,10 +240,7 @@
       background: rgba(200, 0, 255, 0.7);
     }
 
-    /* ========================================================
-       C) Caja de precio + botón "Reservar Este Plan"
-       ======================================================== */
-
+    /* C) Caja de precio + botón Reservar */
     html.dark #modalPlanContenido .bg-gradient-to-r,
     html.dark #modalPlanContenido .bg-gradient-to-l,
     html.dark #modalPlanContenido .bg-gradient-to-t,
@@ -291,7 +282,6 @@
       color: #ffffff !important;
     }
 
-    /* Botón "Reservar Este Plan" → gradiente + texto blanco */
     html.dark #modalPlanContenido .gradient-btn,
     html.dark #modalPlanContenido button.gradient-btn,
     html.dark #modalPlanContenido a.gradient-btn {
@@ -341,10 +331,7 @@
       opacity: 1 !important;
     }
 
-    /* ========================================================
-       D) IMÁGENES SIN TINTE MORADO
-       ======================================================== */
-
+    /* D) IMÁGENES SIN TINTE MORADO */
     #gridPlanes img,
     #modalPlanContenido img,
     .modal-content-catalogo img,
@@ -415,7 +402,8 @@
         Iniciar Sesión
       </a>
 
-      <a href="../backend/api/logout.php" id="btnCerrarSesionNav" class="hidden items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-white/5 py-1.5 px-3 rounded-xl transition-colors" title="Cerrar sesión">
+      <!-- ✅ Botón Cerrar Sesión: solo cambia color de texto en hover (igual que perfil.html) -->
+      <a href="../backend/api/logout.php" id="btnCerrarSesionNav" class="hidden items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 transition-colors" title="Cerrar sesión">
         <span class="material-symbols-outlined text-base">logout</span>
         <span class="hidden sm:inline">Cerrar sesión</span>
       </a>
@@ -749,12 +737,6 @@
   }, true);
 </script>
 
-<!-- ================================================================
-     FUERZA BLANCO PURO EN EL BOTÓN "RESERVAR ESTE PLAN" (24/7)
-     Un setInterval re-aplica los estilos inline cada 200ms.
-     Esto garantiza que SIN IMPORTAR qué haga el JS del catálogo,
-     el texto SIEMPRE se vea blanco (no solo en hover).
-     ================================================================ -->
 <script>
   (function () {
     const BLANCO = '#ffffff';
@@ -767,7 +749,6 @@
       if (!botones.length) return;
 
       botones.forEach(function (btn) {
-        // 1) Fondo con gradiente + reset total del botón
         btn.style.setProperty('background-image', GRADIENTE, 'important');
         btn.style.setProperty('background-color', 'transparent', 'important');
         btn.style.setProperty('background-clip', 'padding-box', 'important');
@@ -780,7 +761,6 @@
         btn.style.setProperty('text-shadow', 'none', 'important');
         btn.style.setProperty('font-weight', '800', 'important');
 
-        // 2) Recorre TODOS los descendientes y fuerza blanco puro
         const hijos = btn.querySelectorAll('*');
         hijos.forEach(function (el) {
           el.style.setProperty('color', BLANCO, 'important');
@@ -796,18 +776,15 @@
           el.style.setProperty('font-weight', '800', 'important');
         });
 
-        // 3) Aseguramos que el botón también tenga las propiedades de texto blancas
         btn.style.setProperty('color', BLANCO, 'important');
         btn.style.setProperty('-webkit-text-fill-color', BLANCO, 'important');
       });
     }
 
-    // Ejecuta lo antes posible y luego cada 200ms (para siempre)
     document.addEventListener('DOMContentLoaded', forzarBlancoBoton);
     window.addEventListener('load', forzarBlancoBoton);
     setInterval(forzarBlancoBoton, 200);
 
-    // Refuerza cuando el usuario hace clic en cualquier botón "Ver detalles"
     document.addEventListener('click', function (e) {
       const t = e.target.closest('button, a');
       if (!t) return;

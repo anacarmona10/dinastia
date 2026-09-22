@@ -11,10 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-  <!-- Font Awesome (para el ojito) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  <!-- jsPDF CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script id="tailwind-config">
@@ -68,6 +66,345 @@
       }
     }
   </script>
+
+  <!-- =========================================================
+       FIX MODO CLARO + OSCURO — Modal "Detalle del Plan Turístico"
+       (contenedor #detalleReservaContenido del modal #modalDetalleReserva)
+       ========================================================= -->
+  <style>
+    /* =========================================================
+       A) MODO CLARO — Mejorar legibilidad del modal de Detalle
+       ========================================================= */
+
+    /* A.1 — El contenedor del modal: fondo blanco limpio y borde sutil */
+    #modalDetalleReserva .modal-content {
+      background-color: #ffffff !important;
+      border: 1px solid rgba(200, 0, 255, 0.12) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    /* A.2 — Título del modal: negro pleno */
+    #modalDetalleReserva .modal-content > .flex h3,
+    #modalDetalleReserva #detalleReservaContenido h1,
+    #modalDetalleReserva #detalleReservaContenido h2,
+    #modalDetalleReserva #detalleReservaContenido h3,
+    #modalDetalleReserva #detalleReservaContenido h4 {
+      color: #0f172a !important;
+      font-weight: 900 !important;
+    }
+
+    /* A.3 — Textos base dentro del contenido: negro/gris oscuro definido */
+    #detalleReservaContenido {
+      color: #1e293b !important;
+    }
+
+    #detalleReservaContenido p,
+    #detalleReservaContenido span:not(.material-symbols-outlined),
+    #detalleReservaContenido label,
+    #detalleReservaContenido div {
+      color: inherit;
+    }
+
+    /* A.4 — Textos secundarios y etiquetas: gris oscuro legible (no gris claro) */
+    #detalleReservaContenido .text-slate-400,
+    #detalleReservaContenido .text-slate-500,
+    #detalleReservaContenido .text-gray-400,
+    #detalleReservaContenido .text-gray-500,
+    #detalleReservaContenido small,
+    #detalleReservaContenido .text-xs,
+    #detalleReservaContenido .text-sm {
+      color: #475569 !important;
+    }
+
+    /* A.5 — Valores destacados: negro pleno y bold */
+    #detalleReservaContenido strong,
+    #detalleReservaContenido b,
+    #detalleReservaContenido .font-bold,
+    #detalleReservaContenido .font-black,
+    #detalleReservaContenido .text-slate-700,
+    #detalleReservaContenido .text-slate-800,
+    #detalleReservaContenido .text-slate-900 {
+      color: #0f172a !important;
+    }
+
+    /* A.6 — Cajas internas con fondo grisáceo muy claro → blanco limpio con borde definido */
+    #detalleReservaContenido .bg-slate-50,
+    #detalleReservaContenido .bg-slate-100,
+    #detalleReservaContenido .bg-gray-50,
+    #detalleReservaContenido .bg-gray-100,
+    #detalleReservaContenido [class*="bg-slate-50"] {
+      background-color: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+
+    /* A.7 — Cajas moradas suaves (info de pago) → tono púrpura claro */
+    #detalleReservaContenido .bg-purple-50,
+    #detalleReservaContenido .bg-purple-100,
+    #detalleReservaContenido [class*="bg-purple-50"],
+    #detalleReservaContenido [class*="bg-purple-100"] {
+      background-color: #faf5ff !important;
+      border: 1px solid #e9d5ff !important;
+    }
+
+    /* A.8 — Precio / total → rosa-magenta de marca bien definido */
+    #detalleReservaContenido .text-primary {
+      color: #c800ff !important;
+    }
+
+    /* A.9 — Separadores visibles */
+    #detalleReservaContenido .border-t,
+    #detalleReservaContenido .border-slate-100,
+    #detalleReservaContenido .border-slate-200,
+    #detalleReservaContenido hr {
+      border-color: #e2e8f0 !important;
+    }
+
+    /* A.10 — Textos de "Método de Transacción:" / "Fecha de Aprobación:" etc → oscuros */
+    #detalleReservaContenido .grid > div span:first-child,
+    #detalleReservaContenido > div > div > span:first-child,
+    #detalleReservaContenido .flex.justify-between > span:first-child {
+      color: #475569 !important;
+      font-weight: 600 !important;
+    }
+
+    /* A.11 — Botones dentro del modal */
+    #modalDetalleReserva .modal-content .btn-cerrar-modal {
+      background: #f1f5f9 !important;
+      color: #334155 !important;
+    }
+    #modalDetalleReserva .modal-content .btn-cerrar-modal:hover {
+      background: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    /* A.12 — Botón Descargar (gradiente) siempre con texto blanco */
+    #modalDetalleReserva .modal-content .btn-guardar-modal,
+    #modalDetalleReserva .modal-content .btn-guardar-modal * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* =========================================================
+       B) MODO OSCURO — Todo el modal en tema dark
+       ========================================================= */
+
+    html.dark #modalDetalleReserva .modal-content {
+      background-color: #07152b !important;
+      border: 1px solid rgba(200, 0, 255, 0.28) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
+    }
+
+    /* B.1 — Título del modal: blanco */
+    html.dark #modalDetalleReserva .modal-content > .flex h3,
+    html.dark #modalDetalleReserva #detalleReservaContenido h1,
+    html.dark #modalDetalleReserva #detalleReservaContenido h2,
+    html.dark #modalDetalleReserva #detalleReservaContenido h3,
+    html.dark #modalDetalleReserva #detalleReservaContenido h4 {
+      color: #ffffff !important;
+    }
+
+    /* B.2 — Botón X para cerrar */
+    html.dark #modalDetalleReserva .modal-content > .flex button {
+      color: #94a3b8 !important;
+    }
+    html.dark #modalDetalleReserva .modal-content > .flex button:hover {
+      color: #ffffff !important;
+    }
+
+    /* B.3 — Texto base del contenido: gris claro legible */
+    html.dark #detalleReservaContenido {
+      color: #cbd5e1 !important;
+    }
+
+    /* B.4 — Textos secundarios / etiquetas: gris medio claro */
+    html.dark #detalleReservaContenido .text-slate-400,
+    html.dark #detalleReservaContenido .text-slate-500,
+    html.dark #detalleReservaContenido .text-gray-400,
+    html.dark #detalleReservaContenido .text-gray-500,
+    html.dark #detalleReservaContenido small,
+    html.dark #detalleReservaContenido .text-xs,
+    html.dark #detalleReservaContenido .text-sm {
+      color: #94a3b8 !important;
+    }
+
+    /* B.5 — Valores destacados: blanco pleno */
+    html.dark #detalleReservaContenido strong,
+    html.dark #detalleReservaContenido b,
+    html.dark #detalleReservaContenido .font-bold,
+    html.dark #detalleReservaContenido .font-black,
+    html.dark #detalleReservaContenido .text-slate-700,
+    html.dark #detalleReservaContenido .text-slate-800,
+    html.dark #detalleReservaContenido .text-slate-900,
+    html.dark #detalleReservaContenido h1,
+    html.dark #detalleReservaContenido h2,
+    html.dark #detalleReservaContenido h3,
+    html.dark #detalleReservaContenido h4,
+    html.dark #detalleReservaContenido h5 {
+      color: #ffffff !important;
+    }
+
+    /* B.6 — Cajas grises → fondo oscuro translúcido con borde sutil */
+    html.dark #detalleReservaContenido .bg-slate-50,
+    html.dark #detalleReservaContenido .bg-slate-100,
+    html.dark #detalleReservaContenido .bg-gray-50,
+    html.dark #detalleReservaContenido .bg-gray-100,
+    html.dark #detalleReservaContenido [class*="bg-slate-50"] {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    }
+
+    /* B.7 — Cajas moradas (info de pago) → púrpura translúcido oscuro */
+    html.dark #detalleReservaContenido .bg-purple-50,
+    html.dark #detalleReservaContenido .bg-purple-100,
+    html.dark #detalleReservaContenido [class*="bg-purple-50"],
+    html.dark #detalleReservaContenido [class*="bg-purple-100"] {
+      background-color: rgba(200, 0, 255, 0.14) !important;
+      border: 1px solid rgba(200, 0, 255, 0.30) !important;
+    }
+
+    /* B.8 — Precio/total → rosa claro brillante */
+    html.dark #detalleReservaContenido .text-primary {
+      color: #e879f9 !important;
+    }
+
+    /* B.9 — Separadores visibles en dark */
+    html.dark #detalleReservaContenido .border-t,
+    html.dark #detalleReservaContenido .border-slate-100,
+    html.dark #detalleReservaContenido .border-slate-200,
+    html.dark #detalleReservaContenido hr {
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+
+    /* B.10 — Etiquetas tipo "Método de Transacción:" → gris claro */
+    html.dark #detalleReservaContenido .grid > div span:first-child,
+    html.dark #detalleReservaContenido > div > div > span:first-child,
+    html.dark #detalleReservaContenido .flex.justify-between > span:first-child {
+      color: #94a3b8 !important;
+    }
+
+    /* B.11 — Todo el texto dentro de cajas → claro */
+    html.dark #detalleReservaContenido .bg-slate-50 *,
+    html.dark #detalleReservaContenido .bg-slate-100 *,
+    html.dark #detalleReservaContenido .bg-gray-50 *,
+    html.dark #detalleReservaContenido .bg-gray-100 *,
+    html.dark #detalleReservaContenido .bg-purple-50 *,
+    html.dark #detalleReservaContenido .bg-purple-100 *,
+    html.dark #detalleReservaContenido [class*="bg-slate-50"] *,
+    html.dark #detalleReservaContenido [class*="bg-purple-50"] * {
+      color: #e2e8f0 !important;
+    }
+
+    /* B.12 — Botones del footer del modal (Cerrar + Descargar) */
+    html.dark #modalDetalleReserva .modal-content .btn-cerrar-modal {
+      background: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark #modalDetalleReserva .modal-content .btn-cerrar-modal:hover {
+      background: #334155 !important;
+      color: #ffffff !important;
+    }
+    html.dark #modalDetalleReserva .modal-content .btn-guardar-modal,
+    html.dark #modalDetalleReserva .modal-content .btn-guardar-modal * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* B.13 — Botón rojo "Cancelar reserva" → sigue rojo con texto blanco */
+    html.dark #btnCancelarReserva {
+      color: #ffffff !important;
+    }
+    html.dark #btnCancelarReserva * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* B.14 — Badges de estado (Confirmada, Pendiente, etc.) */
+    html.dark #detalleReservaContenido .bg-emerald-100 {
+      background-color: rgba(16, 185, 129, 0.18) !important;
+    }
+    html.dark #detalleReservaContenido .text-emerald-700,
+    html.dark #detalleReservaContenido .text-emerald-600 {
+      color: #6ee7b7 !important;
+    }
+    html.dark #detalleReservaContenido .bg-amber-100 {
+      background-color: rgba(245, 158, 11, 0.18) !important;
+    }
+    html.dark #detalleReservaContenido .text-amber-800,
+    html.dark #detalleReservaContenido .text-amber-700 {
+      color: #fcd34d !important;
+    }
+    html.dark #detalleReservaContenido .bg-red-100 {
+      background-color: rgba(239, 68, 68, 0.18) !important;
+    }
+    html.dark #detalleReservaContenido .text-red-700,
+    html.dark #detalleReservaContenido .text-red-600 {
+      color: #fca5a5 !important;
+    }
+    html.dark #detalleReservaContenido .bg-blue-100 {
+      background-color: rgba(59, 130, 246, 0.18) !important;
+    }
+    html.dark #detalleReservaContenido .text-blue-700,
+    html.dark #detalleReservaContenido .text-blue-600 {
+      color: #93c5fd !important;
+    }
+
+    /* B.15 — Scrollbar del contenido del modal */
+    html.dark #detalleReservaContenido::-webkit-scrollbar {
+      width: 8px;
+    }
+    html.dark #detalleReservaContenido::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+    }
+    html.dark #detalleReservaContenido::-webkit-scrollbar-thumb {
+      background: rgba(200, 0, 255, 0.5);
+      border-radius: 999px;
+    }
+    html.dark #detalleReservaContenido::-webkit-scrollbar-thumb:hover {
+      background: rgba(200, 0, 255, 0.7);
+    }
+
+    /* =========================================================
+       C) OTROS MODALES — también en dark (por consistencia)
+       ========================================================= */
+
+    html.dark .modal-overlay .modal-content {
+      background-color: #07152b !important;
+      border: 1px solid rgba(200, 0, 255, 0.25) !important;
+      color: #e2e8f0 !important;
+    }
+
+    html.dark .modal-overlay .modal-content h3,
+    html.dark .modal-overlay .modal-content h2,
+    html.dark .modal-overlay .modal-content label {
+      color: #ffffff !important;
+    }
+
+    html.dark .modal-overlay .modal-content p,
+    html.dark .modal-overlay .modal-content .text-slate-600,
+    html.dark .modal-overlay .modal-content .text-slate-500 {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark .modal-overlay .modal-content .border-t,
+    html.dark .modal-overlay .modal-content .border-slate-100 {
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+
+    html.dark .modal-overlay .modal-content .btn-cerrar-modal {
+      background: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .modal-overlay .modal-content .btn-cerrar-modal:hover {
+      background: #334155 !important;
+      color: #ffffff !important;
+    }
+
+    html.dark .modal-overlay .modal-content .btn-eliminar {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+    }
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
@@ -88,7 +425,6 @@
         <span class="hidden sm:inline">Dashboard</span>
       </a>
       <span class="hidden sm:inline text-sm font-bold text-primary" id="saludoUsuario">¡Hola, viajero!</span>
-      <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
       <button
         type="button"
         id="btnToggleTheme"
@@ -253,9 +589,6 @@
 </div>
 </div>
 
-<!-- ====================================================================
-     MODAL 1: CAMBIO DE CONTRASEÑA
-     ==================================================================== -->
 <div class="modal-overlay" id="modalPassword" role="dialog" aria-modal="true">
   <div class="modal-content">
     <div class="flex items-center justify-between mb-3">
@@ -300,9 +633,6 @@
   </div>
 </div>
 
-<!-- ====================================================================
-     MODAL 2: DETALLE DE RESERVA
-     ==================================================================== -->
 <div class="modal-overlay" id="modalDetalleReserva" role="dialog" aria-modal="true">
   <div class="modal-content max-w-xl">
     <div class="flex items-center justify-between mb-3">
@@ -316,7 +646,6 @@
         <span class="material-symbols-outlined text-sm">download</span> Descargar Comprobante PDF
       </button>
     </div>
-    <!-- 🆕 BOTÓN CANCELAR RESERVA -->
     <button type="button" id="btnCancelarReserva" class="w-full mt-3 py-3 rounded-xl bg-red-500 text-white font-bold text-sm shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all flex items-center justify-center gap-2">
       <span class="material-symbols-outlined text-lg">cancel</span>
       Cancelar reserva
@@ -324,9 +653,6 @@
   </div>
 </div>
 
-<!-- ====================================================================
-     MODAL 3: CONFIRMACIÓN DE CIERRE DE SESIÓN
-     ==================================================================== -->
 <div class="modal-overlay" id="modalConfirmarCierre">
   <div class="modal-content text-center">
     <h3 class="text-xl font-black mb-2">¿Seguro que quieres cerrar sesión?</h3>
@@ -338,9 +664,6 @@
   </div>
 </div>
 
-<!-- ====================================================================
-     MODAL 4: CONFIRMACIÓN DE CANCELAR RESERVA (NUEVO)
-     ==================================================================== -->
 <div class="modal-overlay" id="modalConfirmarCancelacion" role="dialog" aria-modal="true">
   <div class="modal-content text-center">
     <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-red-100 flex items-center justify-center">
