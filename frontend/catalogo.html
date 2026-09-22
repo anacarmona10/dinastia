@@ -40,13 +40,11 @@
   <link rel="stylesheet" href="style_dark.css">
   <script src="js/theme.js"></script>
 
-  <!-- =========================================================
-       FIX MODO OSCURO — Tarjetas del catálogo de planes turísticos
-       Garantiza que los destinos, descripciones y metadatos
-       sean legibles cuando el tema está en oscuro.
-       ========================================================= -->
   <style>
-    /* 1. Fondo de la tarjeta: forzamos oscuro en dark mode */
+    /* ========================================================
+       A) TARJETAS DEL CATÁLOGO (gridPlanes)
+       ======================================================== */
+
     html.dark #gridPlanes article,
     html.dark #gridPlanes > div,
     html.dark #gridPlanes > div > .bg-white,
@@ -55,7 +53,6 @@
       border-color: rgba(200, 0, 255, 0.22) !important;
     }
 
-    /* 2. Título del destino dentro de la tarjeta: SIEMPRE blanco en dark */
     html.dark #gridPlanes h2,
     html.dark #gridPlanes h3,
     html.dark #gridPlanes h4,
@@ -70,7 +67,6 @@
       color: #ffffff !important;
     }
 
-    /* 3. Descripciones y textos secundarios dentro de la tarjeta */
     html.dark #gridPlanes p,
     html.dark #gridPlanes .text-slate-700,
     html.dark #gridPlanes .text-slate-600,
@@ -81,24 +77,20 @@
       color: #cbd5e1 !important;
     }
 
-    /* 4. Metadatos pequeños (Salida, Días, etc.) */
     html.dark #gridPlanes .text-slate-400,
     html.dark #gridPlanes .text-gray-400 {
       color: #94a3b8 !important;
     }
 
-    /* 5. Precio destacado: rosa claro para buen contraste */
     html.dark #gridPlanes .text-primary {
       color: #e879f9 !important;
     }
 
-    /* 6. Badge del destino sobre la imagen: siempre blanco */
     html.dark #gridPlanes .absolute.bottom-3,
     html.dark #gridPlanes .absolute.bottom-3 * {
       color: #ffffff !important;
     }
 
-    /* 7. Etiquetas de servicios (Tiquetes, Hospedaje, Desayunos, etc.) */
     html.dark #gridPlanes .bg-purple-50,
     html.dark #gridPlanes .bg-purple-100,
     html.dark #gridPlanes .bg-slate-50,
@@ -117,27 +109,266 @@
       color: #f1f5f9 !important;
     }
 
-    /* 8. Separadores internos (líneas sutiles claras) */
     html.dark #gridPlanes .border-t,
     html.dark #gridPlanes .border-slate-100,
     html.dark #gridPlanes .border-slate-200 {
       border-color: rgba(255, 255, 255, 0.10) !important;
     }
 
-    /* 9. Botón "Ver detalles" (btn-outline) en dark */
     html.dark #gridPlanes .btn-outline {
       background-color: transparent !important;
       color: #ffffff !important;
       border-color: rgba(200, 0, 255, 0.45) !important;
     }
-
     html.dark #gridPlanes .btn-outline:hover {
       background-color: rgba(200, 0, 255, 0.15) !important;
       color: #ffffff !important;
     }
 
-    /* 10. Pills de "Salida", "días", "-25% Dcto", "10 cupos" no se tocan
-           porque tienen sus propios colores (yellow, pink, etc.) */
+    /* ========================================================
+       B) MODAL "VER DETALLES" DEL CATÁLOGO
+       ======================================================== */
+
+    html.dark .modal-content-catalogo {
+      background-color: #07152b !important;
+      border: 1px solid rgba(200, 0, 255, 0.25) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    html.dark .modal-content-catalogo #tituloModalDetalle,
+    html.dark .modal-content-catalogo h1,
+    html.dark .modal-content-catalogo h2,
+    html.dark .modal-content-catalogo h3,
+    html.dark .modal-content-catalogo h4 {
+      color: #ffffff !important;
+    }
+    html.dark .modal-content-catalogo .border-slate-100,
+    html.dark .modal-content-catalogo .border-slate-200 {
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    html.dark .modal-content-catalogo #btnCerrarModalPlan,
+    html.dark .modal-content-catalogo .text-slate-400 {
+      color: #94a3b8 !important;
+    }
+    html.dark .modal-content-catalogo #btnCerrarModalPlan:hover {
+      color: #ffffff !important;
+    }
+
+    html.dark #modalPlanContenido {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark #modalPlanContenido h1,
+    html.dark #modalPlanContenido h2,
+    html.dark #modalPlanContenido h3,
+    html.dark #modalPlanContenido h4,
+    html.dark #modalPlanContenido h5,
+    html.dark #modalPlanContenido h6,
+    html.dark #modalPlanContenido .text-slate-900,
+    html.dark #modalPlanContenido .text-slate-800,
+    html.dark #modalPlanContenido .text-gray-900,
+    html.dark #modalPlanContenido .text-gray-800,
+    html.dark #modalPlanContenido strong,
+    html.dark #modalPlanContenido b {
+      color: #ffffff !important;
+    }
+
+    html.dark #modalPlanContenido p,
+    html.dark #modalPlanContenido .text-slate-700,
+    html.dark #modalPlanContenido .text-slate-600,
+    html.dark #modalPlanContenido .text-gray-700,
+    html.dark #modalPlanContenido .text-gray-600 {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark #modalPlanContenido .text-slate-500,
+    html.dark #modalPlanContenido .text-gray-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark #modalPlanContenido .text-slate-400,
+    html.dark #modalPlanContenido .text-gray-400 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark #modalPlanContenido .bg-slate-50,
+    html.dark #modalPlanContenido .bg-slate-100,
+    html.dark #modalPlanContenido .bg-gray-50,
+    html.dark #modalPlanContenido .bg-gray-100,
+    html.dark #modalPlanContenido [class*="bg-slate-50"] {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+
+    html.dark #modalPlanContenido .bg-purple-50,
+    html.dark #modalPlanContenido .bg-purple-100,
+    html.dark #modalPlanContenido [class*="bg-purple-50"],
+    html.dark #modalPlanContenido [class*="bg-purple-100"] {
+      background-color: rgba(200, 0, 255, 0.14) !important;
+      border-color: rgba(200, 0, 255, 0.25) !important;
+    }
+
+    html.dark #modalPlanContenido .bg-slate-50 *,
+    html.dark #modalPlanContenido .bg-slate-100 *,
+    html.dark #modalPlanContenido .bg-gray-50 *,
+    html.dark #modalPlanContenido .bg-gray-100 *,
+    html.dark #modalPlanContenido .bg-purple-50 *,
+    html.dark #modalPlanContenido .bg-purple-100 *,
+    html.dark #modalPlanContenido [class*="bg-slate-50"] *,
+    html.dark #modalPlanContenido [class*="bg-purple-50"] * {
+      color: #e2e8f0 !important;
+    }
+
+    html.dark #modalPlanContenido .text-primary,
+    html.dark #modalPlanContenido [class*="text-primary"] {
+      color: #e879f9 !important;
+    }
+
+    html.dark #modalPlanContenido .text-emerald-600,
+    html.dark #modalPlanContenido .text-green-600,
+    html.dark #modalPlanContenido .text-emerald-500 {
+      color: #34d399 !important;
+    }
+
+    html.dark #modalPlanContenido::-webkit-scrollbar {
+      width: 8px;
+    }
+    html.dark #modalPlanContenido::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+    }
+    html.dark #modalPlanContenido::-webkit-scrollbar-thumb {
+      background: rgba(200, 0, 255, 0.5);
+      border-radius: 999px;
+    }
+    html.dark #modalPlanContenido::-webkit-scrollbar-thumb:hover {
+      background: rgba(200, 0, 255, 0.7);
+    }
+
+    /* ========================================================
+       C) Caja de precio + botón "Reservar Este Plan"
+       ======================================================== */
+
+    html.dark #modalPlanContenido .bg-gradient-to-r,
+    html.dark #modalPlanContenido .bg-gradient-to-l,
+    html.dark #modalPlanContenido .bg-gradient-to-t,
+    html.dark #modalPlanContenido .bg-gradient-to-b,
+    html.dark #modalPlanContenido .bg-gradient-to-tr,
+    html.dark #modalPlanContenido .bg-gradient-to-tl,
+    html.dark #modalPlanContenido .bg-gradient-to-br,
+    html.dark #modalPlanContenido .bg-gradient-to-bl,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn),
+    html.dark #modalPlanContenido [class*="from-purple"]:not(.gradient-btn),
+    html.dark #modalPlanContenido [class*="from-primary"]:not(.gradient-btn),
+    html.dark #modalPlanContenido [class*="from-pink"]:not(.gradient-btn) {
+      background-image: none !important;
+      background-color: rgba(200, 0, 255, 0.14) !important;
+      border: 1px solid rgba(200, 0, 255, 0.28) !important;
+    }
+
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-slate-500,
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-slate-600,
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-gray-500,
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-gray-600,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) .text-slate-500,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-primary,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) .text-primary,
+    html.dark #modalPlanContenido .bg-gradient-to-r span.text-primary,
+    html.dark #modalPlanContenido .bg-gradient-to-r .font-black {
+      color: #e879f9 !important;
+    }
+
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-slate-900,
+    html.dark #modalPlanContenido .bg-gradient-to-r .text-slate-800,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) .text-slate-900,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) .text-slate-800,
+    html.dark #modalPlanContenido [class*="bg-gradient"]:not(.gradient-btn) strong {
+      color: #ffffff !important;
+    }
+
+    /* Botón "Reservar Este Plan" → gradiente + texto blanco */
+    html.dark #modalPlanContenido .gradient-btn,
+    html.dark #modalPlanContenido button.gradient-btn,
+    html.dark #modalPlanContenido a.gradient-btn {
+      background-image: linear-gradient(to right, #c800ff, #EF1D9C) !important;
+      background-color: transparent !important;
+      background-clip: padding-box !important;
+      -webkit-background-clip: padding-box !important;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      border: none !important;
+      opacity: 1 !important;
+      filter: none !important;
+      -webkit-filter: none !important;
+      mix-blend-mode: normal !important;
+      text-shadow: none !important;
+      isolation: auto !important;
+      font-weight: 800 !important;
+    }
+
+    html.dark #modalPlanContenido .gradient-btn *,
+    html.dark #modalPlanContenido .gradient-btn span,
+    html.dark #modalPlanContenido .gradient-btn i,
+    html.dark #modalPlanContenido .gradient-btn .material-symbols-outlined,
+    html.dark #modalPlanContenido .gradient-btn strong,
+    html.dark #modalPlanContenido .gradient-btn b,
+    html.dark #modalPlanContenido .gradient-btn small,
+    html.dark #modalPlanContenido .gradient-btn p,
+    html.dark #modalPlanContenido button.gradient-btn *,
+    html.dark #modalPlanContenido a.gradient-btn * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background-image: none !important;
+      background-clip: border-box !important;
+      -webkit-background-clip: border-box !important;
+      opacity: 1 !important;
+      filter: none !important;
+      -webkit-filter: none !important;
+      mix-blend-mode: normal !important;
+      text-shadow: none !important;
+      font-weight: 800 !important;
+    }
+
+    html.dark #modalPlanContenido .gradient-btn:hover,
+    html.dark #modalPlanContenido .gradient-btn:hover * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    /* ========================================================
+       D) IMÁGENES SIN TINTE MORADO
+       ======================================================== */
+
+    #gridPlanes img,
+    #modalPlanContenido img,
+    .modal-content-catalogo img,
+    #skeletonLoader img {
+      filter: none !important;
+      -webkit-filter: none !important;
+      mix-blend-mode: normal !important;
+      opacity: 1 !important;
+      background-color: transparent !important;
+    }
+
+    #gridPlanes .relative > .absolute.inset-0[class*="bg-gradient"],
+    #modalPlanContenido .relative > .absolute.inset-0[class*="bg-gradient"] {
+      background-image: none !important;
+      background-color: transparent !important;
+    }
+
+    #gridPlanes .relative,
+    #gridPlanes .overflow-hidden,
+    #modalPlanContenido .relative,
+    #modalPlanContenido .overflow-hidden {
+      filter: none !important;
+      -webkit-filter: none !important;
+    }
   </style>
 </head>
 
@@ -165,7 +396,6 @@
 
       <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
 
-      <!-- ✅ BOTÓN MODO CLARO / OSCURO -->
       <button
         type="button"
         id="btnToggleTheme"
@@ -176,18 +406,15 @@
         <span class="material-symbols-outlined text-xl">dark_mode</span>
       </button>
 
-      <!-- Botón Mi Perfil: oculto por defecto si el usuario NO ha iniciado sesión (ej: vino del landing) -->
       <a href="perfil.html" id="btnMiPerfilNav" class="hidden items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors py-1.5 px-3 rounded-xl hover:bg-purple-50 dark:hover:bg-white/5">
         <span class="material-symbols-outlined text-primary text-base sm:text-lg">account_circle</span>
         Mi Perfil
       </a>
 
-      <!-- Botón Iniciar Sesión: visible si el usuario no ha iniciado sesión -->
       <a href="login.html" id="btnIniciarSesionNav" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full gradient-btn text-white text-xs sm:text-sm font-bold shadow-md shadow-primary/25">
         Iniciar Sesión
       </a>
 
-      <!-- Botón Cerrar Sesión: visible si el usuario ha iniciado sesión -->
       <a href="../backend/api/logout.php" id="btnCerrarSesionNav" class="hidden items-center gap-1 text-xs sm:text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-white/5 py-1.5 px-3 rounded-xl transition-colors" title="Cerrar sesión">
         <span class="material-symbols-outlined text-base">logout</span>
         <span class="hidden sm:inline">Cerrar sesión</span>
@@ -448,7 +675,6 @@
       
       <div class="text-xs text-slate-500 dark:text-slate-400 mb-4">Aplica los filtros para actualizar la lista de planes.</div>
       
-      <!-- Contenedor dinámico de filtros para dispositivos móviles o pantallas delgadas -->
       <div id="contenedorFiltrosDrawer"></div>
     </div>
   </div>
@@ -472,9 +698,6 @@
     </div>
   </div>
 
-  <!-- ======================================================
-       MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN
-       ====================================================== -->
   <div class="modal-overlay" id="modalConfirmarCierre" role="dialog" aria-modal="true" aria-labelledby="tituloModalCierre">
     <div class="modal-content-custom">
       <h3 id="tituloModalCierre" class="text-xl font-black mb-2 text-slate-900">¿Seguro que quieres cerrar sesión?</h3>
@@ -501,7 +724,6 @@
 
 <script src="js/catalogo.js"></script>
 
-<!-- Script de intercepción de botones "Reservar" -->
 <script>
   document.addEventListener('click', function (e) {
     const btn = e.target.closest('button, a');
@@ -525,6 +747,78 @@
       window.location.href = 'Confirmacion_reserva.html?viaje_id=' + viajeId;
     }
   }, true);
+</script>
+
+<!-- ================================================================
+     FUERZA BLANCO PURO EN EL BOTÓN "RESERVAR ESTE PLAN" (24/7)
+     Un setInterval re-aplica los estilos inline cada 200ms.
+     Esto garantiza que SIN IMPORTAR qué haga el JS del catálogo,
+     el texto SIEMPRE se vea blanco (no solo en hover).
+     ================================================================ -->
+<script>
+  (function () {
+    const BLANCO = '#ffffff';
+    const GRADIENTE = 'linear-gradient(to right, #c800ff, #EF1D9C)';
+
+    function forzarBlancoBoton() {
+      const botones = document.querySelectorAll(
+        '#modalPlanContenido .gradient-btn, #modalPlanContenido button.gradient-btn, #modalPlanContenido a.gradient-btn'
+      );
+      if (!botones.length) return;
+
+      botones.forEach(function (btn) {
+        // 1) Fondo con gradiente + reset total del botón
+        btn.style.setProperty('background-image', GRADIENTE, 'important');
+        btn.style.setProperty('background-color', 'transparent', 'important');
+        btn.style.setProperty('background-clip', 'padding-box', 'important');
+        btn.style.setProperty('-webkit-background-clip', 'padding-box', 'important');
+        btn.style.setProperty('border', 'none', 'important');
+        btn.style.setProperty('opacity', '1', 'important');
+        btn.style.setProperty('filter', 'none', 'important');
+        btn.style.setProperty('-webkit-filter', 'none', 'important');
+        btn.style.setProperty('mix-blend-mode', 'normal', 'important');
+        btn.style.setProperty('text-shadow', 'none', 'important');
+        btn.style.setProperty('font-weight', '800', 'important');
+
+        // 2) Recorre TODOS los descendientes y fuerza blanco puro
+        const hijos = btn.querySelectorAll('*');
+        hijos.forEach(function (el) {
+          el.style.setProperty('color', BLANCO, 'important');
+          el.style.setProperty('-webkit-text-fill-color', BLANCO, 'important');
+          el.style.setProperty('background-image', 'none', 'important');
+          el.style.setProperty('background-clip', 'border-box', 'important');
+          el.style.setProperty('-webkit-background-clip', 'border-box', 'important');
+          el.style.setProperty('opacity', '1', 'important');
+          el.style.setProperty('filter', 'none', 'important');
+          el.style.setProperty('-webkit-filter', 'none', 'important');
+          el.style.setProperty('mix-blend-mode', 'normal', 'important');
+          el.style.setProperty('text-shadow', 'none', 'important');
+          el.style.setProperty('font-weight', '800', 'important');
+        });
+
+        // 3) Aseguramos que el botón también tenga las propiedades de texto blancas
+        btn.style.setProperty('color', BLANCO, 'important');
+        btn.style.setProperty('-webkit-text-fill-color', BLANCO, 'important');
+      });
+    }
+
+    // Ejecuta lo antes posible y luego cada 200ms (para siempre)
+    document.addEventListener('DOMContentLoaded', forzarBlancoBoton);
+    window.addEventListener('load', forzarBlancoBoton);
+    setInterval(forzarBlancoBoton, 200);
+
+    // Refuerza cuando el usuario hace clic en cualquier botón "Ver detalles"
+    document.addEventListener('click', function (e) {
+      const t = e.target.closest('button, a');
+      if (!t) return;
+      if ((t.textContent || '').toLowerCase().includes('ver detalles') || 
+          (t.textContent || '').toLowerCase().includes('detalle')) {
+        setTimeout(forzarBlancoBoton, 50);
+        setTimeout(forzarBlancoBoton, 200);
+        setTimeout(forzarBlancoBoton, 500);
+      }
+    }, true);
+  })();
 </script>
 
 </body>
