@@ -10,7 +10,7 @@
     <script>
       (function () {
         try {
-          var t = localStorage.getItem('theme');
+          var t = localStorage.getItem('dinastia_theme');
           if (t === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.classList.remove('light');
@@ -172,6 +172,10 @@
                    class="shrink-0 bg-purple-100 text-primary font-black px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
                     <span class="hidden sm:inline">Usuarios</span>
+                </a>
+                <a href="admin_reportes.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                    <span class="material-symbols-outlined text-base">analytics</span>
+                    <span>Reportes</span>
                 </a>
             </nav>
 

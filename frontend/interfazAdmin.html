@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Viajes - Panel de Administración | Dinastía AMV</title>
 
+<<<<<<< HEAD
     <!-- Anti-FOUC: aplica el tema guardado antes de renderizar -->
     <script>
       (function () {
@@ -19,6 +20,18 @@
             document.documentElement.classList.remove('dark');
           }
         } catch (e) {}
+=======
+    <!-- Aplica el tema guardado antes de dibujar la página. -->
+    <script>
+      (function () {
+        try {
+          var tema = localStorage.getItem('dinastia_theme');
+          if (tema === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch (_) {}
+>>>>>>> dbb4a2c5fe67eb7a50b0ed8688565b9b19ba361e
       })();
     </script>
 
@@ -133,6 +146,10 @@
                    class="shrink-0 text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-purple-50 dark:hover:bg-white/5 transition-colors px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold whitespace-nowrap">
                     <span class="material-symbols-outlined text-base">group</span>
                     <span class="hidden sm:inline">Usuarios</span>
+                </a>
+                <a href="admin_reportes.html" class="text-slate-600 hover:text-primary hover:bg-purple-50 transition-colors px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 font-bold">
+                    <span class="material-symbols-outlined text-base">analytics</span>
+                    <span>Reportes</span>
                 </a>
             </nav>
 

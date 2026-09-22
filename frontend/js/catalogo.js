@@ -45,7 +45,10 @@
     btnMiPerfilNav: document.getElementById('btnMiPerfilNav'),
     btnIniciarSesionNav: document.getElementById('btnIniciarSesionNav'),
     btnCerrarSesionNav: document.getElementById('btnCerrarSesionNav'),
-    navDashboard: document.getElementById('navDashboard')
+    navDashboard: document.getElementById('navDashboard'),
+    modalConfirmarCierre: document.getElementById('modalConfirmarCierre'),
+    btnNoCerrar: document.getElementById('btnNoCerrar'),
+    btnSiCerrar: document.getElementById('btnSiCerrar')
   };
 
   let planesCargados = [];
@@ -648,10 +651,41 @@
       if (e.target === DOM.modalDetalle) cerrarModalDetalle();
     });
 
+    // Modal de confirmación de cierre de sesión
+    if (DOM.btnCerrarSesionNav && DOM.modalConfirmarCierre) {
+      DOM.btnCerrarSesionNav.addEventListener('click', (e) => {
+        e.preventDefault();
+        DOM.modalConfirmarCierre.classList.add('active');
+      });
+    }
+
+    if (DOM.btnNoCerrar && DOM.modalConfirmarCierre) {
+      DOM.btnNoCerrar.addEventListener('click', () => {
+        DOM.modalConfirmarCierre.classList.remove('active');
+      });
+    }
+
+    if (DOM.btnSiCerrar) {
+      DOM.btnSiCerrar.addEventListener('click', () => {
+        window.location.href = '../backend/api/logout.php';
+      });
+    }
+
+    if (DOM.modalConfirmarCierre) {
+      DOM.modalConfirmarCierre.addEventListener('click', (e) => {
+        if (e.target === DOM.modalConfirmarCierre) {
+          DOM.modalConfirmarCierre.classList.remove('active');
+        }
+      });
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         cerrarModalDetalle();
         cerrarDrawer();
+        if (DOM.modalConfirmarCierre && DOM.modalConfirmarCierre.classList.contains('active')) {
+          DOM.modalConfirmarCierre.classList.remove('active');
+        }
       }
     });
 
