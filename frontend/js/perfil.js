@@ -716,7 +716,7 @@
       doc.setFont('helvetica', 'normal');
       doc.text(`Teléfono:`, col2, y);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${user.telefono || '+57 312 456 7890'}`, col2 + 22, y);
+      doc.text(`${user.telefono || 'Función telefónica no disponible'}`, col2 + 22, y);
       doc.setFont('helvetica', 'normal');
       y += 10;
 
@@ -736,7 +736,6 @@
       doc.setTextColor(51, 65, 85);
       doc.text(`Departamento / Región: ${reserva.departamento}`, margin + 4, y + 12);
       doc.text(`Itinerario: ${reserva.fechasFormato}`, margin + 4, y + 18);
-      doc.text(`Alojamiento: ${reserva.alojamiento}`, margin + 4, y + 23);
       doc.text(`Pasajeros: ${reserva.personasTexto}`, col2, y + 12);
       doc.text(`Estado: ${obtenerTextoEstado(reserva.estado, reserva.metodoPago).toUpperCase()}`, col2, y + 18);
       y += 32;
@@ -806,6 +805,13 @@
       doc.text(selloTexto, selloX + (selloAncho - textoAncho) / 2, selloY + 11);
       y += 24;
 
+
+      if (y > 245) {
+        doc.addPage();
+        y = margin;
+      }
+
+
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y, pageWidth - margin, y);
       y += 6;
@@ -814,11 +820,228 @@
       doc.setTextColor(71, 85, 105);
       doc.text('TÉRMINOS Y CONDICIONES:', margin, y);
       y += 4;
+
+
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(148, 163, 184);
-      const clausula = 'Este documento constituye el comprobante oficial de su compra en Dinastía AMV. Para soporte o modificaciones comuníquese con soporte@dinastia.com.';
-      doc.text(doc.splitTextToSize(clausula, pageWidth - (margin * 2)), margin, y);
+
+
+      const introduccion = `Los presentes Términos y Condiciones regulan la contratación de servicios turísticos ofrecidos por Dinastía AMV (en adelante, "la Agencia") a través de su plataforma virtual. Al realizar una reserva o pago, el usuario (en adelante, "el Pasajero") declara haber leído, comprendido y aceptado sin reservas las siguientes disposiciones.`;
+
+      let lineas = doc.splitTextToSize(
+        introduccion,
+        pageWidth - (margin * 2)
+      );
+
+      doc.text(lineas, margin, y);
+
+      y += (lineas.length * 3.5) + 5;
+
+      function agregarTituloTermino(numero, titulo) {
+
+        // Si queda poco espacio, crear una nueva página
+        if (y > 260) {
+          doc.addPage();
+          y = margin;
+        }
+
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(71, 85, 105);
+
+        doc.text(`${numero}. ${titulo}`, margin, y);
+
+        y += 4;
+      }
+
+      function agregarParrafoTermino(texto) {
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(80, 80, 80);
+
+        const lineas = doc.splitTextToSize(
+          texto,
+          pageWidth - (margin * 2)
+        );
+
+        // Agregar línea por línea para controlar los saltos de página
+        lineas.forEach(linea => {
+
+          if (y > 270) {
+            doc.addPage();
+            y = margin;
+          }
+
+          doc.text(linea, margin, y);
+          y += 3.5;
+        });
+
+        y += 2;
+      }
+
+
+      function agregarViñetaTermino(texto) {
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(80, 80, 80);
+
+        const anchoTexto = pageWidth - (margin * 2) - 5;
+
+        const lineas = doc.splitTextToSize(
+          texto,
+          anchoTexto
+        );
+
+        lineas.forEach((linea, indice) => {
+
+          if (y > 270) {
+            doc.addPage();
+            y = margin;
+          }
+
+          if (indice === 0) {
+            doc.text('•', margin, y);
+            doc.text(linea, margin + 4, y);
+          } else {
+            doc.text(linea, margin + 4, y);
+          }
+
+          y += 3.5;
+        });
+
+        y += 1.5;
+      }
+
+
+      // ============================================================
+      // 1. OBJETO Y PROCESO DE RESERVA
+      // ============================================================
+
+      agregarTituloTermino(1, 'Objeto y Proceso de Reserva');
+
+      agregarParrafoTermino(
+        'La Agencia actúa como intermediaria entre el Pasajero y los proveedores de servicios turísticos (aerolíneas, hoteles, operadores locales, entre otros).'
+      );
+
+      agregarViñetaTermino(
+        'La reserva se considerará formalizada únicamente cuando el Pasajero reciba la confirmación por escrito (correo electrónico) y se haya acreditado el pago total o el anticipo requerido.'
+      );
+
+      agregarViñetaTermino(
+        'Es responsabilidad exclusiva del Pasajero verificar que sus datos personales (nombres, apellidos y números de documentos de identidad o pasaporte) coincidan exactamente con sus documentos oficiales de viaje al momento de la reserva.'
+      );
+
+
+      // ============================================================
+      // 2. TARIFAS Y FORMAS DE PAGO
+      // ============================================================
+
+      agregarTituloTermino(2, 'Tarifas y Formas de Pago');
+
+      agregarViñetaTermino(
+        'Los precios publicados en la plataforma están expresados en pesos colombianos e incluyen los impuestos de ley especificados en cada cotización.'
+      );
+
+      agregarViñetaTermino(
+        'Las tarifas están sujetas a disponibilidad y cambios sin previo aviso hasta que la reserva esté garantizada con el pago correspondiente.'
+      );
+
+      agregarViñetaTermino(
+        'Los pagos realizados mediante pasarelas virtuales están sujetos a los tiempos de procesamiento y validación de las entidades financieras asociadas.'
+      );
+
+
+      // ============================================================
+      // 3. CANCELACIÓN, MODIFICACIÓN Y REEMBOLSOS
+      // ============================================================
+
+      agregarTituloTermino(3, 'Políticas de Cancelación, Modificación y Reembolsos');
+
+      agregarViñetaTermino(
+        'Cancelaciones por parte del Pasajero: Toda solicitud de cancelación deberá realizarse por escrito al correo de atención al cliente (dinastiaamv@gmail.com). Las penalizaciones dependerán de las políticas de cada proveedor final (aerolíneas, hoteles, etc.). La Agencia retendrá un porcentaje administrativo del [PORCENTAJE] sobre el valor total del paquete por gastos de gestión, siempre que las políticas del proveedor lo permitan.'
+      );
+
+      agregarViñetaTermino(
+        'No Presentación (No-Show): La no presentación en la fecha, hora y lugar previstos para el inicio de los servicios implicará la pérdida total del valor pagado, sin derecho a reembolso ni reprogramación.'
+      );
+
+      agregarViñetaTermino(
+        'Cancelaciones por fuerza mayor: En caso de fuerza mayor (desastres naturales, alertas gubernamentales de viaje, huelgas o emergencias sanitarias), la Agencia gestionará con los proveedores los créditos o aplazamientos disponibles, sujetos a las normativas vigentes y políticas de dichos terceros.'
+      );
+
+
+      // ============================================================
+      // 4. REQUISITOS DE VIAJE Y SEGUROS MÉDICOS
+      // ============================================================
+
+      agregarTituloTermino(4, 'Requisitos de Viaje y Seguros Médicos');
+
+      agregarViñetaTermino(
+        'Documentación: Es estricta responsabilidad del Pasajero contar con pasaporte vigente, visas, permisos de menores de edad y vacunas obligatorias exigidas por el país de destino o de tránsito.'
+      );
+
+      agregarViñetaTermino(
+        'Asistencia Médica y Seguros: Dinastía AMV recomienda enfáticamente la contratación de una póliza de asistencia médica y de viajes internacional antes de la salida. Ciertos destinos exigen de manera obligatoria un seguro médico con cobertura mínima. Si el Pasajero decide declinar la compra del seguro ofrecido por la Agencia, exime a esta de cualquier responsabilidad sobre gastos médicos, hospitalarios o de repatriación derivados de accidentes o enfermedades durante el viaje.'
+      );
+
+
+      // ============================================================
+      // 5. RESPONSABILIDAD Y LIMITACIONES
+      // ============================================================
+
+      agregarTituloTermino(5, 'Responsabilidad y Limitaciones');
+
+      agregarViñetaTermino(
+        'La Agencia no se hace responsable por retrasos, cancelaciones o modificaciones de itinerarios operados directamente por las aerolíneas o proveedores de servicios finales.'
+      );
+
+      agregarViñetaTermino(
+        'La Agencia no asume responsabilidad por pérdida, daño o robo de equipaje o efectos personales, debiendo el Pasajero canalizar dichos reclamos directamente con la aerolínea o la compañía aseguradora.'
+      );
+
+
+      // ============================================================
+      // 6. JURISDICCIÓN Y LEY APLICABLE
+      // ============================================================
+
+      agregarTituloTermino(6, 'Jurisdicción y Ley Aplicable');
+
+      agregarParrafoTermino(
+        'Cualquier controversia derivada de la interpretación o ejecución de los presentes términos será resuelta bajo las leyes aplicables de Colombia, buscando en primera instancia la conciliación directa entre las partes.'
+      );
+
+
+      // ============================================================
+      // TEXTO FINAL
+      // ============================================================
+
+      if (y > 270) {
+        doc.addPage();
+        y = margin;
+      }
+
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(6.5);
+      doc.setTextColor(148, 163, 184);
+
+      const textoFinal =
+        'Este documento constituye el comprobante oficial de su compra en Dinastía AMV. Para soporte o modificaciones comuníquese con soporte@dinastia.com.';
+
+      const lineasFinales = doc.splitTextToSize(
+        textoFinal,
+        pageWidth - (margin * 2)
+      );
+
+      doc.text(lineasFinales, margin, y);
+
+      y += (lineasFinales.length * 3.5) + 3;
+
+
+
 
       const nombreArchivo = `Comprobante_AMV_${reserva.codigo}.pdf`;
       doc.save(nombreArchivo);
